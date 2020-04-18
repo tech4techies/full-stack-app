@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    /* https://www.typescriptlang.org/docs/handbook/compiler-options.html */
+    "target": "es2017" /* node10 ~= es2017 https://node.green/#ES2017 */,
+    "lib": ["es2017"],
+    "module": "commonjs" /* node10 only support commonjs */,
+    "outDir": "./dist",
+    "strict": true,
+    "esModuleInterop": true /* to treat commonJS 'module.exports' as 'default export' */
+  }
+}
