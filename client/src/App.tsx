@@ -1,9 +1,15 @@
 /** @format */
 
 import React from "react";
+import styled from "@emotion/styled";
 
 function App() {
-  return <div className='App'>Hello World!</div>;
+  const Box = styled.div({});
+  return (
+    <div className='App'>
+      <Box>Hello World!</Box>
+    </div>
+  );
 }
 
 export default App;

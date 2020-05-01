@@ -12,8 +12,6 @@
     "start": "concurrently \"yarn run start-server\" \"yarn run start-client\""
   },
   "dependencies": {
-    "@emotion/core": "^10.0.28",
-    "@emotion/styled": "^10.0.27",
     "@types/dotenv": "^8.2.0",
     "@types/express": "^4.17.6",
     "@types/nodemon": "^1.19.0",
