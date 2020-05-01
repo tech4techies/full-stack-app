@@ -3,7 +3,12 @@
 import express from "express";
 import { notFound } from "./controller/custom-express";
 import config from "./config";
-const getAPIRouter = () => express.Router({ mergeParams: true }).use(notFound);
+import { getAuthRouter } from "./controller/auth";
+const getAPIRouter = () =>
+  express
+    .Router({ mergeParams: true })
+    .use("/api/auth", getAuthRouter())
+    .use(notFound);
 
 const ONE_MIN = 1000 * 60;
 async function main() {
