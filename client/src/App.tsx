@@ -1,11 +1,8 @@
 /** @format */
 
 import React, { useLayoutEffect } from "react";
-import { Box } from "./components/Boxes";
-import { instanceOf } from "prop-types";
-import { useCookies, Cookies } from "react-cookie";
-import { BrowserRouter as Router, Switch, Link, Route } from "react-router-dom";
-import { ajaxUtils } from "./utils-lib/axios-utils";
+import { Cookies } from "react-cookie";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import SchoolLogin from "./Login/school-login";
 import NotFound from "./NotFound/not-found";
 function App() {
