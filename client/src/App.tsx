@@ -1,14 +1,14 @@
 /** @format */
 
-import React from "react";
-import styled from "@emotion/styled";
-
+import React, { useLayoutEffect } from "react";
+import { Box } from "./components/Boxes";
+import { BrowserRouter as Router, Switch, Link } from "react-router-dom";
 function App() {
-  const Box = styled.div({});
+  useLayoutEffect(() => {}, []);
   return (
-    <div className='App'>
-      <Box>Hello World!</Box>
-    </div>
+    <Router>
+      <Box></Box>
+    </Router>
   );
 }
 
