@@ -18,4 +18,3 @@ export const PrimaryButton = styled.button({
   borderRadius: 2,
   cursor: "pointer",
 });
-export const newStyle = styled.style({});
