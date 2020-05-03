@@ -18,3 +18,15 @@ export const PrimaryButton = styled.button({
   borderRadius: 2,
   cursor: "pointer",
 });
+
+export const SubmitButton = styled.button({
+  outline: "2px solid #fff3e0",
+  border: "2px solid #f44336",
+  backgroundColor: "#f44336",
+  color: "#fff",
+  cursor: "pointer",
+  fontSize: 16,
+  fontWeight: 600,
+  padding: 5,
+  borderRadius: 3,
+});
