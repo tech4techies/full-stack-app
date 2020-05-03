@@ -1,8 +1,8 @@
 /** @format */
 
 import React, { useState } from "react";
-import { Captcha } from "../components/Captcha";
 import { Box, FlexBoxRowCenter, FormBox } from "../components/Boxes";
+import { Captcha } from "../components/Captcha";
 import { SchoolLoginCard } from "../components/Cards";
 import { FormActions, FormInput } from "../components/Forms";
 import { genCaptcha } from "../utils-lib/generate-captcha";

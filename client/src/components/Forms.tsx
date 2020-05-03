@@ -1,9 +1,9 @@
 /** @format */
 
 import React from "react";
-import { InputBox, Box, FlexBoxRow, FlexBoxRowCenter } from "./Boxes";
-import { StyledInput, StyledTextArea, InputLabel, StyledSpan } from "./Inputs";
+import { Box, FlexBoxRowCenter, InputBox } from "./Boxes";
 import { SubmitButton } from "./Buttons";
+import { InputLabel, StyledInput, StyledSpan, StyledTextArea } from "./Inputs";
 
 interface FormInputProps {
   inputType: string;

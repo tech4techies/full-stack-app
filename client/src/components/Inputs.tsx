@@ -1,8 +1,6 @@
 /** @format */
 
 import styled from "@emotion/styled";
-import React from "react";
-import { InputBox } from "./Boxes";
 
 export const StyledSpan = styled.span({
   color: "#f44336",

@@ -1,6 +1,5 @@
 /** @format */
 
-import generate from "nanoid/generate";
 import React from "react";
 import { CaptchaBox } from "./Boxes";
 interface ICaptchaProps {
