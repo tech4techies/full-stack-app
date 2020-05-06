@@ -1,19 +1,41 @@
 /** @format */
 
 import React from "react";
-import { Box, FlexBoxRowCenter, InputBox } from "./Boxes";
-import { SubmitButton } from "./Buttons";
+import {
+  Box,
+  FlexBoxCol,
+  FlexBoxRowCenter,
+  FrmErrBox,
+  InputBox,
+} from "./Boxes";
+import { SubmitButton, BackButton } from "./Buttons";
 import { InputLabel, StyledInput, StyledSpan, StyledTextArea } from "./Inputs";
+import { IValidatorResult } from "./Validators";
+
+interface IFrmErrsProps {
+  errs: IValidatorResult[];
+}
+export function FrmErrs(props: IFrmErrsProps) {
+  const { errs } = props;
+  return (
+    <FlexBoxCol style={{ marginBottom: 3 }}>
+      {errs.map((err, index) => (
+        <FrmErrBox key={err.errMessage}>{err.errMessage}</FrmErrBox>
+      ))}
+    </FlexBoxCol>
+  );
+}
 
 interface FormInputProps {
   inputType: string;
   label: string;
+  name: string;
   required: boolean;
   onKeyUp?: (e: any) => void;
   onFocus?: (e: any) => void;
   onKeyPress?: (e: any) => void;
-  onChange?: (e: any) => void;
   onKeyDown?: (e: any) => void;
+  onChange?: (e: any) => void;
   style?: object;
 }
 export function FormInput(props: FormInputProps) {
@@ -25,6 +47,7 @@ export function FormInput(props: FormInputProps) {
     onKeyDown,
     onKeyPress,
     onFocus,
+    name,
     onChange,
     style,
   } = props;
@@ -40,6 +63,7 @@ export function FormInput(props: FormInputProps) {
           onChange={onChange}
           onKeyDown={onKeyDown}
           onKeyPress={onKeyPress}
+          name={name}
           onKeyUp={onKeyUp}
           required={required}
         />
@@ -51,6 +75,7 @@ export function FormInput(props: FormInputProps) {
           onKeyDown={onKeyDown}
           onKeyPress={onKeyPress}
           onKeyUp={onKeyUp}
+          name={name}
           required={required}></StyledTextArea>
       )}
       {required && (
@@ -65,26 +90,44 @@ export function FormInput(props: FormInputProps) {
 }
 
 const ArrowRight = require("../assets/right-arrow.svg");
+const ArrowLeft = require("../assets/left-arrow.svg");
 
-interface IonSubmit {
+interface IOnSubmit {
   label: string;
+  onFrmSubmit: (e: any) => void;
+}
+interface IOnGoBack {
+  label: string;
+  onFrmGoBack: (e: any) => void;
 }
 interface IFormActionsProps {
-  onSubmit: IonSubmit;
-  onGoBack?: string;
+  onSubmit: IOnSubmit;
+  onGoBack?: IOnGoBack;
 }
 export function FormActions(props: IFormActionsProps) {
-  const onSubmit = (e: any) => {
-    console.log("submitted");
-  };
+  const { onSubmit, onGoBack } = props;
+
+  const { label, onFrmSubmit } = onSubmit;
   return (
-    <Box>
-      <SubmitButton onClick={onSubmit}>
-        <FlexBoxRowCenter>
-          <img src={ArrowRight} />
-          Submit
-        </FlexBoxRowCenter>
-      </SubmitButton>
+    <Box style={{ padding: 0 }}>
+      <FlexBoxRowCenter>
+        <Box style={{ marginRight: "40%" }}>
+          <SubmitButton onClick={onFrmSubmit}>
+            <FlexBoxRowCenter>
+              <img alt={"Arrow-Right"} src={ArrowRight} />
+              {label}
+            </FlexBoxRowCenter>
+          </SubmitButton>
+        </Box>
+        {onGoBack && (
+          <BackButton>
+            <FlexBoxRowCenter>
+              <img alt={"Arrow-Left"} src={ArrowLeft} />
+              {onGoBack.label}
+            </FlexBoxRowCenter>
+          </BackButton>
+        )}
+      </FlexBoxRowCenter>
     </Box>
   );
 }

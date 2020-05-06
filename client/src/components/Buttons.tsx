@@ -30,3 +30,14 @@ export const SubmitButton = styled.button({
   padding: 5,
   borderRadius: 3,
 });
+
+export const BackButton = styled.button({
+  outline: "none",
+  border: "2px solid #f57c00",
+  backgroundColor: "#fff",
+  color: "#f57c00",
+  padding: 5,
+  fontSize: 16,
+  cursor: "pointer",
+  borderRadius: 3,
+});

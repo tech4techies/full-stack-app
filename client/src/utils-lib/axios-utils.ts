@@ -7,5 +7,6 @@ class AjaxUtils {
   get(routeSuffix: string) {
     return axios.get(routeSuffix);
   }
+  post(routeSuffix: string) {}
 }
 export const ajaxUtils = new AjaxUtils();

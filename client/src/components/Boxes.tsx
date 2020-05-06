@@ -53,3 +53,12 @@ export const CaptchaBox = styled.div({
   userSelect: "none",
   textShadow: "1px 1px #f44336",
 });
+
+export const FrmErrBox = styled.div({
+  color: "#f44336",
+  textAlign: "left",
+  padding: 5,
+  backgroundColor: "#ffebee",
+  borderRadius: 3,
+  marginBottom: 5,
+});
