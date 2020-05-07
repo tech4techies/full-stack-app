@@ -5,12 +5,11 @@ import { Box, FlexBoxRowCenter, FormBox } from "../components/Boxes";
 import { Captcha } from "../components/Captcha";
 import { LoginCard } from "../components/Cards";
 import { FormActions, FormInput, FrmErrs } from "../components/Forms";
-import { genCaptcha } from "../utils-lib/generate-captcha";
-import { Validator, IValidatorResult } from "../components/Validators";
-import { ajaxUtils } from "../utils-lib/axios-utils";
-import crypto from "crypto";
+import { IValidatorResult, Validator } from "../components/Validators";
 import config from "../config";
+import { ajaxUtils } from "../utils-lib/axios-utils";
 import Encrypt from "../utils-lib/encrypt";
+import { genCaptcha } from "../utils-lib/generate-captcha";
 
 function ManagerLogin() {
   const [captcha, setCaptcha] = useState(btoa(genCaptcha(8)).replace("=", ""));
@@ -36,13 +35,13 @@ function ManagerLogin() {
   const onSubmit = (e: any) => {
     const validations: IValidatorResult[] = [
       Validator.isRequired(userName, "Username"),
+      Validator.isRequired(password, "Password"),
       Validator.equal(
         userCapVal,
         atob(captcha),
         "Captcha Value",
         "Generated Captcha",
       ),
-      Validator.isRequired(password, "Password"),
     ];
     const validErrs = validations.filter((val: IValidatorResult) => val.err);
     if (validErrs.length > 0) {
@@ -54,7 +53,7 @@ function ManagerLogin() {
         userName,
         password: Encrypt.hashPassword(password, config.secretKey),
       };
-      ajaxUtils.post("manager/login").then((res) => {
+      ajaxUtils.post("manager/login", frmData).then((res) => {
         console.log("res ---", res);
       });
     }

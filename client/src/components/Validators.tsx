@@ -14,6 +14,22 @@ export class Validator {
         errMessage: `Entered ${fieldName} is an invalid email`,
       };
   };
+
+  static password = (val: string, fieldName: string): IValidatorResult => {
+    const res: IValidatorResult = {
+      err: false,
+      errMessage: "",
+    };
+    const PASSWORD_POLICY = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (PASSWORD_POLICY.test(val)) {
+      res.err = false;
+      res.errMessage = "";
+    } else {
+      res.err = true;
+      res.errMessage = `${fieldName} must contain atleast 8 characters having One Number, One Special Character, One Uppercase Letter, One Lowercase Letter`;
+    }
+    return res;
+  };
   static equal = (
     enteredValue: string | null,
     compareVal: string,

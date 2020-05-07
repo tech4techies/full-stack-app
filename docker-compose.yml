@@ -1,0 +1,15 @@
+# @format
+
+version: "2"
+services:
+  mongo:
+    # upgrade version to 3.6
+    # start server, in shell run command
+    #   db.adminCommand( { setFeatureCompatibilityVersion: "3.6" } )
+    # shutdown
+    # upgrade version to 4.0
+    image: mongo:4.0
+    volumes:
+      - ./dev/mongo-data:/data/db
+    ports:
+      - 27017:27017
