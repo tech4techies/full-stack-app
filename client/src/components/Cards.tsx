@@ -8,7 +8,7 @@ export const SimpleCard = styled.div({
   backgroundColor: "#fff",
 });
 
-export const SchoolLoginCard = styled.div({
+export const LoginCard = styled.div({
   borderRadius: 5,
   width: 500,
   padding: 10,

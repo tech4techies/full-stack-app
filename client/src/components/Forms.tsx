@@ -29,7 +29,6 @@ export function FrmErrs(props: IFrmErrsProps) {
 interface FormInputProps {
   inputType: string;
   label: string;
-  name: string;
   required: boolean;
   onKeyUp?: (e: any) => void;
   onFocus?: (e: any) => void;
@@ -37,6 +36,8 @@ interface FormInputProps {
   onKeyDown?: (e: any) => void;
   onChange?: (e: any) => void;
   style?: object;
+  autoComplete?: string;
+  autoCapitalize?: string;
 }
 export function FormInput(props: FormInputProps) {
   const {
@@ -47,8 +48,9 @@ export function FormInput(props: FormInputProps) {
     onKeyDown,
     onKeyPress,
     onFocus,
-    name,
     onChange,
+    autoComplete,
+    autoCapitalize,
     style,
   } = props;
   const inputTypes = ["text", "email", "password", "number"];
@@ -63,9 +65,10 @@ export function FormInput(props: FormInputProps) {
           onChange={onChange}
           onKeyDown={onKeyDown}
           onKeyPress={onKeyPress}
-          name={name}
           onKeyUp={onKeyUp}
           required={required}
+          autoComplete={autoComplete}
+          autoCapitalize={autoCapitalize}
         />
       )}
       {isTextArea && (
@@ -75,7 +78,6 @@ export function FormInput(props: FormInputProps) {
           onKeyDown={onKeyDown}
           onKeyPress={onKeyPress}
           onKeyUp={onKeyUp}
-          name={name}
           required={required}></StyledTextArea>
       )}
       {required && (

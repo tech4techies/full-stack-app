@@ -3,11 +3,11 @@
 import express from "express";
 import { notFound } from "./controller/custom-express";
 import config from "./config";
-import { getAuthRouter } from "./controller/auth";
+import { getSchoolRouter } from "./controller/school";
 const getAPIRouter = () =>
   express
     .Router({ mergeParams: true })
-    .use("/api/auth", getAuthRouter())
+    .use("/api/school", getSchoolRouter())
     .use(notFound);
 
 const ONE_MIN = 1000 * 60;

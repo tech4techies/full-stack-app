@@ -8,29 +8,41 @@ import { FormActions, FormInput, FrmErrs } from "../components/Forms";
 import { genCaptcha } from "../utils-lib/generate-captcha";
 import { Validator, IValidatorResult } from "../components/Validators";
 import { ajaxUtils } from "../utils-lib/axios-utils";
-function SchoolLogin() {
+import crypto from "crypto";
+import config from "../config";
+import Encrypt from "../utils-lib/encrypt";
+
+function ManagerLogin() {
   const [captcha, setCaptcha] = useState(btoa(genCaptcha(8)).replace("=", ""));
-  const [schoolId, setSchoolId] = useState(null);
-  const [userCapVal, setUserCapVal] = useState(null);
+  const [userName, setUsername] = useState(null);
+  const [password, setPassword] = useState("");
+  const [userCapVal, setUserCapVal] = useState("");
   const [errs, setErrs] = useState<null | IValidatorResult[]>(null);
-  const onChangeSchoolId = (e: any) => {
+  const onChangeUsername = (e: any) => {
     const { value } = e.target;
-    setSchoolId(value);
+    setUsername(value);
   };
-  // const onValidate = (errs: string[]) => setErrs(errs);
+
   const onChangeCaptcha = (e: any) => {
     const { value } = e.target;
     setUserCapVal(value);
   };
+
+  const onChangePassword = (e: any) => {
+    const { value } = e.target;
+    setPassword(value);
+  };
+
   const onSubmit = (e: any) => {
     const validations: IValidatorResult[] = [
-      Validator.isRequired(schoolId, "School ID"),
+      Validator.isRequired(userName, "Username"),
       Validator.equal(
         userCapVal,
         atob(captcha),
         "Captcha Value",
         "Generated Captcha",
       ),
+      Validator.isRequired(password, "Password"),
     ];
     const validErrs = validations.filter((val: IValidatorResult) => val.err);
     if (validErrs.length > 0) {
@@ -38,7 +50,11 @@ function SchoolLogin() {
       setCaptcha(btoa(genCaptcha(8)).replace("=", ""));
     } else {
       setErrs(null);
-      ajaxUtils.post("school/login").then((res) => {
+      const frmData = {
+        userName,
+        password: Encrypt.hashPassword(password, config.secretKey),
+      };
+      ajaxUtils.post("manager/login").then((res) => {
         console.log("res ---", res);
       });
     }
@@ -46,13 +62,19 @@ function SchoolLogin() {
   return (
     <Box>
       <LoginCard>
-        <h2>School Login</h2>
+        <h2>Manager Login</h2>
         <FormBox>
           {errs && <FrmErrs errs={errs} />}
           <FormInput
             inputType={"text"}
-            onChange={onChangeSchoolId}
-            label={"School ID"}
+            onChange={onChangeUsername}
+            label={"Username"}
+            required={true}
+          />
+          <FormInput
+            inputType={"password"}
+            onChange={onChangePassword}
+            label={"Password"}
             required={true}
           />
           <FlexBoxRowCenter>
@@ -76,4 +98,4 @@ function SchoolLogin() {
     </Box>
   );
 }
-export default SchoolLogin;
+export default ManagerLogin;
