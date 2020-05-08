@@ -38,7 +38,10 @@ function SchoolLogin() {
       setCaptcha(btoa(genCaptcha(8)).replace("=", ""));
     } else {
       setErrs(null);
-      ajaxUtils.post("school/login").then((res) => {
+      const frmData = {
+        schoolId,
+      };
+      ajaxUtils.post("school/login", frmData).then((res) => {
         console.log("res ---", res);
       });
     }
