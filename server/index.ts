@@ -1,21 +1,25 @@
 /** @format */
 
 import express from "express";
-import { notFound } from "./controller/custom-express";
+import { notFound } from "./utils/custom-express";
 import config from "./config";
 import { getSchoolRouter } from "./controller/school";
+import MongoDb from "./models/mongodb";
+import { getManagerRouter } from "./controller/manager";
 const getAPIRouter = () =>
   express
     .Router({ mergeParams: true })
-    .use("/api/school", getSchoolRouter())
+    .use("/school", getSchoolRouter())
+    .use("/manager", getManagerRouter())
     .use(notFound);
 
 const ONE_MIN = 1000 * 60;
 async function main() {
+  await MongoDb.init();
   const app = express()
     .use(express.json({ limit: "2mb" }))
     .use("sms/dist", express.static("../client/dist", { maxAge: ONE_MIN }))
-    .use("api/sms/", getAPIRouter())
+    .use("/sms/api", getAPIRouter())
     .use(notFound)
     .listen(config.port, () =>
       console.log(`listening on http://localhost:${config.port}`),

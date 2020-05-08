@@ -1,6 +1,6 @@
 /** @format */
 import express from "express";
-import { jaction } from "./custom-express";
+import { jaction } from "../utils/custom-express";
 
 export function getSchoolRouter() {
   return express

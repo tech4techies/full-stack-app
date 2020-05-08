@@ -53,6 +53,7 @@ function ManagerLogin() {
         userName,
         password: Encrypt.hashPassword(password, config.secretKey),
       };
+      console.log(frmData.password);
       ajaxUtils.post("manager/login", frmData).then((res) => {
         console.log("res ---", res);
       });

@@ -5,7 +5,7 @@ import config from "../config";
 import Manager from "./manager";
 
 export default class MongoDb {
-  static managers: Manager;
+  static manager: Manager;
 
   static async init() {
     const mclient: MongoClient = await MongoClient.connect(
