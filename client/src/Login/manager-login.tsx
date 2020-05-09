@@ -33,6 +33,9 @@ function ManagerLogin() {
   };
 
   const onSubmit = (e: any) => {
+    ajaxUtils.get("manager/login").then((res) => {
+      console.log("res ---", res);
+    });
     const validations: IValidatorResult[] = [
       Validator.isRequired(userName, "Username"),
       Validator.isRequired(password, "Password"),

@@ -16,6 +16,6 @@ export default class MongoDb {
       },
     );
     const chaathraDb = mclient.db("chaathra");
-    const manager = new Manager(chaathraDb);
+    MongoDb.manager = new Manager(chaathraDb);
   }
 }
