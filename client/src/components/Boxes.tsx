@@ -31,8 +31,6 @@ export const FlexBoxColCenter = styled.div({
   alignItems: "center",
 });
 
-export const FormBox = styled.div({});
-
 export const InputBox = styled.div({
   position: "relative",
 });

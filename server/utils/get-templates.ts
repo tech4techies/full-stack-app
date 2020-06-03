@@ -28,8 +28,7 @@ export function getMngrCredentialsTemplate(
         <div> Login  <a href="http://localhost:3000/manager/login" target="blank">Here</a> with above credentials.</div>
     </p>
     <footer style="justify-content:left; text-align: center;">
-        * The above credentials are confidential and strictly not to be shared to anyone with in the organization or outside, and generate by the server with no human intervention
-    </footer>
+        * The above credentials are confidential and generate by the server with no human intervention, strictly not to be shared with anyone with in the organization or outside.    </footer>
   </body>
 </html>
   `;

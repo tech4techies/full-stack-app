@@ -12,6 +12,15 @@ import { SubmitButton, BackButton } from "./Buttons";
 import { InputLabel, StyledInput, StyledSpan, StyledTextArea } from "./Inputs";
 import { IValidatorResult } from "./Validators";
 
+interface IFrmProps {
+  children: React.ReactChild;
+}
+
+export function Form(props: IFrmProps) {
+  const { children } = props;
+  return <form onSubmit={(e) => e.preventDefault()}>{children}</form>;
+}
+
 interface IFrmErrsProps {
   errs: IValidatorResult[];
 }

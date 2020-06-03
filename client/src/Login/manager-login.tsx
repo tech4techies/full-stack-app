@@ -1,10 +1,10 @@
 /** @format */
 
 import React, { useState } from "react";
-import { Box, FlexBoxRowCenter, FormBox } from "../components/Boxes";
+import { Box, FlexBoxRowCenter } from "../components/Boxes";
 import { Captcha } from "../components/Captcha";
 import { LoginCard } from "../components/Cards";
-import { FormActions, FormInput, FrmErrs } from "../components/Forms";
+import { FormActions, FormInput, FrmErrs, Form } from "../components/Forms";
 import { IValidatorResult, Validator } from "../components/Validators";
 import config from "../config";
 import { ajaxUtils } from "../utils-lib/axios-utils";
@@ -33,9 +33,6 @@ function ManagerLogin() {
   };
 
   const onSubmit = (e: any) => {
-    ajaxUtils.get("manager/login").then((res) => {
-      console.log("res ---", res);
-    });
     const validations: IValidatorResult[] = [
       Validator.isRequired(userName, "Username"),
       Validator.isRequired(password, "Password"),
@@ -52,11 +49,11 @@ function ManagerLogin() {
       setCaptcha(btoa(genCaptcha(8)).replace("=", ""));
     } else {
       setErrs(null);
+      console.log("user password", password);
       const frmData = {
         userName,
         password: Encrypt.hashPassword(password, config.secretKey),
       };
-      console.log(frmData.password);
       ajaxUtils.post("manager/login", frmData).then((res) => {
         console.log("res ---", res);
       });
@@ -66,37 +63,42 @@ function ManagerLogin() {
     <Box>
       <LoginCard>
         <h2>Manager Login</h2>
-        <FormBox>
-          {errs && <FrmErrs errs={errs} />}
-          <FormInput
-            inputType={"text"}
-            onChange={onChangeUsername}
-            label={"Username"}
-            required={true}
-          />
-          <FormInput
-            inputType={"password"}
-            onChange={onChangePassword}
-            label={"Password"}
-            required={true}
-          />
-          <FlexBoxRowCenter>
-            <Captcha value={captcha} />
+        <Form>
+          <Box>
+            {errs && <FrmErrs errs={errs} />}
             <FormInput
-              style={{ top: 10, left: 10, paddingRight: 10 }}
               inputType={"text"}
-              label={"Captcha"}
-              onChange={onChangeCaptcha}
+              onChange={onChangeUsername}
+              label={"Username"}
               required={true}
+              autoComplete='off'
             />
-          </FlexBoxRowCenter>
-          <FormActions
-            onSubmit={{
-              label: "Submit",
-              onFrmSubmit: onSubmit,
-            }}
-          />
-        </FormBox>
+            <FormInput
+              inputType={"password"}
+              onChange={onChangePassword}
+              label={"Password"}
+              required={true}
+              autoComplete='off'
+            />
+            <FlexBoxRowCenter>
+              <Captcha value={captcha} />
+              <FormInput
+                style={{ top: 10, left: 10, paddingRight: 10 }}
+                inputType={"text"}
+                label={"Captcha"}
+                onChange={onChangeCaptcha}
+                required={true}
+                autoComplete='off'
+              />
+            </FlexBoxRowCenter>
+            <FormActions
+              onSubmit={{
+                label: "Submit",
+                onFrmSubmit: onSubmit,
+              }}
+            />
+          </Box>
+        </Form>
       </LoginCard>
     </Box>
   );

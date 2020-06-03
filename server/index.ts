@@ -18,11 +18,10 @@ async function main() {
   await MongoDb.init();
   const app = express()
     .use(express.json({ limit: "2mb" }))
-    .use("sms/dist", express.static("../client/dist", { maxAge: ONE_MIN }))
     .use("/sms/api", getAPIRouter())
     .use(notFound)
     .listen(config.port, () =>
-      console.log(`listening on http://localhost:${config.port}`),
+      console.log(`Server Running on Port ${config.port}`),
     );
   function stopServer() {
     console.log("stopping server");

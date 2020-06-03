@@ -32,7 +32,7 @@ export default class Manager {
     );
     if (rows) {
       const res = this.convertMongoId(rows);
-      return { isVerfied: true, ...res };
+      return { isVerified: true, ...res };
     } else return { isVerfied: false };
   }
   async authenticate(token: string) {}

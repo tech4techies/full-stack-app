@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { useState } from "react";
-import { Box, FlexBoxRowCenter, FormBox } from "../components/Boxes";
+import { Box, FlexBoxRowCenter } from "../components/Boxes";
 import { Captcha } from "../components/Captcha";
 import { LoginCard } from "../components/Cards";
 import { FormActions, FormInput, FrmErrs } from "../components/Forms";
@@ -50,31 +50,30 @@ function SchoolLogin() {
     <Box>
       <LoginCard>
         <h2>School Login</h2>
-        <FormBox>
-          {errs && <FrmErrs errs={errs} />}
+
+        {errs && <FrmErrs errs={errs} />}
+        <FormInput
+          inputType={"text"}
+          onChange={onChangeSchoolId}
+          label={"School ID"}
+          required={true}
+        />
+        <FlexBoxRowCenter>
+          <Captcha value={captcha} />
           <FormInput
+            style={{ top: 10, left: 10, paddingRight: 10 }}
             inputType={"text"}
-            onChange={onChangeSchoolId}
-            label={"School ID"}
+            label={"Captcha"}
+            onChange={onChangeCaptcha}
             required={true}
           />
-          <FlexBoxRowCenter>
-            <Captcha value={captcha} />
-            <FormInput
-              style={{ top: 10, left: 10, paddingRight: 10 }}
-              inputType={"text"}
-              label={"Captcha"}
-              onChange={onChangeCaptcha}
-              required={true}
-            />
-          </FlexBoxRowCenter>
-          <FormActions
-            onSubmit={{
-              label: "Submit",
-              onFrmSubmit: onSubmit,
-            }}
-          />
-        </FormBox>
+        </FlexBoxRowCenter>
+        <FormActions
+          onSubmit={{
+            label: "Submit",
+            onFrmSubmit: onSubmit,
+          }}
+        />
       </LoginCard>
     </Box>
   );
