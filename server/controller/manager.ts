@@ -27,8 +27,20 @@ async function verifyLogin(req: Request, res: Response) {
     const signOpts: SignOptions = {
       expiresIn: "24h",
     };
-    const jwtRes = jwt.sign(data, config.jwtSecret, signOpts);
-    console.log("jwtRes ---", jwtRes);
+    const jwtRes = jwt.sign({ id: rows.id }, config.jwtSecret, signOpts);
+    return {
+      success: true,
+      token: jwtRes,
+      type: true,
+      isDefault: rows.isDefault,
+      userMessage: "Logged in Successfully",
+    };
+  } else {
+    return {
+      success: true,
+      type: false,
+      userMessage: "Login Failed! Invalid Login Credentials",
+    };
   }
 }
 

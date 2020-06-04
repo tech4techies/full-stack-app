@@ -10,8 +10,10 @@ import config from "../config";
 import { ajaxUtils } from "../utils-lib/axios-utils";
 import Encrypt from "../utils-lib/encrypt";
 import { genCaptcha } from "../utils-lib/generate-captcha";
-
+import cookies, { useCookies } from "react-cookie";
+import { Redirect } from "react-router-dom";
 function ManagerLogin() {
+  const [cookies, setCookie, removeCookie] = useCookies(["ch.token"]);
   const [captcha, setCaptcha] = useState(btoa(genCaptcha(8)).replace("=", ""));
   const [userName, setUsername] = useState(null);
   const [password, setPassword] = useState("");
@@ -49,13 +51,13 @@ function ManagerLogin() {
       setCaptcha(btoa(genCaptcha(8)).replace("=", ""));
     } else {
       setErrs(null);
-      console.log("user password", password);
       const frmData = {
         userName,
         password: Encrypt.hashPassword(password, config.secretKey),
       };
       ajaxUtils.post("manager/login", frmData).then((res) => {
-        console.log("res ---", res);
+        if (res.token) setCookie("ch-token", res.token);
+        if (res.isDefault) return true;
       });
     }
   };
