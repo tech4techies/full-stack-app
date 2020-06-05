@@ -8,7 +8,7 @@ export const SimpleCard = styled.div({
   backgroundColor: "#fff",
 });
 
-export const LoginCard = styled.div({
+export const FormCard = styled.div({
   borderRadius: 5,
   width: 500,
   padding: 10,
@@ -16,3 +16,5 @@ export const LoginCard = styled.div({
   marginTop: "10%",
   backgroundColor: "#fff",
 });
+
+export const CardTitle = styled.h2({});

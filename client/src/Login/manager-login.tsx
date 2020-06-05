@@ -3,22 +3,23 @@
 import React, { useState } from "react";
 import { Box, FlexBoxRowCenter } from "../components/Boxes";
 import { Captcha } from "../components/Captcha";
-import { LoginCard } from "../components/Cards";
+import { FormCard, CardTitle } from "../components/Cards";
 import { FormActions, FormInput, FrmErrs, Form } from "../components/Forms";
 import { IValidatorResult, Validator } from "../components/Validators";
 import config from "../config";
 import { ajaxUtils } from "../utils-lib/axios-utils";
 import Encrypt from "../utils-lib/encrypt";
 import { genCaptcha } from "../utils-lib/generate-captcha";
-import cookies, { useCookies } from "react-cookie";
+import { useCookies } from "react-cookie";
 import { Redirect } from "react-router-dom";
 function ManagerLogin() {
-  const [cookies, setCookie, removeCookie] = useCookies(["ch.token"]);
+  const [, setCookie] = useCookies(["ch.token"]);
   const [captcha, setCaptcha] = useState(btoa(genCaptcha(8)).replace("=", ""));
   const [userName, setUsername] = useState(null);
   const [password, setPassword] = useState("");
   const [userCapVal, setUserCapVal] = useState("");
   const [errs, setErrs] = useState<null | IValidatorResult[]>(null);
+  const [isDefault, setIsDefault] = useState(false);
   const onChangeUsername = (e: any) => {
     const { value } = e.target;
     setUsername(value);
@@ -57,14 +58,15 @@ function ManagerLogin() {
       };
       ajaxUtils.post("manager/login", frmData).then((res) => {
         if (res.token) setCookie("ch-token", res.token);
-        if (res.isDefault) return true;
+        if (res.isDefault) setIsDefault(res.isDefault);
       });
     }
   };
   return (
     <Box>
-      <LoginCard>
-        <h2>Manager Login</h2>
+      {isDefault && <Redirect to='/manager/change-default' />}
+      <FormCard>
+        <CardTitle>Manager Login</CardTitle>
         <Form>
           <Box>
             {errs && <FrmErrs errs={errs} />}
@@ -101,7 +103,7 @@ function ManagerLogin() {
             />
           </Box>
         </Form>
-      </LoginCard>
+      </FormCard>
     </Box>
   );
 }

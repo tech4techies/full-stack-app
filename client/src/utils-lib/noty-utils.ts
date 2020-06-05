@@ -22,30 +22,6 @@ class NotyUtils {
       timeout: 1500,
     }).show();
   }
-  show500Error(text: string) {
-    return new Noty({
-      theme: "relax",
-      type: "error",
-      text,
-      timeout: 1500,
-    });
-  }
-  showInvalidReq(text: string) {
-    return new Noty({
-      theme: "relax",
-      type: "error",
-      text,
-      timeout: 1500,
-    });
-  }
-  showBadRequest(text: string) {
-    return new Noty({
-      theme: "relax",
-      type: "error",
-      text,
-      timeout: 1500,
-    });
-  }
 }
 
 const notyUtils = new NotyUtils();

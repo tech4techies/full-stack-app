@@ -2,7 +2,6 @@
 
 import axios from "axios";
 import notyUtils from "./noty-utils";
-import Noty from "noty";
 class AjaxUtils {
   get(routeSuffix: string) {
     return axios.get(`/sms/api/${routeSuffix}`);
@@ -19,9 +18,7 @@ class AjaxUtils {
         notyUtils.showFailed(userMessage);
       return data;
     } else if (status === 500)
-      notyUtils.show500Error(`Request Failed with ${status} status`);
-    else if (status === 404) notyUtils.showInvalidReq("Invalid Request");
-    else notyUtils.showBadRequest("Bad Request");
+      notyUtils.showFailed(`Request Failed with ${status} status`);
   }
 }
 export const ajaxUtils = new AjaxUtils();

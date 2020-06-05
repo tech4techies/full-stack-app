@@ -32,11 +32,11 @@ export class Validator {
   };
   static equal = (
     enteredValue: string | null,
-    compareVal: string,
+    compareVal: string | null,
     fieldName: string,
     comparatorFieldName: string,
   ): IValidatorResult => {
-    return enteredValue && enteredValue === compareVal
+    return enteredValue && compareVal && enteredValue === compareVal
       ? {
           err: false,
           errMessage: "",

@@ -3,8 +3,8 @@
 import React, { useState } from "react";
 import { Box, FlexBoxRowCenter } from "../components/Boxes";
 import { Captcha } from "../components/Captcha";
-import { LoginCard } from "../components/Cards";
-import { FormActions, FormInput, FrmErrs } from "../components/Forms";
+import { FormCard, CardTitle } from "../components/Cards";
+import { FormActions, FormInput, FrmErrs, Form } from "../components/Forms";
 import { genCaptcha } from "../utils-lib/generate-captcha";
 import { Validator, IValidatorResult } from "../components/Validators";
 import { ajaxUtils } from "../utils-lib/axios-utils";
@@ -48,33 +48,37 @@ function SchoolLogin() {
   };
   return (
     <Box>
-      <LoginCard>
-        <h2>School Login</h2>
+      <FormCard>
+        <CardTitle>School Login</CardTitle>
 
         {errs && <FrmErrs errs={errs} />}
-        <FormInput
-          inputType={"text"}
-          onChange={onChangeSchoolId}
-          label={"School ID"}
-          required={true}
-        />
-        <FlexBoxRowCenter>
-          <Captcha value={captcha} />
-          <FormInput
-            style={{ top: 10, left: 10, paddingRight: 10 }}
-            inputType={"text"}
-            label={"Captcha"}
-            onChange={onChangeCaptcha}
-            required={true}
-          />
-        </FlexBoxRowCenter>
-        <FormActions
-          onSubmit={{
-            label: "Submit",
-            onFrmSubmit: onSubmit,
-          }}
-        />
-      </LoginCard>
+        <Form>
+          <Box>
+            <FormInput
+              inputType={"text"}
+              onChange={onChangeSchoolId}
+              label={"School ID"}
+              required={true}
+            />
+            <FlexBoxRowCenter>
+              <Captcha value={captcha} />
+              <FormInput
+                style={{ top: 10, left: 10, paddingRight: 10 }}
+                inputType={"text"}
+                label={"Captcha"}
+                onChange={onChangeCaptcha}
+                required={true}
+              />
+            </FlexBoxRowCenter>
+            <FormActions
+              onSubmit={{
+                label: "Submit",
+                onFrmSubmit: onSubmit,
+              }}
+            />
+          </Box>
+        </Form>
+      </FormCard>
     </Box>
   );
 }
