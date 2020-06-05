@@ -1,15 +1,16 @@
 /** @format */
 
-import axios from "axios";
+import axios, { AxiosStatic } from "axios";
 import notyUtils from "./noty-utils";
 class AjaxUtils {
   get(routeSuffix: string) {
-    return axios.get(`/sms/api/${routeSuffix}`);
+    return axios.get(`/sms/api/${routeSuffix}`, { withCredentials: true });
   }
   async post(routeSuffix: string, frmData: any) {
     const { data, status } = await axios.post(
       `/sms/api/${routeSuffix}`,
       frmData,
+      { withCredentials: true },
     );
     if (status === 200) {
       const { success, type, userMessage } = data;

@@ -10,7 +10,7 @@ import {
 } from "./Boxes";
 import { SubmitButton, BackButton } from "./Buttons";
 import { InputLabel, StyledInput, StyledSpan, StyledTextArea } from "./Inputs";
-import { IValidatorResult } from "./Validators";
+import { IValidatorResult } from "../utils-lib/validators";
 
 interface IFrmProps {
   children: React.ReactChild;

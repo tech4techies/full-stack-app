@@ -5,15 +5,13 @@ import { Box, FlexBoxRowCenter } from "../components/Boxes";
 import { Captcha } from "../components/Captcha";
 import { FormCard, CardTitle } from "../components/Cards";
 import { FormActions, FormInput, FrmErrs, Form } from "../components/Forms";
-import { IValidatorResult, Validator } from "../components/Validators";
+import { IValidatorResult, Validator } from "../utils-lib/validators";
 import config from "../config";
 import { ajaxUtils } from "../utils-lib/axios-utils";
 import Encrypt from "../utils-lib/encrypt";
 import { genCaptcha } from "../utils-lib/generate-captcha";
-import { useCookies } from "react-cookie";
 import { Redirect } from "react-router-dom";
 function ManagerLogin() {
-  const [, setCookie] = useCookies(["ch.token"]);
   const [captcha, setCaptcha] = useState(btoa(genCaptcha(8)).replace("=", ""));
   const [userName, setUsername] = useState(null);
   const [password, setPassword] = useState("");
@@ -57,7 +55,6 @@ function ManagerLogin() {
         password: Encrypt.hashPassword(password, config.secretKey),
       };
       ajaxUtils.post("manager/login", frmData).then((res) => {
-        if (res.token) setCookie("ch-token", res.token);
         if (res.isDefault) setIsDefault(res.isDefault);
       });
     }

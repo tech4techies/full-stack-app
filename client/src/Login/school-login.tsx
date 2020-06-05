@@ -6,7 +6,7 @@ import { Captcha } from "../components/Captcha";
 import { FormCard, CardTitle } from "../components/Cards";
 import { FormActions, FormInput, FrmErrs, Form } from "../components/Forms";
 import { genCaptcha } from "../utils-lib/generate-captcha";
-import { Validator, IValidatorResult } from "../components/Validators";
+import { Validator, IValidatorResult } from "../utils-lib/validators";
 import { ajaxUtils } from "../utils-lib/axios-utils";
 function SchoolLogin() {
   const [captcha, setCaptcha] = useState(btoa(genCaptcha(8)).replace("=", ""));

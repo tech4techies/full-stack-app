@@ -4,13 +4,16 @@ import React, { useState } from "react";
 import { Box } from "../components/Boxes";
 import { FormCard, CardTitle } from "../components/Cards";
 import { Form, FormInput, FrmErrs, FormActions } from "../components/Forms";
-import { IValidatorResult, Validator } from "../components/Validators";
+import { IValidatorResult, Validator } from "../utils-lib/validators";
 import { ajaxUtils } from "../utils-lib/axios-utils";
 import Encrypt from "../utils-lib/encrypt";
+import history, { refresh } from "../utils-lib/history";
 import config from "../config";
+import { Redirect } from "react-router-dom";
 function ManagerChangeDefault() {
-  const [password, setPassword] = useState(null);
-  const [cnfPass, setCnfPass] = useState(null);
+  const [password, setPassword] = useState<null | string>(null);
+  const [cnfPass, setCnfPass] = useState<null | string>(null);
+  const [isRedirect, setisRedirect] = useState(false);
   const [errs, setErrs] = useState<null | IValidatorResult[]>(null);
   const onChangePassword = (e: any) => {
     const { value } = e.target;
@@ -25,6 +28,7 @@ function ManagerChangeDefault() {
       Validator.isRequired(password, "New Password"),
       Validator.isRequired(cnfPass, "Confirm Password"),
       Validator.equal(cnfPass, password, "Confirm Password", "New Password"),
+      Validator.password(password, "New Password"),
     ];
     const validErrs = validations.filter((val: IValidatorResult) => val.err);
     if (validErrs.length > 0) {
@@ -33,15 +37,17 @@ function ManagerChangeDefault() {
       setErrs(null);
       const frmData = {
         password: password,
-        isDefault: false,
       };
-      ajaxUtils.post("manager/change-default", frmData).then((res) => {
-        console.log("res ---", res);
+      if (password && password.length > 0)
+        frmData.password = Encrypt.hashPassword(password, config.secretKey);
+      ajaxUtils.post("manager/changeDefault", frmData).then((res) => {
+        if (res.isRedirect) setisRedirect(true);
       });
     }
   };
   return (
     <Box>
+      {isRedirect && <Redirect to='/manager/login' />}
       <FormCard>
         <CardTitle>Change Password </CardTitle>
         {errs && <FrmErrs errs={errs} />}

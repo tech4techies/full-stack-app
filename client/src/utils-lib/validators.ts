@@ -15,18 +15,21 @@ export class Validator {
       };
   };
 
-  static password = (val: string, fieldName: string): IValidatorResult => {
+  static password = (
+    val: string | null,
+    fieldName: string,
+  ): IValidatorResult => {
     const res: IValidatorResult = {
       err: false,
       errMessage: "",
     };
-    const PASSWORD_POLICY = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    if (PASSWORD_POLICY.test(val)) {
+    const PASSWORD_POLICY = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{10,20}$/;
+    if (val && PASSWORD_POLICY.test(val)) {
       res.err = false;
       res.errMessage = "";
     } else {
       res.err = true;
-      res.errMessage = `${fieldName} must contain atleast 8 characters having One Number, One Special Character, One Uppercase Letter, One Lowercase Letter`;
+      res.errMessage = `${fieldName} must contain 10 to 20 characters having One Number, One Special Character, One Uppercase Letter, One Lowercase Letter`;
     }
     return res;
   };
