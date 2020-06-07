@@ -12,6 +12,11 @@ export default class Manager {
     return { id, ...rest };
   }
   async getCtx(mId: string) {}
+  async checkMngrExists(id: string, userName: string): Promise<boolean> {
+    const rows = await this.colConn.findOne({ _id: id, userName });
+    if (rows) return true;
+    else return false;
+  }
   async findMngr(email: string): Promise<boolean> {
     const rows = await this.colConn.findOne(
       { email },

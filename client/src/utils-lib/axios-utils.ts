@@ -1,10 +1,18 @@
 /** @format */
 
-import axios, { AxiosStatic } from "axios";
+import axios from "axios";
 import notyUtils from "./noty-utils";
 class AjaxUtils {
-  get(routeSuffix: string) {
-    return axios.get(`/sms/api/${routeSuffix}`, { withCredentials: true });
+  async get(routeSuffix: string): Promise<any> {
+    const { data, status } = await axios.get(`/sms/api/${routeSuffix}`, {
+      withCredentials: true,
+    });
+    if (status === 200) {
+      return data;
+    } else {
+      notyUtils.showFailed("Something went wrong");
+      return {};
+    }
   }
   async post(routeSuffix: string, frmData: any) {
     const { data, status } = await axios.post(

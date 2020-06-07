@@ -6,7 +6,7 @@ export const Button = styled.button({
 });
 export const PrimaryButton = styled.button({
   marginTop: "5%",
-  backgroundColor: "#d77a05",
+  backgroundColor: "#1565c0",
   border: "none",
   outline: "none",
   fontWeight: 600,

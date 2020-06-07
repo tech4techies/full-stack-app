@@ -6,9 +6,11 @@ import config from "./config";
 import { getSchoolRouter } from "./controller/school";
 import MongoDb from "./models/mongodb";
 import { getManagerRouter } from "./controller/manager";
+import { getCookieRouter } from "./controller/cookie";
 const getAPIRouter = () =>
   express
     .Router({ mergeParams: true })
+    .use("/cookie", getCookieRouter())
     .use("/school", getSchoolRouter())
     .use("/manager", getManagerRouter())
     .use(notFound);

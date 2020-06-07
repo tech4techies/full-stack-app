@@ -2,6 +2,13 @@
 
 import { createBrowserHistory } from "history";
 
-export const refresh = () => window.location.reload();
+const browserHistory = createBrowserHistory();
+class History {
+  redirectTo(path: string) {
+    browserHistory.push(path);
+    window.location.reload();
+  }
+}
 
-export default createBrowserHistory();
+const history = new History();
+export default history;

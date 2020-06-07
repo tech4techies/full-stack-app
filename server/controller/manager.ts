@@ -1,14 +1,16 @@
 /** @format */
 
 import sendgrid, { MailDataRequired } from "@sendgrid/mail";
-import express, { Request, Response } from "express";
+import express, { Request, Response, CookieOptions } from "express";
 import jwt, { SignOptions } from "jsonwebtoken";
 import config from "../config";
 import MongoDb from "../models/mongodb";
 import { jaction } from "../utils/custom-express";
+import { DateTime } from "luxon";
 import Encrypt, { ClientEncrypt } from "../utils/encrypt";
 import { genId, genMngrPass, genNum } from "../utils/generate-random";
 import { getMngrCredentialsTemplate } from "../utils/get-templates";
+import { authenticate } from "./cookie";
 
 export function getManagerRouter() {
   return express
@@ -29,11 +31,17 @@ async function verifyLogin(req: Request, res: Response) {
       expiresIn: "24h",
     };
     const jwtRes = jwt.sign(
-      { id: rows.id, user: req.body.userName },
+      { id: rows.id, user: req.body.userName, userType: "manager" },
       config.jwtSecret,
       signOpts,
     );
-    res.cookie("ch-token", jwtRes);
+    const luxonTime = new Date(
+      DateTime.fromISO(new Date().toISOString()).plus({ hours: 24 }).toISO(),
+    );
+    const expiresAt = new Date(luxonTime);
+    res.cookie("ch-token", jwtRes, {
+      expires: expiresAt,
+    });
     res.send({
       success: true,
       type: true,
@@ -123,19 +131,4 @@ async function createManager(req: Request) {
       type: false,
       userMessage: "Manager Already Exists",
     };
-}
-
-function authenticate(cookie: string) {
-  let token: null | string = null;
-  cookie
-    .split(";")
-    .map((cookie) => cookie.trim())
-    .forEach((cookie) => {
-      const cookieInfo = cookie.split(/=/);
-      if (/ch-token/.test(cookieInfo[0])) token = cookieInfo[1];
-    });
-  if (token) {
-    const tokenInfo = jwt.verify(token, config.jwtSecret) as any;
-    return { success: true, info: tokenInfo };
-  } else return { success: false, info: null };
 }

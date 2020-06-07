@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useState } from "react";
+import React, { useState, useLayoutEffect } from "react";
 import { Box, FlexBoxRowCenter } from "../components/Boxes";
 import { Captcha } from "../components/Captcha";
 import { FormCard, CardTitle } from "../components/Cards";
@@ -10,6 +10,7 @@ import config from "../config";
 import { ajaxUtils } from "../utils-lib/axios-utils";
 import Encrypt from "../utils-lib/encrypt";
 import { genCaptcha } from "../utils-lib/generate-captcha";
+import { Cookies } from "react-cookie";
 import { Redirect } from "react-router-dom";
 function ManagerLogin() {
   const [captcha, setCaptcha] = useState(btoa(genCaptcha(8)).replace("=", ""));
@@ -17,7 +18,19 @@ function ManagerLogin() {
   const [password, setPassword] = useState("");
   const [userCapVal, setUserCapVal] = useState("");
   const [errs, setErrs] = useState<null | IValidatorResult[]>(null);
-  const [isDefault, setIsDefault] = useState(false);
+  const [isDefault, setIsDefault] = useState<null | boolean>(null);
+  const [userType, setUserType] = useState<null | string>(null);
+
+  useLayoutEffect(() => {
+    const cookies = new Cookies();
+    const chToken = cookies.get("ch-token");
+    if (chToken && chToken.length > 0) {
+      ajaxUtils.get("cookie/userType").then((res) => {
+        const { userType } = res;
+        if (userType) setUserType(userType);
+      });
+    }
+  }, [isDefault]);
   const onChangeUsername = (e: any) => {
     const { value } = e.target;
     setUsername(value);
@@ -34,7 +47,7 @@ function ManagerLogin() {
   };
 
   const onSubmit = (e: any) => {
-    const validations: IValidatorResult[] = [
+    const validErrs: IValidatorResult[] = [
       Validator.isRequired(userName, "Username"),
       Validator.isRequired(password, "Password"),
       Validator.equal(
@@ -43,8 +56,7 @@ function ManagerLogin() {
         "Captcha Value",
         "Generated Captcha",
       ),
-    ];
-    const validErrs = validations.filter((val: IValidatorResult) => val.err);
+    ].filter((val: IValidatorResult) => val.err);
     if (validErrs.length > 0) {
       setErrs(validErrs);
       setCaptcha(btoa(genCaptcha(8)).replace("=", ""));
@@ -55,13 +67,18 @@ function ManagerLogin() {
         password: Encrypt.hashPassword(password, config.secretKey),
       };
       ajaxUtils.post("manager/login", frmData).then((res) => {
-        if (res.isDefault) setIsDefault(res.isDefault);
+        setIsDefault(res.isDefault);
       });
     }
   };
   return (
     <Box>
-      {isDefault && <Redirect to='/manager/change-default' />}
+      {isDefault && userType === "manager" && (
+        <Redirect to='/manager/change-default' />
+      )}
+      {!isDefault && userType === "manager" && (
+        <Redirect to='/manager/dashboard' />
+      )}
       <FormCard>
         <CardTitle>Manager Login</CardTitle>
         <Form>

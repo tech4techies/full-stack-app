@@ -1,15 +1,14 @@
 /** @format */
 
 import React, { useState } from "react";
+import { Redirect } from "react-router-dom";
 import { Box } from "../components/Boxes";
-import { FormCard, CardTitle } from "../components/Cards";
-import { Form, FormInput, FrmErrs, FormActions } from "../components/Forms";
-import { IValidatorResult, Validator } from "../utils-lib/validators";
+import { CardTitle, FormCard } from "../components/Cards";
+import { Form, FormActions, FormInput, FrmErrs } from "../components/Forms";
+import config from "../config";
 import { ajaxUtils } from "../utils-lib/axios-utils";
 import Encrypt from "../utils-lib/encrypt";
-import history, { refresh } from "../utils-lib/history";
-import config from "../config";
-import { Redirect } from "react-router-dom";
+import { IValidatorResult, Validator } from "../utils-lib/validators";
 function ManagerChangeDefault() {
   const [password, setPassword] = useState<null | string>(null);
   const [cnfPass, setCnfPass] = useState<null | string>(null);
@@ -24,13 +23,12 @@ function ManagerChangeDefault() {
     setCnfPass(value);
   };
   const onSubmit = () => {
-    const validations: IValidatorResult[] = [
+    const validErrs: IValidatorResult[] = [
       Validator.isRequired(password, "New Password"),
       Validator.isRequired(cnfPass, "Confirm Password"),
       Validator.equal(cnfPass, password, "Confirm Password", "New Password"),
       Validator.password(password, "New Password"),
-    ];
-    const validErrs = validations.filter((val: IValidatorResult) => val.err);
+    ].filter((val: IValidatorResult) => val.err);
     if (validErrs.length > 0) {
       setErrs(validErrs);
     } else {
