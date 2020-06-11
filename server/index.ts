@@ -1,16 +1,16 @@
 /** @format */
 
 import express from "express";
-import { notFound } from "./utils/custom-express";
 import config from "./config";
-import { getSchoolRouter } from "./controller/school";
-import MongoDb from "./models/mongodb";
 import { getManagerRouter } from "./controller/manager";
-import { getCookieRouter } from "./controller/cookie";
+import { getSchoolRouter } from "./controller/school";
+import { getValidateRouter } from "./controller/validate";
+import MongoDb from "./models/mongodb";
+import { notFound } from "./utils/custom-express";
 const getAPIRouter = () =>
   express
     .Router({ mergeParams: true })
-    .use("/cookie", getCookieRouter())
+    .use("/validate", getValidateRouter())
     .use("/school", getSchoolRouter())
     .use("/manager", getManagerRouter())
     .use(notFound);

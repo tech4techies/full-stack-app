@@ -3,8 +3,8 @@
 import React from "react";
 import { Box } from "../components/Boxes";
 
-function ManagerDashboard() {
+function Dashboard() {
   return <Box>In Manager Dashboard</Box>;
 }
 
-export default ManagerDashboard;
+export default Dashboard;

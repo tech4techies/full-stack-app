@@ -1,12 +1,9 @@
 /** @format */
 
-import { createContext, useContext } from "react";
-export const validateCookieCtx = createContext({
+import { createContext } from "react";
+export const ValidateCookieCtx = createContext({
   refresh: () => {
     // donothing
   },
-  isValid: false,
+  isMngrCookieValid: false,
 });
-export function getReIndexContext() {
-  return useContext(validateCookieCtx);
-}

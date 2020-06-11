@@ -1,19 +1,19 @@
 /** @format */
 
-import MongoDb from "../models/mongodb";
-import { jaction } from "../utils/custom-express";
-import express, { Request, Response } from "express";
+import express, { Request } from "express";
 import jwt from "jsonwebtoken";
 import config from "../config";
+import MongoDb from "../models/mongodb";
+import { jaction } from "../utils/custom-express";
 import Encrypt from "../utils/encrypt";
 
-export function getCookieRouter() {
+export function getValidateRouter() {
   return express
     .Router({ mergeParams: true })
-    .get("/userType", jaction(getCookieUserType));
+    .get("/cookie/manager", jaction(validateManager));
 }
 
-async function getCookieUserType(req: Request) {
+async function validateManager(req: Request) {
   const cookie = req.headers.cookie as string;
   const { success, info } = authenticate(cookie);
   if (success && info) {

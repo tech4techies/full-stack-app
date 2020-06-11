@@ -1,16 +1,16 @@
 /** @format */
 
 import sendgrid, { MailDataRequired } from "@sendgrid/mail";
-import express, { Request, Response, CookieOptions } from "express";
+import express, { Request, Response } from "express";
 import jwt, { SignOptions } from "jsonwebtoken";
+import { DateTime } from "luxon";
 import config from "../config";
 import MongoDb from "../models/mongodb";
 import { jaction } from "../utils/custom-express";
-import { DateTime } from "luxon";
 import Encrypt, { ClientEncrypt } from "../utils/encrypt";
 import { genId, genMngrPass, genNum } from "../utils/generate-random";
 import { getMngrCredentialsTemplate } from "../utils/get-templates";
-import { authenticate } from "./cookie";
+import { authenticate } from "./validate";
 
 export function getManagerRouter() {
   return express

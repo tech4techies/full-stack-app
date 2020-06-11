@@ -1,36 +1,29 @@
 /** @format */
 
-import React, { useState, useLayoutEffect } from "react";
+import React, { useContext, useLayoutEffect, useState } from "react";
+import { Redirect } from "react-router-dom";
 import { Box, FlexBoxRowCenter } from "../components/Boxes";
 import { Captcha } from "../components/Captcha";
-import { FormCard, CardTitle } from "../components/Cards";
-import { FormActions, FormInput, FrmErrs, Form } from "../components/Forms";
-import { IValidatorResult, Validator } from "../utils-lib/validators";
+import { CardTitle, FormCard } from "../components/Cards";
+import { Form, FormActions, FormInput, FrmErrs } from "../components/Forms";
 import config from "../config";
+import { ValidateCookieCtx } from "../context/manager";
 import { ajaxUtils } from "../utils-lib/axios-utils";
 import Encrypt from "../utils-lib/encrypt";
 import { genCaptcha } from "../utils-lib/generate-captcha";
-import { Cookies } from "react-cookie";
-import { Redirect } from "react-router-dom";
+import { IValidatorResult, Validator } from "../utils-lib/validators";
 function Login() {
   const [captcha, setCaptcha] = useState(btoa(genCaptcha(8)).replace("=", ""));
   const [userName, setUsername] = useState(null);
+  const cookieCtx = useContext(ValidateCookieCtx);
   const [password, setPassword] = useState("");
   const [userCapVal, setUserCapVal] = useState("");
   const [errs, setErrs] = useState<null | IValidatorResult[]>(null);
   const [isDefault, setIsDefault] = useState<null | boolean>(null);
-  const [userType, setUserType] = useState<null | string>(null);
 
   useLayoutEffect(() => {
-    const cookies = new Cookies();
-    const chToken = cookies.get("ch-token");
-    if (chToken && chToken.length > 0) {
-      ajaxUtils.get("cookie/userType").then((res) => {
-        const { userType } = res;
-        if (userType) setUserType(userType);
-      });
-    }
-  }, [isDefault]);
+    cookieCtx.refresh();
+  }, [cookieCtx]);
   const onChangeUsername = (e: any) => {
     const { value } = e.target;
     setUsername(value);
@@ -68,15 +61,16 @@ function Login() {
       };
       ajaxUtils.post("manager/login", frmData).then((res) => {
         setIsDefault(res.isDefault);
+        cookieCtx.refresh();
       });
     }
   };
   return (
     <Box>
-      {isDefault && userType === "manager" && (
+      {isDefault && cookieCtx.isMngrCookieValid && (
         <Redirect to='/manager/change-default' />
       )}
-      {!isDefault && userType === "manager" && (
+      {!isDefault && cookieCtx.isMngrCookieValid && (
         <Redirect to='/manager/dashboard' />
       )}
       <FormCard>
