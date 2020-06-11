@@ -12,7 +12,7 @@ import Encrypt from "../utils-lib/encrypt";
 import { genCaptcha } from "../utils-lib/generate-captcha";
 import { Cookies } from "react-cookie";
 import { Redirect } from "react-router-dom";
-function ManagerLogin() {
+function Login() {
   const [captcha, setCaptcha] = useState(btoa(genCaptcha(8)).replace("=", ""));
   const [userName, setUsername] = useState(null);
   const [password, setPassword] = useState("");
@@ -121,4 +121,4 @@ function ManagerLogin() {
     </Box>
   );
 }
-export default ManagerLogin;
+export default Login;

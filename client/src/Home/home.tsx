@@ -8,10 +8,10 @@ import history from "../utils-lib/history";
 
 function Home() {
   const onAdminClick = () => {
-    history.redirectTo("/manager/login");
+    history.redirectTo("/manager");
   };
   const onSchoolClick = (e: any) => {
-    history.redirectTo("/school/login");
+    history.redirectTo("/school");
   };
 
   return (

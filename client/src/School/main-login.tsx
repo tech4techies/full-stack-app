@@ -8,7 +8,7 @@ import { FormActions, FormInput, FrmErrs, Form } from "../components/Forms";
 import { genCaptcha } from "../utils-lib/generate-captcha";
 import { Validator, IValidatorResult } from "../utils-lib/validators";
 import { ajaxUtils } from "../utils-lib/axios-utils";
-function SchoolLogin() {
+function MainLogin() {
   const [captcha, setCaptcha] = useState(btoa(genCaptcha(8)).replace("=", ""));
   const [schoolId, setSchoolId] = useState(null);
   const [userCapVal, setUserCapVal] = useState(null);
@@ -82,4 +82,4 @@ function SchoolLogin() {
     </Box>
   );
 }
-export default SchoolLogin;
+export default MainLogin;
