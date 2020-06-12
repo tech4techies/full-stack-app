@@ -1,8 +1,8 @@
 /** @format */
 
 import React from "react";
-import Auth from "../components/Auth";
 import { Box } from "../components/Boxes";
+import Auth from "./auth";
 
 function Dashboard() {
   return (

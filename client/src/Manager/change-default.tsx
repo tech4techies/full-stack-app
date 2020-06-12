@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { Redirect } from "react-router-dom";
-import Auth from "../components/Auth";
 import { Box } from "../components/Boxes";
 import { CardTitle, FormCard } from "../components/Cards";
 import { Form, FormActions, FormInput, FrmErrs } from "../components/Forms";
@@ -45,39 +44,37 @@ function ChangeDefault() {
     }
   };
   return (
-    <Auth>
-      <Box>
-        {changed && <Redirect to='/manager/login' />}
-        <FormCard>
-          <CardTitle>Change Password </CardTitle>
-          {errs && <FrmErrs errs={errs} />}
-          <Form>
-            <Box>
-              <FormInput
-                inputType='password'
-                onChange={onChangePassword}
-                required={true}
-                label={"New Password"}
-                autoComplete={"off"}
-              />
-              <FormInput
-                inputType='password'
-                onChange={onChangeCnfPwd}
-                required={true}
-                label={"Confirm New Password"}
-                autoComplete={"off"}
-              />
-              <FormActions
-                onSubmit={{
-                  label: "Submit",
-                  onFrmSubmit: onSubmit,
-                }}
-              />
-            </Box>
-          </Form>
-        </FormCard>
-      </Box>
-    </Auth>
+    <Box>
+      {changed && <Redirect to='/manager/login' />}
+      <FormCard>
+        <CardTitle>Change Password </CardTitle>
+        {errs && <FrmErrs errs={errs} />}
+        <Form>
+          <Box>
+            <FormInput
+              inputType='password'
+              onChange={onChangePassword}
+              required={true}
+              label={"New Password"}
+              autoComplete={"off"}
+            />
+            <FormInput
+              inputType='password'
+              onChange={onChangeCnfPwd}
+              required={true}
+              label={"Confirm New Password"}
+              autoComplete={"off"}
+            />
+            <FormActions
+              onSubmit={{
+                label: "Submit",
+                onFrmSubmit: onSubmit,
+              }}
+            />
+          </Box>
+        </Form>
+      </FormCard>
+    </Box>
   );
 }
 export default ChangeDefault;

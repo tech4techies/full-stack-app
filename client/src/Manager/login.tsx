@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { useState } from "react";
-import Auth from "../components/Auth";
+import { Redirect } from "react-router-dom";
 import { Box, FlexBoxRowCenter } from "../components/Boxes";
 import { Captcha } from "../components/Captcha";
 import { CardTitle, FormCard } from "../components/Cards";
@@ -11,7 +11,7 @@ import { ajaxUtils } from "../utils-lib/axios-utils";
 import Encrypt from "../utils-lib/encrypt";
 import { genCaptcha } from "../utils-lib/generate-captcha";
 import { IValidatorResult, Validator } from "../utils-lib/validators";
-import { Redirect } from "react-router-dom";
+import Auth from "./auth";
 function Login() {
   const [captcha, setCaptcha] = useState(btoa(genCaptcha(8)).replace("=", ""));
   const [userName, setUsername] = useState(null);
@@ -19,6 +19,7 @@ function Login() {
   const [userCapVal, setUserCapVal] = useState("");
   const [errs, setErrs] = useState<null | IValidatorResult[]>(null);
   const [isDefault, setIsDefault] = useState<null | boolean>(null);
+  const [loginSuccess, setIsLoginSuccess] = useState(false);
 
   const onChangeUsername = (e: any) => {
     const { value } = e.target;
@@ -57,6 +58,7 @@ function Login() {
       };
       ajaxUtils.post("manager/login", frmData).then((res) => {
         setIsDefault(res.isDefault);
+        setIsLoginSuccess(res.type);
       });
     }
   };
@@ -64,6 +66,7 @@ function Login() {
     <Auth>
       <Box>
         {isDefault && <Redirect to='/manager/change-default' />}
+        {loginSuccess && <Redirect to='/manager/dashboard' />}
         <FormCard>
           <CardTitle>Manager Login</CardTitle>
           <Form>
