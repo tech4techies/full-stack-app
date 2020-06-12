@@ -1,6 +1,7 @@
 /** @format */
 
 import React, { useState } from "react";
+import { Redirect } from "react-router-dom";
 import Auth from "../components/Auth";
 import { Box } from "../components/Boxes";
 import { CardTitle, FormCard } from "../components/Cards";
@@ -8,9 +9,7 @@ import { Form, FormActions, FormInput, FrmErrs } from "../components/Forms";
 import config from "../config";
 import { ajaxUtils } from "../utils-lib/axios-utils";
 import Encrypt from "../utils-lib/encrypt";
-import history from "../utils-lib/history";
 import { IValidatorResult, Validator } from "../utils-lib/validators";
-import { Redirect } from "react-router-dom";
 function ChangeDefault() {
   const [password, setPassword] = useState<null | string>(null);
   const [cnfPass, setCnfPass] = useState<null | string>(null);
