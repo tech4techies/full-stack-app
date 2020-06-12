@@ -16,6 +16,7 @@ function ManagerRouter() {
       if (success) setMngrValid(userType === "manager");
     });
   }, []);
+
   return (
     <ValidateCookieCtx.Provider
       value={{ refresh: validateCookie, isMngrCookieValid }}>

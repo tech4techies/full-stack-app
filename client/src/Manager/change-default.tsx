@@ -9,7 +9,7 @@ import config from "../config";
 import { ajaxUtils } from "../utils-lib/axios-utils";
 import Encrypt from "../utils-lib/encrypt";
 import { IValidatorResult, Validator } from "../utils-lib/validators";
-function ManagerChangeDefault() {
+function ChangeDefault() {
   const [password, setPassword] = useState<null | string>(null);
   const [cnfPass, setCnfPass] = useState<null | string>(null);
   const [isRedirect, setisRedirect] = useState(false);
@@ -77,4 +77,4 @@ function ManagerChangeDefault() {
     </Box>
   );
 }
-export default ManagerChangeDefault;
+export default ChangeDefault;

@@ -11,6 +11,7 @@ import { ValidateCookieCtx } from "../context/manager";
 import { ajaxUtils } from "../utils-lib/axios-utils";
 import Encrypt from "../utils-lib/encrypt";
 import { genCaptcha } from "../utils-lib/generate-captcha";
+import history from "../utils-lib/history";
 import { IValidatorResult, Validator } from "../utils-lib/validators";
 function Login() {
   const [captcha, setCaptcha] = useState(btoa(genCaptcha(8)).replace("=", ""));
@@ -23,6 +24,7 @@ function Login() {
 
   useLayoutEffect(() => {
     cookieCtx.refresh();
+    if (cookieCtx.isMngrCookieValid) history.redirectTo("/manager/dashboard");
   }, [cookieCtx]);
   const onChangeUsername = (e: any) => {
     const { value } = e.target;
