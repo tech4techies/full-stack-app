@@ -26,10 +26,12 @@ async function verifyLogin(req: Request, res: Response) {
   data.password = Encrypt.hash(password, config.secretKey);
   data.userName = Encrypt.hash(userName, config.secretKey);
   const rows = await MongoDb.manager.verifyLogin(data.userName, data.password);
+  const signOpts: SignOptions = {
+    expiresIn: "24h",
+  };
+  const FIVE_MIN = 60 * 5;
+  if (rows.isDefault) signOpts.expiresIn = FIVE_MIN;
   if (rows.isVerified && !rows.disabled) {
-    const signOpts: SignOptions = {
-      expiresIn: "24h",
-    };
     const jwtRes = jwt.sign(
       { id: rows.id, user: req.body.userName, userType: "manager" },
       config.jwtSecret,
@@ -57,34 +59,36 @@ async function verifyLogin(req: Request, res: Response) {
   }
 }
 
-async function changeDefault(req: Request) {
+async function changeDefault(req: Request, res: Response) {
   const { password } = req.body;
   const cookie = req.headers.cookie as string;
   const { success, info } = authenticate(cookie);
+  res.cookie("ch-token", null, {
+    expires: new Date("1970-01-01"),
+  });
   if (success && info) {
     const encPass = Encrypt.hash(password, config.secretKey);
     const { id, user } = info;
     if (id && user) {
       const dbUsername = Encrypt.hash(user, config.secretKey);
       await MongoDb.manager.changeDefault(id, encPass, dbUsername);
-      return {
+
+      res.send({
         success: true,
         type: true,
-        isRedirect: true,
         userMessage: "Password Changed Successfully",
-      };
+      });
     } else
       return {
         success: true,
         type: false,
-        isRedirect: true,
         userMessage: "Invalid Request",
       };
   } else
     return {
       success: true,
       type: false,
-      isRedirect: true,
+      loginRequired: true,
       userMessage: "Invalid Request",
     };
 }

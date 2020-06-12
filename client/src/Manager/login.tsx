@@ -1,31 +1,25 @@
 /** @format */
 
-import React, { useContext, useLayoutEffect, useState } from "react";
-import { Redirect } from "react-router-dom";
+import React, { useState } from "react";
+import Auth from "../components/Auth";
 import { Box, FlexBoxRowCenter } from "../components/Boxes";
 import { Captcha } from "../components/Captcha";
 import { CardTitle, FormCard } from "../components/Cards";
 import { Form, FormActions, FormInput, FrmErrs } from "../components/Forms";
 import config from "../config";
-import { ValidateCookieCtx } from "../context/manager";
 import { ajaxUtils } from "../utils-lib/axios-utils";
 import Encrypt from "../utils-lib/encrypt";
 import { genCaptcha } from "../utils-lib/generate-captcha";
-import history from "../utils-lib/history";
 import { IValidatorResult, Validator } from "../utils-lib/validators";
+import { Redirect } from "react-router-dom";
 function Login() {
   const [captcha, setCaptcha] = useState(btoa(genCaptcha(8)).replace("=", ""));
   const [userName, setUsername] = useState(null);
-  const cookieCtx = useContext(ValidateCookieCtx);
   const [password, setPassword] = useState("");
   const [userCapVal, setUserCapVal] = useState("");
   const [errs, setErrs] = useState<null | IValidatorResult[]>(null);
   const [isDefault, setIsDefault] = useState<null | boolean>(null);
 
-  useLayoutEffect(() => {
-    cookieCtx.refresh();
-    if (cookieCtx.isMngrCookieValid) history.redirectTo("/manager/dashboard");
-  }, [cookieCtx]);
   const onChangeUsername = (e: any) => {
     const { value } = e.target;
     setUsername(value);
@@ -63,58 +57,54 @@ function Login() {
       };
       ajaxUtils.post("manager/login", frmData).then((res) => {
         setIsDefault(res.isDefault);
-        cookieCtx.refresh();
       });
     }
   };
   return (
-    <Box>
-      {isDefault && cookieCtx.isMngrCookieValid && (
-        <Redirect to='/manager/change-default' />
-      )}
-      {!isDefault && cookieCtx.isMngrCookieValid && (
-        <Redirect to='/manager/dashboard' />
-      )}
-      <FormCard>
-        <CardTitle>Manager Login</CardTitle>
-        <Form>
-          <Box>
-            {errs && <FrmErrs errs={errs} />}
-            <FormInput
-              inputType={"text"}
-              onChange={onChangeUsername}
-              label={"Username"}
-              required={true}
-              autoComplete='off'
-            />
-            <FormInput
-              inputType={"password"}
-              onChange={onChangePassword}
-              label={"Password"}
-              required={true}
-              autoComplete='off'
-            />
-            <FlexBoxRowCenter>
-              <Captcha value={captcha} />
+    <Auth>
+      <Box>
+        {isDefault && <Redirect to='/manager/change-default' />}
+        <FormCard>
+          <CardTitle>Manager Login</CardTitle>
+          <Form>
+            <Box>
+              {errs && <FrmErrs errs={errs} />}
               <FormInput
-                style={{ top: 10, left: 10, paddingRight: 10 }}
                 inputType={"text"}
-                label={"Captcha"}
-                onChange={onChangeCaptcha}
+                onChange={onChangeUsername}
+                label={"Username"}
                 required={true}
                 autoComplete='off'
               />
-            </FlexBoxRowCenter>
-            <FormActions
-              onSubmit={{
-                label: "Submit",
-                onFrmSubmit: onSubmit,
-              }}
-            />
-          </Box>
-        </Form>
-      </FormCard>
-    </Box>
+              <FormInput
+                inputType={"password"}
+                onChange={onChangePassword}
+                label={"Password"}
+                required={true}
+                autoComplete='off'
+              />
+              <FlexBoxRowCenter>
+                <Captcha value={captcha} />
+                <FormInput
+                  style={{ top: 10, left: 10, paddingRight: 10 }}
+                  inputType={"text"}
+                  label={"Captcha"}
+                  onChange={onChangeCaptcha}
+                  required={true}
+                  autoComplete='off'
+                />
+              </FlexBoxRowCenter>
+              <FormActions
+                onSubmit={{
+                  label: "Submit",
+                  onFrmSubmit: onSubmit,
+                }}
+              />
+            </Box>
+          </Form>
+        </FormCard>
+      </Box>
+    </Auth>
   );
 }
 export default Login;

@@ -1,19 +1,21 @@
 /** @format */
 
 import React, { useState } from "react";
-import { Redirect } from "react-router-dom";
+import Auth from "../components/Auth";
 import { Box } from "../components/Boxes";
 import { CardTitle, FormCard } from "../components/Cards";
 import { Form, FormActions, FormInput, FrmErrs } from "../components/Forms";
 import config from "../config";
 import { ajaxUtils } from "../utils-lib/axios-utils";
 import Encrypt from "../utils-lib/encrypt";
+import history from "../utils-lib/history";
 import { IValidatorResult, Validator } from "../utils-lib/validators";
+import { Redirect } from "react-router-dom";
 function ChangeDefault() {
   const [password, setPassword] = useState<null | string>(null);
   const [cnfPass, setCnfPass] = useState<null | string>(null);
-  const [isRedirect, setisRedirect] = useState(false);
   const [errs, setErrs] = useState<null | IValidatorResult[]>(null);
+  const [changed, setIsChanged] = useState<null | boolean>(null);
   const onChangePassword = (e: any) => {
     const { value } = e.target;
     setPassword(value);
@@ -39,42 +41,44 @@ function ChangeDefault() {
       if (password && password.length > 0)
         frmData.password = Encrypt.hashPassword(password, config.secretKey);
       ajaxUtils.post("manager/changeDefault", frmData).then((res) => {
-        if (res.isRedirect) setisRedirect(true);
+        if (res.type) setIsChanged(res.type);
       });
     }
   };
   return (
-    <Box>
-      {isRedirect && <Redirect to='/manager/login' />}
-      <FormCard>
-        <CardTitle>Change Password </CardTitle>
-        {errs && <FrmErrs errs={errs} />}
-        <Form>
-          <Box>
-            <FormInput
-              inputType='password'
-              onChange={onChangePassword}
-              required={true}
-              label={"New Password"}
-              autoComplete={"off"}
-            />
-            <FormInput
-              inputType='password'
-              onChange={onChangeCnfPwd}
-              required={true}
-              label={"Confirm New Password"}
-              autoComplete={"off"}
-            />
-            <FormActions
-              onSubmit={{
-                label: "Submit",
-                onFrmSubmit: onSubmit,
-              }}
-            />
-          </Box>
-        </Form>
-      </FormCard>
-    </Box>
+    <Auth>
+      <Box>
+        {changed && <Redirect to='/manager/login' />}
+        <FormCard>
+          <CardTitle>Change Password </CardTitle>
+          {errs && <FrmErrs errs={errs} />}
+          <Form>
+            <Box>
+              <FormInput
+                inputType='password'
+                onChange={onChangePassword}
+                required={true}
+                label={"New Password"}
+                autoComplete={"off"}
+              />
+              <FormInput
+                inputType='password'
+                onChange={onChangeCnfPwd}
+                required={true}
+                label={"Confirm New Password"}
+                autoComplete={"off"}
+              />
+              <FormActions
+                onSubmit={{
+                  label: "Submit",
+                  onFrmSubmit: onSubmit,
+                }}
+              />
+            </Box>
+          </Form>
+        </FormCard>
+      </Box>
+    </Auth>
   );
 }
 export default ChangeDefault;

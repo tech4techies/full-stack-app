@@ -8,6 +8,7 @@ import NotFound from "../NotFound/not-found";
 import { ajaxUtils } from "../utils-lib/axios-utils";
 import Dashboard from "./dashboard";
 import Login from "./login";
+import ChangeDefault from "./change-default";
 function ManagerRouter() {
   const [isMngrCookieValid, setMngrValid] = useState(false);
   const validateCookie = useCallback(() => {
@@ -31,6 +32,9 @@ function ManagerRouter() {
             </Route>
             <Route path='/manager/dashboard'>
               <Dashboard />
+            </Route>
+            <Route path='/manager/change-default'>
+              <ChangeDefault />
             </Route>
             <Route path='*'>
               <NotFound />
