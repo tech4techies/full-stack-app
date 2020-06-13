@@ -2,6 +2,8 @@
 
 import styled from "@emotion/styled";
 
+export const SimpleBox = styled.div({});
+
 export const Box = styled.div({
   padding: 5,
 });
@@ -59,4 +61,42 @@ export const FrmErrBox = styled.div({
   backgroundColor: "#ffebee",
   borderRadius: 3,
   marginBottom: 5,
+});
+
+export const TopBarMainBox = styled.div({
+  backgroundColor: "#fff",
+  minWidth: "100%",
+  maxWidth: "100%",
+  position: "sticky",
+  zIndex: 99999,
+  top: 0,
+  lineHeight: 1.15,
+  display: "flex",
+  alignItems: "center",
+  fontSize: 14,
+});
+
+export const TopBarLogOutBox = styled.div({
+  paddingTop: 6,
+});
+
+export const TopBarLogoBox = styled.div({
+  width: 200,
+  borderRight: "1px solid #dfe2e5",
+  borderBottom: "1px solid #dfe2e5",
+});
+
+export const LeftBarMainBox = styled.div({
+  fontSize: 14,
+  lineHeight: 1.15,
+  minWidth: 200,
+  flexDirection: "column",
+  backgroundColor: "white",
+  display: "flex",
+  borderRight: "1px solid #dfe2e5",
+});
+
+export const DashboardContentBox = styled.div({
+  display: "flex",
+  flex: "1 1 0%",
 });

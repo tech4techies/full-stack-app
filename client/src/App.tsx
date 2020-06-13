@@ -1,7 +1,7 @@
 /** @format */
 
 import React from "react";
-import { Box } from "./components/Boxes";
+import { SimpleBox } from "./components/Boxes";
 import ExtraStyle from "./components/ExtraStyle";
 import ManagerRouter from "./Manager/manager";
 import NotFound from "./NotFound/not-found";
@@ -13,12 +13,12 @@ function App() {
   const isSchool = /school/gi.test(pathname);
   const isManager = /manager/gi.test(pathname);
   return (
-    <Box>
+    <SimpleBox>
       <ExtraStyle />
       {isSchool && <SchoolRouter />}
       {isManager && <ManagerRouter />}
       {!isSchool && !isManager && <NotFound />}
-    </Box>
+    </SimpleBox>
   );
 }
 

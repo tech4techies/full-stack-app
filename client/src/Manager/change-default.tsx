@@ -9,6 +9,7 @@ import config from "../config";
 import { ajaxUtils } from "../utils-lib/axios-utils";
 import Encrypt from "../utils-lib/encrypt";
 import { IValidatorResult, Validator } from "../utils-lib/validators";
+import Auth from "./auth";
 function ChangeDefault() {
   const [password, setPassword] = useState<null | string>(null);
   const [cnfPass, setCnfPass] = useState<null | string>(null);
@@ -44,37 +45,39 @@ function ChangeDefault() {
     }
   };
   return (
-    <Box>
-      {changed && <Redirect to='/manager/login' />}
-      <FormCard>
-        <CardTitle>Change Password </CardTitle>
-        {errs && <FrmErrs errs={errs} />}
-        <Form>
-          <Box>
-            <FormInput
-              inputType='password'
-              onChange={onChangePassword}
-              required={true}
-              label={"New Password"}
-              autoComplete={"off"}
-            />
-            <FormInput
-              inputType='password'
-              onChange={onChangeCnfPwd}
-              required={true}
-              label={"Confirm New Password"}
-              autoComplete={"off"}
-            />
-            <FormActions
-              onSubmit={{
-                label: "Submit",
-                onFrmSubmit: onSubmit,
-              }}
-            />
-          </Box>
-        </Form>
-      </FormCard>
-    </Box>
+    <Auth>
+      <Box>
+        {changed && <Redirect to='/manager/login' />}
+        <FormCard>
+          <CardTitle>Change Password </CardTitle>
+          {errs && <FrmErrs errs={errs} />}
+          <Form>
+            <Box>
+              <FormInput
+                inputType='password'
+                onChange={onChangePassword}
+                required={true}
+                label={"New Password"}
+                autoComplete={"off"}
+              />
+              <FormInput
+                inputType='password'
+                onChange={onChangeCnfPwd}
+                required={true}
+                label={"Confirm New Password"}
+                autoComplete={"off"}
+              />
+              <FormActions
+                onSubmit={{
+                  label: "Submit",
+                  onFrmSubmit: onSubmit,
+                }}
+              />
+            </Box>
+          </Form>
+        </FormCard>
+      </Box>
+    </Auth>
   );
 }
 export default ChangeDefault;

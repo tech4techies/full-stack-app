@@ -1,8 +1,9 @@
 /** @format */
 
-import React, { useLayoutEffect, useContext } from "react";
+import React, { useContext, useLayoutEffect } from "react";
+import { Box, SimpleBox } from "../components/Boxes";
 import { ValidateCookieCtx } from "../context/manager";
-import { Box } from "../components/Boxes";
+import history from "../utils-lib/history";
 
 interface IProps {
   children: React.ReactChild;
@@ -16,12 +17,15 @@ function Auth(props: IProps) {
   const isLoginPath = /manager\/login/gi.test(pathname);
   useLayoutEffect(() => {
     cookieCtx.refresh();
-  }, []);
+    if (isLoginPath && cookieCtx.isMngrCookieValid) {
+      history.redirectTo("/manager/dashboard");
+    }
+  }, [isLoginPath, cookieCtx]);
   return (
-    <Box>
+    <SimpleBox>
       {!cookieCtx.isMngrCookieValid && !isLoginPath && <Box>Loading....</Box>}
       {(cookieCtx.isMngrCookieValid || isLoginPath) && children}
-    </Box>
+    </SimpleBox>
   );
 }
 

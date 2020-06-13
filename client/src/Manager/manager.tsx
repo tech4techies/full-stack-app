@@ -1,8 +1,13 @@
 /** @format */
 
-import React, { useCallback, useContext, useState } from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { Box } from "../components/Boxes";
+import React, { useCallback, useRef, useState } from "react";
+import {
+  BrowserRouter as Router,
+  Redirect,
+  Route,
+  Switch,
+} from "react-router-dom";
+import { SimpleBox } from "../components/Boxes";
 import { ValidateCookieCtx } from "../context/manager";
 import NotFound from "../NotFound/not-found";
 import { ajaxUtils } from "../utils-lib/axios-utils";
@@ -15,33 +20,20 @@ function ManagerRouter() {
     location: { pathname },
   } = window;
   const isLoginPath = /manager\/login/gi.test(pathname);
-  const [isMngrCookieValid, setMngrValid] = useState(false);
-  const cookieCtx = useContext(ValidateCookieCtx);
-
+  const [isMngrCookieValid, setIsMngr] = useState(false);
+  const isCallMade = useRef(false);
   const validateCookie = useCallback(() => {
-    ajaxUtils.get("validate/cookie/manager").then((res) => {
-      const { success, userType } = res;
-      if (
-        success &&
-        userType === "manager" &&
-        !cookieCtx.isMngrCookieValid &&
-        isLoginPath
-      ) {
-        setMngrValid(true);
-        history.redirectTo("/manager/dashboard");
-      } else if (
-        success &&
-        userType === "manager" &&
-        !cookieCtx.isMngrCookieValid &&
-        !isLoginPath
-      ) {
-        console.log("setting the state");
-        setMngrValid(true);
-      } else if (success && userType !== "manager") {
-        if (!isLoginPath) history.redirectTo("/manager/login");
-      }
-    });
-  }, []);
+    if (!isCallMade.current)
+      ajaxUtils.get("validate/cookie/manager").then((res) => {
+        isCallMade.current = true;
+        const { success, userType } = res;
+        if (success && userType === "manager") {
+          setIsMngr(true);
+        } else if (success && userType !== "manager") {
+          if (!isLoginPath) history.redirectTo("/manager/login");
+        }
+      });
+  }, [isLoginPath]);
 
   return (
     <ValidateCookieCtx.Provider
@@ -49,11 +41,11 @@ function ManagerRouter() {
         refresh: validateCookie,
         isMngrCookieValid,
       }}>
-      <Box>
+      <SimpleBox>
         <Router>
           <Switch>
             <Route path='/manager/' exact>
-              <Login />
+              <Redirect to='/manager/login' />
             </Route>
             <Route path='/manager/login'>
               <Login />
@@ -69,7 +61,7 @@ function ManagerRouter() {
             </Route>
           </Switch>
         </Router>
-      </Box>
+      </SimpleBox>
     </ValidateCookieCtx.Provider>
   );
 }
