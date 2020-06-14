@@ -22,17 +22,17 @@ function ManagerRouter() {
   const isLoginPath = /manager\/login/gi.test(pathname);
   const [isMngrCookieValid, setIsMngr] = useState(false);
   const isCallMade = useRef(false);
-  const validateCookie = useCallback(() => {
-    if (!isCallMade.current)
-      ajaxUtils.get("validate/cookie/manager").then((res) => {
-        isCallMade.current = true;
+  const validateCookie = useCallback(async () => {
+    if (!isCallMade.current) {
+      const res = await ajaxUtils.get("validate/cookie/manager");
+      isCallMade.current = true;
+      if (res) {
         const { success, userType } = res;
-        if (success && userType === "manager") {
-          setIsMngr(true);
-        } else if (success && userType !== "manager") {
+        if (success && userType === "manager") setIsMngr(true);
+        else if (success && userType !== "manager")
           if (!isLoginPath) history.redirectTo("/manager/login");
-        }
-      });
+      }
+    }
   }, [isLoginPath]);
 
   return (

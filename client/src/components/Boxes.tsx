@@ -1,6 +1,7 @@
 /** @format */
 
 import styled from "@emotion/styled";
+import React, { Fragment, useState } from "react";
 
 export const SimpleBox = styled.div({});
 
@@ -74,16 +75,12 @@ export const TopBarMainBox = styled.div({
   display: "flex",
   alignItems: "center",
   fontSize: 14,
-});
-
-export const TopBarLogOutBox = styled.div({
-  paddingTop: 6,
+  borderBottom: "1px solid #dfe2e5",
 });
 
 export const TopBarLogoBox = styled.div({
   width: 200,
   borderRight: "1px solid #dfe2e5",
-  borderBottom: "1px solid #dfe2e5",
 });
 
 export const LeftBarMainBox = styled.div({
@@ -92,6 +89,7 @@ export const LeftBarMainBox = styled.div({
   minWidth: 200,
   flexDirection: "column",
   backgroundColor: "white",
+  minHeight: "calc(100vh - 70px)",
   display: "flex",
   borderRight: "1px solid #dfe2e5",
 });
@@ -100,3 +98,79 @@ export const DashboardContentBox = styled.div({
   display: "flex",
   flex: "1 1 0%",
 });
+
+export const LeftBarOptionsBox = styled.div({
+  fontSize: 14,
+  lineHeight: 1.15,
+});
+
+export const LeftBarListOptionBox = styled.div({
+  lineHeight: 1.15,
+  marginBottom: 0,
+  WebkitBoxAlign: "center",
+  alignItems: "center",
+  display: "flex",
+  fontSize: 14,
+  color: "#444444",
+  cursor: "pointer",
+  textDecoration: "none",
+  paddingTop: 14,
+  paddingRight: 9,
+  paddingBottom: 14,
+  paddingLeft: 18,
+});
+
+export const LeftBarListOptionLabelBox = styled.div({
+  lineHeight: 1.15,
+  color: "#444444",
+  fontSize: 14,
+  flex: "1 1 0%",
+});
+
+export const UserMenuBox = styled.div({
+  fontSize: 14,
+  lineHeight: 1.15,
+  WebkitBoxAlign: "center",
+  alignItems: "center",
+  WebkitBoxPack: "end",
+  position: "relative",
+  display: "flex",
+  justifyContent: "flex-end",
+  flex: "1 1 0%",
+  paddingRight: 30,
+});
+
+interface IMenuOptionProps {
+  label: string;
+}
+export function LeftBarListOption(props: IMenuOptionProps) {
+  const { label } = props;
+  const [isHover, setHover] = useState(false);
+  return (
+    <Fragment>
+      <LeftBarListOptionLabelBox
+        onMouseOver={() => {
+          console.log("jkdfjfdklfjkj");
+          setHover(true);
+        }}
+        onMouseOut={() => setHover(false)}>
+        {label}
+      </LeftBarListOptionLabelBox>
+      <svg
+        width='8'
+        height='8'
+        viewBox='0 0 7 4'
+        style={{
+          transform: "rotate(-90deg)",
+          transition: "all 0.3s ease 0s",
+          marginRight: 4,
+        }}>
+        <path
+          fill='#354052'
+          fillRule='evenodd'
+          d='M3.852 3.684l-.018.014-.05.042a.492.492 0 0 1-.636-.056L.316.852A.504.504 0 0 1 .262.214L.318.146a.494.494 0 0 1 .705-.001L3.5 2.62 5.977.145A.504.504 0 0 1 6.614.09l.068.056a.494.494 0 0 1 .002.706L3.852 3.684z'></path>
+      </svg>
+    </Fragment>
+  );
+}
+export const LeftBarOptionBox = styled.div({});

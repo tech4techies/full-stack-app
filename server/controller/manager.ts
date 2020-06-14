@@ -5,19 +5,33 @@ import express, { Request, Response } from "express";
 import jwt, { SignOptions } from "jsonwebtoken";
 import { DateTime } from "luxon";
 import config from "../config";
-import MongoDb from "../models/mongodb";
+import Db from "../models/mongodb";
 import { jaction } from "../utils/custom-express";
 import Encrypt, { ClientEncrypt } from "../utils/encrypt";
 import { genId, genMngrPass, genNum } from "../utils/generate-random";
 import { getMngrCredentialsTemplate } from "../utils/get-templates";
 import { authenticate } from "./validate";
+import { IMngrActivity } from "../types";
 
 export function getManagerRouter() {
   return express
     .Router({ mergeParams: true })
     .post("/login", jaction(verifyLogin))
     .post("/changeDefault", jaction(changeDefault))
-    .post("/createManager", jaction(createManager));
+    .post("/createManager", jaction(createManager))
+    .get("/profile", jaction(getProfile));
+}
+
+async function getActivity(req: Request) {}
+
+async function recordActivity(id: string, ip: string, activity: string) {
+  const activityData: IMngrActivity = {
+    id,
+    ip,
+    iAt: new Date().toISOString(),
+    activity,
+  };
+  return await Db.managerActivity.setActivity(activityData);
 }
 
 async function verifyLogin(req: Request, res: Response) {
@@ -25,7 +39,7 @@ async function verifyLogin(req: Request, res: Response) {
   const data = { userName, password };
   data.password = Encrypt.hash(password, config.secretKey);
   data.userName = Encrypt.hash(userName, config.secretKey);
-  const rows = await MongoDb.manager.verifyLogin(data.userName, data.password);
+  const rows = await Db.manager.verifyLogin(data.userName, data.password);
   const signOpts: SignOptions = {
     expiresIn: "24h",
   };
@@ -59,6 +73,21 @@ async function verifyLogin(req: Request, res: Response) {
   }
 }
 
+async function getProfile(req: Request, res: Response) {
+  const cookie = req.headers.cookie as string;
+  const { success, info } = authenticate(cookie);
+  if (success && info) {
+    const { id } = info;
+    const row = await Db.manager.getCtx(id);
+    return { success: true, type: true, data: row };
+  } else {
+    res.status(500).send({
+      success: true,
+      type: false,
+    });
+  }
+}
+
 async function changeDefault(req: Request, res: Response) {
   const { password } = req.body;
   const cookie = req.headers.cookie as string;
@@ -71,8 +100,9 @@ async function changeDefault(req: Request, res: Response) {
     const { id, user } = info;
     if (id && user) {
       const dbUsername = Encrypt.hash(user, config.secretKey);
-      await MongoDb.manager.changeDefault(id, encPass, dbUsername);
-
+      await Db.manager.changeDefault(id, encPass, dbUsername);
+      const ip = req.headers["x-forwarded-for"] as string;
+      recordActivity(info.id, ip, "Default Password Changed");
       res.send({
         success: true,
         type: true,
@@ -96,7 +126,7 @@ async function changeDefault(req: Request, res: Response) {
 async function createManager(req: Request) {
   const { data } = req.body;
   const { email, name } = data;
-  const isExists = await MongoDb.manager.findMngr(email);
+  const isExists = await Db.manager.findMngr(email);
   if (!isExists) {
     const password = genMngrPass("mngr");
     const clientPassword = ClientEncrypt.hashPassword(
@@ -107,7 +137,7 @@ async function createManager(req: Request) {
     const id = genId(8);
     const userName = genNum(8);
     data.userName = Encrypt.hash(userName, config.secretKey);
-    const isInserted = await MongoDb.manager.createMngrCtx(id, data);
+    const isInserted = await Db.manager.createMngrCtx(id, data);
     if (isInserted) {
       const htmlTemplate = getMngrCredentialsTemplate(
         name,

@@ -11,7 +11,22 @@ export default class Manager {
     const { _id: id, ...rest } = obj;
     return { id, ...rest };
   }
-  async getCtx(mId: string) {}
+  async getCtx(id: string) {
+    const row = await this.colConn.findOne(
+      { _id: id },
+      {
+        projection: {
+          name: 1,
+          mobile: 1,
+          dob: 1,
+          email: 1,
+          _id: 0,
+          isSuperAdmin: 1,
+        },
+      },
+    );
+    return row;
+  }
   async checkMngrExists(id: string, userName: string): Promise<boolean> {
     const rows = await this.colConn.findOne({ _id: id, userName });
     if (rows) return true;

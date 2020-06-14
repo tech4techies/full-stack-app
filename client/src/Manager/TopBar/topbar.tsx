@@ -2,15 +2,16 @@
 
 import React from "react";
 import Logo from "../../assets/chaathra.png";
-import { Anchor, SimpleAnchor } from "../../components/Anchors";
+import { SimpleAnchor } from "../../components/Anchors";
 import {
   FlexBoxRowCenter,
   TopBarLogoBox,
-  TopBarLogOutBox,
   TopBarMainBox,
+  UserMenuBox,
 } from "../../components/Boxes";
-import { TopBarLogo } from "../../components/Images";
-
+import { TopBarLogo, Image } from "../../components/Images";
+import userIcon from "../../assets/user.svg";
+import arrowDown from "../../assets/arrow-down.svg";
 function TopBar() {
   return (
     <FlexBoxRowCenter style={{ zIndex: 99999 }}>
@@ -20,11 +21,12 @@ function TopBar() {
             <TopBarLogo src={Logo} />
           </SimpleAnchor>
         </TopBarLogoBox>
-        <TopBarLogOutBox>
-          <Anchor href='/manager/logout' style={{ paddingTop: 5 }}>
-            Logout
-          </Anchor>
-        </TopBarLogOutBox>
+        <UserMenuBox>
+          <FlexBoxRowCenter style={{ cursor: "pointer" }}>
+            <Image src={userIcon} />
+            <Image src={arrowDown} />
+          </FlexBoxRowCenter>
+        </UserMenuBox>
       </TopBarMainBox>
     </FlexBoxRowCenter>
   );

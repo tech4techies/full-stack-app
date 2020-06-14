@@ -8,3 +8,10 @@ export interface IManagerContext {
   isAdmin: boolean;
   isSuperAdmin: boolean;
 }
+
+export interface IMngrActivity {
+  activity: string;
+  id: string;
+  ip: string;
+  iAt: string;
+}
