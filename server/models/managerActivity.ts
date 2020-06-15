@@ -8,15 +8,18 @@ export default class ManagerActivity {
     this.colConn = dbConn.collection("manager_activity");
   }
 
-  async setActivity(data: IMngrActivity) {
-    const { id, activity, ip, iAt } = data;
-    const { insertedId } = await this.colConn.insertOne({
+  async set(data: IMngrActivity) {
+    const { id, activity, ip, iAt, browser, os, userAgent } = data;
+    await this.colConn.insertOne({
       mId: id,
       activity,
       ip,
+      userAgent,
+      browser,
+      os,
       iAt,
     });
-    if (insertedId) return true;
-    else return false;
   }
+
+  async getList(mId: string, from: string, to: string) {}
 }

@@ -13,5 +13,8 @@ export interface IMngrActivity {
   activity: string;
   id: string;
   ip: string;
+  browser: string;
+  userAgent: string;
+  os: string;
   iAt: string;
 }

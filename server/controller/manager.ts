@@ -12,6 +12,8 @@ import { genId, genMngrPass, genNum } from "../utils/generate-random";
 import { getMngrCredentialsTemplate } from "../utils/get-templates";
 import { authenticate } from "./validate";
 import { IMngrActivity } from "../types";
+import { getIp, getUserBrowser, getUserOS } from "../utils/client-info";
+import { reset } from "nodemon";
 
 export function getManagerRouter() {
   return express
@@ -22,16 +24,36 @@ export function getManagerRouter() {
     .get("/profile", jaction(getProfile));
 }
 
-async function getActivity(req: Request) {}
+async function getActivities(req: Request, res: Response) {
+  const cookie = req.headers.cookie as string;
+  const { success, info } = authenticate(cookie);
+  if (success && info) {
+    const { id } = info;
 
-async function recordActivity(id: string, ip: string, activity: string) {
+    const from = new Date(
+      DateTime.local().startOf("day").toISO(),
+    ).toISOString();
+    const to = new Date().toISOString();
+  } else {
+    res.send(500).send({
+      success: true,
+      type: false,
+      loginRequired: true,
+    });
+  }
+}
+
+async function recordActivity(req: Request, id: string, activity: string) {
   const activityData: IMngrActivity = {
     id,
-    ip,
+    ip: getIp(req),
+    browser: getUserBrowser(req),
     iAt: new Date().toISOString(),
+    os: getUserOS(req),
+    userAgent: req.headers["user-agent"] || "",
     activity,
   };
-  return await Db.managerActivity.setActivity(activityData);
+  await Db.managerActivity.set(activityData);
 }
 
 async function verifyLogin(req: Request, res: Response) {
@@ -46,6 +68,7 @@ async function verifyLogin(req: Request, res: Response) {
   const FIVE_MIN = 60 * 5;
   if (rows.isDefault) signOpts.expiresIn = FIVE_MIN;
   if (rows.isVerified && !rows.disabled) {
+    await recordActivity(req, rows.id, "Logged In Successfully");
     const jwtRes = jwt.sign(
       { id: rows.id, user: req.body.userName, userType: "manager" },
       config.jwtSecret,
@@ -76,6 +99,14 @@ async function verifyLogin(req: Request, res: Response) {
 async function getProfile(req: Request, res: Response) {
   const cookie = req.headers.cookie as string;
   const { success, info } = authenticate(cookie);
+  const indianCurrentTime = DateTime.utc()
+    .plus({ hours: 5 })
+    .plus({ minutes: 30 });
+  const startOfDay = new Date().setHours(0, 0, 0, 0);
+  console.log("start of Day ---", startOfDay);
+  const s = DateTime.fromMillis(startOfDay).toString();
+  console.log("s -----", s);
+  console.log("indianCurrent Time ----", indianCurrentTime);
   if (success && info) {
     const { id } = info;
     const row = await Db.manager.getCtx(id);
@@ -84,6 +115,7 @@ async function getProfile(req: Request, res: Response) {
     res.status(500).send({
       success: true,
       type: false,
+      loginRequired: true,
     });
   }
 }
@@ -101,8 +133,7 @@ async function changeDefault(req: Request, res: Response) {
     if (id && user) {
       const dbUsername = Encrypt.hash(user, config.secretKey);
       await Db.manager.changeDefault(id, encPass, dbUsername);
-      const ip = req.headers["x-forwarded-for"] as string;
-      recordActivity(info.id, ip, "Default Password Changed");
+      await recordActivity(req, info.id, "Default Password Changed");
       res.send({
         success: true,
         type: true,
@@ -115,12 +146,11 @@ async function changeDefault(req: Request, res: Response) {
         userMessage: "Invalid Request",
       };
   } else
-    return {
+    return res.status(500).send({
       success: true,
       type: false,
       loginRequired: true,
-      userMessage: "Invalid Request",
-    };
+    });
 }
 
 async function createManager(req: Request) {
