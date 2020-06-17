@@ -47,6 +47,7 @@ interface FormInputProps {
   style?: object;
   autoComplete?: string;
   autoCapitalize?: string;
+  disbaled?: boolean;
 }
 export function FormInput(props: FormInputProps) {
   const {
@@ -60,6 +61,7 @@ export function FormInput(props: FormInputProps) {
     onChange,
     autoComplete,
     autoCapitalize,
+    disbaled,
     style,
   } = props;
   const inputTypes = ["text", "email", "password", "number"];
@@ -78,6 +80,7 @@ export function FormInput(props: FormInputProps) {
           required={required}
           autoComplete={autoComplete}
           autoCapitalize={autoCapitalize}
+          disabled={disbaled}
         />
       )}
       {isTextArea && (
@@ -86,6 +89,7 @@ export function FormInput(props: FormInputProps) {
           onFocus={onFocus}
           onKeyDown={onKeyDown}
           onKeyPress={onKeyPress}
+          disabled={disbaled}
           onKeyUp={onKeyUp}
           required={required}></StyledTextArea>
       )}

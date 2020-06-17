@@ -21,5 +21,12 @@ export default class ManagerActivity {
     });
   }
 
-  async getList(mId: string, from: string, to: string) {}
+  async getList(mId: string, from: string, to: string) {
+    return await this.colConn
+      .find(
+        { mId, iAt: { $gte: from, $lt: to } },
+        { projection: { activity: 1, browser: 1, os: 1, iAt: 1, _id: 0 } },
+      )
+      .toArray();
+  }
 }

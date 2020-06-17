@@ -1,7 +1,8 @@
 /** @format */
 
 import styled from "@emotion/styled";
-import React, { Fragment, useState } from "react";
+import React, { useState, Fragment } from "react";
+import { ILeftBarLinkOption } from "../types";
 
 export const SimpleBox = styled.div({});
 
@@ -94,7 +95,7 @@ export const LeftBarMainBox = styled.div({
   borderRight: "1px solid #dfe2e5",
 });
 
-export const DashboardContentBox = styled.div({
+export const ContentBox = styled.div({
   display: "flex",
   flex: "1 1 0%",
 });
@@ -102,6 +103,13 @@ export const DashboardContentBox = styled.div({
 export const LeftBarOptionsBox = styled.div({
   fontSize: 14,
   lineHeight: 1.15,
+});
+
+export const ContentPage = styled.div({
+  fontSize: 14,
+  lineHeight: 1.15,
+  maxWidth: 1000,
+  margin: "10px auto",
 });
 
 export const LeftBarListOptionBox = styled.div({
@@ -142,35 +150,44 @@ export const UserMenuBox = styled.div({
 
 interface IMenuOptionProps {
   label: string;
+  options: ILeftBarLinkOption[];
 }
 export function LeftBarListOption(props: IMenuOptionProps) {
   const { label } = props;
-  const [isHover, setHover] = useState(false);
+  const [isClicked, setIsClicked] = useState(false);
+  const onOptionClick = () => {
+    !isClicked ? setIsClicked(true) : setIsClicked(false);
+  };
+  let boxStyle = {};
+  if (isClicked) {
+    boxStyle = { borderRight: "2px solid #f9403a", backgroundColor: "#fdf0e7" };
+  }
   return (
-    <Fragment>
-      <LeftBarListOptionLabelBox
-        onMouseOver={() => {
-          console.log("jkdfjfdklfjkj");
-          setHover(true);
-        }}
-        onMouseOut={() => setHover(false)}>
-        {label}
-      </LeftBarListOptionLabelBox>
+    <LeftBarListOptionBox style={boxStyle} onClick={onOptionClick}>
+      <LeftBarListOptionLabelBox>{label}</LeftBarListOptionLabelBox>
       <svg
         width='8'
         height='8'
         viewBox='0 0 7 4'
-        style={{
-          transform: "rotate(-90deg)",
-          transition: "all 0.3s ease 0s",
-          marginRight: 4,
-        }}>
+        onClick={onOptionClick}
+        style={
+          !isClicked
+            ? {
+                transform: "rotate(-90deg)",
+                transition: "all 0.3s ease 0s",
+                marginRight: 4,
+              }
+            : {
+                transition: "all 0.3s ease 0s",
+                marginRight: 4,
+              }
+        }>
         <path
           fill='#354052'
           fillRule='evenodd'
           d='M3.852 3.684l-.018.014-.05.042a.492.492 0 0 1-.636-.056L.316.852A.504.504 0 0 1 .262.214L.318.146a.494.494 0 0 1 .705-.001L3.5 2.62 5.977.145A.504.504 0 0 1 6.614.09l.068.056a.494.494 0 0 1 .002.706L3.852 3.684z'></path>
       </svg>
-    </Fragment>
+    </LeftBarListOptionBox>
   );
 }
 export const LeftBarOptionBox = styled.div({});

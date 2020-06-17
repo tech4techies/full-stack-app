@@ -13,7 +13,6 @@ import { getMngrCredentialsTemplate } from "../utils/get-templates";
 import { authenticate } from "./validate";
 import { IMngrActivity } from "../types";
 import { getIp, getUserBrowser, getUserOS } from "../utils/client-info";
-import { reset } from "nodemon";
 
 export function getManagerRouter() {
   return express
@@ -21,6 +20,7 @@ export function getManagerRouter() {
     .post("/login", jaction(verifyLogin))
     .post("/changeDefault", jaction(changeDefault))
     .post("/createManager", jaction(createManager))
+    .get("/activities", jaction(getActivities))
     .get("/profile", jaction(getProfile));
 }
 
@@ -29,13 +29,28 @@ async function getActivities(req: Request, res: Response) {
   const { success, info } = authenticate(cookie);
   if (success && info) {
     const { id } = info;
-
-    const from = new Date(
-      DateTime.local().startOf("day").toISO(),
+    const toIndianDateTime = new Date(
+      DateTime.utc().plus({ hours: 5, minutes: 30 }).toString(),
     ).toISOString();
-    const to = new Date().toISOString();
+    const fromIndianDateTime = new Date(
+      DateTime.fromMillis(
+        new Date(
+          new Date().toLocaleString("en-US", {
+            timeZone: "Asia/Kolkata",
+          }),
+        ).setHours(0, 0, 0, 0),
+      )
+        .plus({ hours: 5, minutes: 30 })
+        .toString(),
+    ).toISOString();
+    const rows = await Db.managerActivity.getList(
+      id,
+      fromIndianDateTime,
+      toIndianDateTime,
+    );
+    return { success: true, type: true, data: rows };
   } else {
-    res.send(500).send({
+    res.status(500).send({
       success: true,
       type: false,
       loginRequired: true,
@@ -48,7 +63,9 @@ async function recordActivity(req: Request, id: string, activity: string) {
     id,
     ip: getIp(req),
     browser: getUserBrowser(req),
-    iAt: new Date().toISOString(),
+    iAt: new Date(
+      DateTime.utc().plus({ hours: 5 }).plus({ minutes: 30 }).toString(),
+    ).toISOString(),
     os: getUserOS(req),
     userAgent: req.headers["user-agent"] || "",
     activity,
@@ -75,8 +92,8 @@ async function verifyLogin(req: Request, res: Response) {
       signOpts,
     );
     const luxonTime = new Date(
-      DateTime.fromISO(new Date().toISOString()).plus({ hours: 24 }).toISO(),
-    );
+      DateTime.utc().plus({ hours: 29, minutes: 30 }).toString(),
+    ).toISOString();
     const expiresAt = new Date(luxonTime);
     res.cookie("ch-token", jwtRes, {
       expires: expiresAt,
@@ -99,14 +116,7 @@ async function verifyLogin(req: Request, res: Response) {
 async function getProfile(req: Request, res: Response) {
   const cookie = req.headers.cookie as string;
   const { success, info } = authenticate(cookie);
-  const indianCurrentTime = DateTime.utc()
-    .plus({ hours: 5 })
-    .plus({ minutes: 30 });
-  const startOfDay = new Date().setHours(0, 0, 0, 0);
-  console.log("start of Day ---", startOfDay);
-  const s = DateTime.fromMillis(startOfDay).toString();
-  console.log("s -----", s);
-  console.log("indianCurrent Time ----", indianCurrentTime);
+
   if (success && info) {
     const { id } = info;
     const row = await Db.manager.getCtx(id);

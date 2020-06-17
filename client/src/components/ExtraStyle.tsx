@@ -36,9 +36,7 @@ function ExtraStyle() {
         background-color: #c62828;
         border: 2px solid #c62828;
       }
-      .css-9v4pin:hover {
-        background-color: #f9e6d9;
-      }
+
     `,
       }}
     />

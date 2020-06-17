@@ -3,8 +3,8 @@
 import styled from "@emotion/styled";
 export const SimpleCard = styled.div({
   borderRadius: 5,
-  width: 200,
   padding: 10,
+  minWidth: 500,
   backgroundColor: "#fff",
 });
 

@@ -36,8 +36,13 @@ export function authenticate(cookie: string) {
       const cookieInfo = cookie.split(/=/);
       if (/ch-token/.test(cookieInfo[0])) token = cookieInfo[1];
     });
+  let tokenInfo = null;
   if (token) {
-    const tokenInfo = jwt.verify(token, config.jwtSecret) as any;
-    return { success: true, info: tokenInfo };
+    try {
+      tokenInfo = jwt.verify(token, config.jwtSecret) as any;
+      return { success: true, info: tokenInfo };
+    } catch (err) {
+      return { success: false, info: null };
+    }
   } else return { success: false, info: null };
 }

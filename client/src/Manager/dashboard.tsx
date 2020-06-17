@@ -1,19 +1,17 @@
 /** @format */
 
 import React, { useLayoutEffect, useState } from "react";
-import {
-  FlexBoxCol,
-  FlexBoxRowCenter,
-  DashboardContentBox,
-  SimpleBox,
-} from "../components/Boxes";
+import { ContentBox, SimpleBox } from "../components/Boxes";
+import { IMngrActivity } from "../types";
+import { ajaxUtils } from "../utils-lib/axios-utils";
+import Activity from "./activity";
 import Auth from "./auth";
 import LeftBar from "./LeftBar/letbar";
 import TopBar from "./TopBar/topbar";
-import { ajaxUtils } from "../utils-lib/axios-utils";
 
 function Dashboard() {
-  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+  const [isSuperAdmin, setIsSuperAdmin] = useState<null | boolean>(null);
+  const [activity, setActivity] = useState<null | IMngrActivity[] | []>(null);
   useLayoutEffect(() => {
     ajaxUtils.get("manager/profile").then((res) => {
       if (res) {
@@ -24,15 +22,21 @@ function Dashboard() {
         }
       }
     });
+    ajaxUtils.get("/manager/activities").then((res) => {
+      const { success, type, data } = res;
+      if (success && type) setActivity(data);
+    });
   }, []);
   return (
     <Auth>
       <SimpleBox>
         <TopBar />
-        <DashboardContentBox>
-          <LeftBar isSuperAdmin={isSuperAdmin} />
-          Content Comes Here....
-        </DashboardContentBox>
+        {isSuperAdmin !== null && (
+          <ContentBox>
+            <LeftBar isSuperAdmin={isSuperAdmin} />
+            {activity && <Activity activity={activity}></Activity>}
+          </ContentBox>
+        )}
       </SimpleBox>
     </Auth>
   );
