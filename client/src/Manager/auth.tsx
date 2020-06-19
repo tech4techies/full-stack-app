@@ -17,9 +17,6 @@ function Auth(props: IProps) {
   const isLoginPath = /manager\/login/gi.test(pathname);
   useLayoutEffect(() => {
     cookieCtx.refresh();
-    if (isLoginPath && cookieCtx.isMngrCookieValid) {
-      history.redirectTo("/manager/dashboard");
-    }
   }, [isLoginPath, cookieCtx]);
   return (
     <SimpleBox>

@@ -20,3 +20,11 @@ export interface ILeftBarMenuOption {
   isSuperAdminType: boolean;
   options: ILeftBarLinkOption[];
 }
+
+export interface IMngrProfile {
+  name: string;
+  email: string;
+  mobile: string;
+  dob: string;
+  isSuperAdmin: boolean;
+}

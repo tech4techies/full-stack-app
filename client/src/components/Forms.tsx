@@ -64,7 +64,7 @@ export function FormInput(props: FormInputProps) {
     disbaled,
     style,
   } = props;
-  const inputTypes = ["text", "email", "password", "number"];
+  const inputTypes = ["text", "email", "password", "number", "date"];
   const isTextArea = inputTypes.indexOf(inputType) !== -1 ? false : true;
   const inlineStyle = style ? style : {};
   return (

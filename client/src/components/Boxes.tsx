@@ -1,8 +1,9 @@
 /** @format */
 
 import styled from "@emotion/styled";
-import React, { useState, Fragment } from "react";
+import React, { useState } from "react";
 import { ILeftBarLinkOption } from "../types";
+import { LeftBarListAnchor } from "./Anchors";
 
 export const SimpleBox = styled.div({});
 
@@ -75,7 +76,7 @@ export const TopBarMainBox = styled.div({
   lineHeight: 1.15,
   display: "flex",
   alignItems: "center",
-  fontSize: 14,
+  fontSize: 16,
   borderBottom: "1px solid #dfe2e5",
 });
 
@@ -85,7 +86,7 @@ export const TopBarLogoBox = styled.div({
 });
 
 export const LeftBarMainBox = styled.div({
-  fontSize: 14,
+  fontSize: 16,
   lineHeight: 1.15,
   minWidth: 200,
   flexDirection: "column",
@@ -101,12 +102,12 @@ export const ContentBox = styled.div({
 });
 
 export const LeftBarOptionsBox = styled.div({
-  fontSize: 14,
+  fontSize: 16,
   lineHeight: 1.15,
 });
 
 export const ContentPage = styled.div({
-  fontSize: 14,
+  fontSize: 16,
   lineHeight: 1.15,
   maxWidth: 1000,
   margin: "10px auto",
@@ -118,7 +119,7 @@ export const LeftBarListOptionBox = styled.div({
   WebkitBoxAlign: "center",
   alignItems: "center",
   display: "flex",
-  fontSize: 14,
+  fontSize: 16,
   color: "#444444",
   cursor: "pointer",
   textDecoration: "none",
@@ -130,13 +131,13 @@ export const LeftBarListOptionBox = styled.div({
 
 export const LeftBarListOptionLabelBox = styled.div({
   lineHeight: 1.15,
-  color: "#444444",
-  fontSize: 14,
+  color: "#444444e3",
+  fontSize: 16,
   flex: "1 1 0%",
 });
 
 export const UserMenuBox = styled.div({
-  fontSize: 14,
+  fontSize: 16,
   lineHeight: 1.15,
   WebkitBoxAlign: "center",
   alignItems: "center",
@@ -148,46 +149,67 @@ export const UserMenuBox = styled.div({
   paddingRight: 30,
 });
 
+export const ListOptionsBox = styled.div({
+  fontSize: 16,
+  lineHeight: 1.15,
+  marginTop: 8,
+});
+
 interface IMenuOptionProps {
   label: string;
   options: ILeftBarLinkOption[];
 }
 export function LeftBarListOption(props: IMenuOptionProps) {
-  const { label } = props;
+  const { label, options } = props;
   const [isClicked, setIsClicked] = useState(false);
   const onOptionClick = () => {
     !isClicked ? setIsClicked(true) : setIsClicked(false);
   };
   let boxStyle = {};
-  if (isClicked) {
-    boxStyle = { borderRight: "2px solid #f9403a", backgroundColor: "#fdf0e7" };
-  }
+  if (isClicked)
+    boxStyle = {
+      borderRight: "2px solid #f9403a",
+      backgroundColor: "#fdf0e7",
+    };
+
   return (
-    <LeftBarListOptionBox style={boxStyle} onClick={onOptionClick}>
-      <LeftBarListOptionLabelBox>{label}</LeftBarListOptionLabelBox>
-      <svg
-        width='8'
-        height='8'
-        viewBox='0 0 7 4'
-        onClick={onOptionClick}
-        style={
-          !isClicked
-            ? {
-                transform: "rotate(-90deg)",
-                transition: "all 0.3s ease 0s",
-                marginRight: 4,
-              }
-            : {
-                transition: "all 0.3s ease 0s",
-                marginRight: 4,
-              }
-        }>
-        <path
-          fill='#354052'
-          fillRule='evenodd'
-          d='M3.852 3.684l-.018.014-.05.042a.492.492 0 0 1-.636-.056L.316.852A.504.504 0 0 1 .262.214L.318.146a.494.494 0 0 1 .705-.001L3.5 2.62 5.977.145A.504.504 0 0 1 6.614.09l.068.056a.494.494 0 0 1 .002.706L3.852 3.684z'></path>
-      </svg>
-    </LeftBarListOptionBox>
+    <SimpleBox>
+      <LeftBarListOptionBox style={boxStyle} onClick={onOptionClick}>
+        <LeftBarListOptionLabelBox
+          style={isClicked ? { color: "#1e0b00" } : {}}>
+          {label}
+        </LeftBarListOptionLabelBox>
+        <svg
+          width='8'
+          height='8'
+          viewBox='0 0 7 4'
+          onClick={onOptionClick}
+          style={
+            !isClicked
+              ? {
+                  transform: "rotate(-90deg)",
+                  transition: "all 0.3s ease 0s",
+                  marginRight: 4,
+                }
+              : {
+                  transition: "all 0.3s ease 0s",
+                  marginRight: 4,
+                }
+          }>
+          <path
+            fill='#354052'
+            fillRule='evenodd'
+            d='M3.852 3.684l-.018.014-.05.042a.492.492 0 0 1-.636-.056L.316.852A.504.504 0 0 1 .262.214L.318.146a.494.494 0 0 1 .705-.001L3.5 2.62 5.977.145A.504.504 0 0 1 6.614.09l.068.056a.494.494 0 0 1 .002.706L3.852 3.684z'></path>
+        </svg>
+      </LeftBarListOptionBox>
+      {isClicked && (
+        <ListOptionsBox>
+          {options.map((opt: ILeftBarLinkOption, idx: number) => (
+            <LeftBarListAnchor key={idx} path={opt.path} label={opt.label} />
+          ))}
+        </ListOptionsBox>
+      )}
+    </SimpleBox>
   );
 }
 export const LeftBarOptionBox = styled.div({});

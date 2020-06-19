@@ -15,7 +15,7 @@ class AjaxUtils {
         return {};
       }
     } catch (err) {
-      notyUtils.showFailed("Request Failed!.");
+      notyUtils.showFailed("Request Failed!");
     }
   }
   async post(routeSuffix: string, frmData: any) {
@@ -33,7 +33,7 @@ class AjaxUtils {
         return data;
       } else notyUtils.showFailed("Something went wrong");
     } catch (err) {
-      notyUtils.showFailed("Request Failed");
+      notyUtils.showFailed("Request Failed!");
     }
   }
 }

@@ -11,7 +11,12 @@ const mngrLeftBarOptions: Array<ILeftBarLinkOption | ILeftBarMenuOption> = [
       {
         label: "Create a Manager",
         isSuperAdminType: true,
-        path: "/manager/create-new",
+        path: "/manager/create-mngr",
+      },
+      {
+        label: "Delete Manager",
+        isSuperAdminType: true,
+        path: "/manager/delete-mngr",
       },
     ],
   },

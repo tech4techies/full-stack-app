@@ -10,10 +10,10 @@ import Encrypt from "../utils/encrypt";
 export function getValidateRouter() {
   return express
     .Router({ mergeParams: true })
-    .get("/cookie/manager", jaction(validateManager));
+    .get("/cookie/manager", jaction(managerCookie));
 }
 
-async function validateManager(req: Request) {
+async function managerCookie(req: Request) {
   const cookie = req.headers.cookie as string;
   const { success, info } = authenticate(cookie);
   if (success && info) {
@@ -29,13 +29,14 @@ async function validateManager(req: Request) {
 
 export function authenticate(cookie: string) {
   let token: null | string = null;
-  cookie
-    .split(";")
-    .map((cookie) => cookie.trim())
-    .forEach((cookie) => {
-      const cookieInfo = cookie.split(/=/);
-      if (/ch-token/.test(cookieInfo[0])) token = cookieInfo[1];
-    });
+  cookie &&
+    cookie
+      .split(";")
+      .map((cookie) => cookie.trim())
+      .forEach((cookie) => {
+        const cookieInfo = cookie.split(/=/);
+        if (/ch-token/.test(cookieInfo[0])) token = cookieInfo[1];
+      });
   let tokenInfo = null;
   if (token) {
     try {
