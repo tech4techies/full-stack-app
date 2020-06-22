@@ -55,10 +55,8 @@ function Login() {
         password: Encrypt.hashPassword(password, config.secretKey),
       };
       ajaxUtils.post("manager/login", frmData).then((res) => {
-        setTimeout(() => {
-          if (res.isDefault) history.redirectTo("/manager/change-default");
-          if (res.type) history.redirectTo("/manager/dashboard");
-        }, 200);
+        if (res.isDefault) history.redirectTo("/manager/change-default");
+        else if (res.type) history.redirectTo("/manager/dashboard");
       });
     }
   };
@@ -97,7 +95,7 @@ function Login() {
               </FlexBoxRowCenter>
               <FormActions
                 onSubmit={{
-                  label: "Submit",
+                  label: "Login",
                   onFrmSubmit: onSubmit,
                 }}
               />

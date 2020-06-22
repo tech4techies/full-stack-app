@@ -3,7 +3,7 @@
 import styled from "@emotion/styled";
 import React from "react";
 import { Link } from "react-router-dom";
-import { SimpleBox, FlexBoxRow } from "./Boxes";
+import { FlexBoxRow } from "./Boxes";
 export const SimpleAnchor = styled.a({});
 
 export const Anchor = styled.a({

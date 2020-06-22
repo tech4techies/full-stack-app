@@ -3,7 +3,6 @@
 import React, { useContext, useLayoutEffect } from "react";
 import { Box, SimpleBox } from "../components/Boxes";
 import { ValidateCookieCtx } from "../context/manager";
-import history from "../utils-lib/history";
 
 interface IProps {
   children: React.ReactChild;

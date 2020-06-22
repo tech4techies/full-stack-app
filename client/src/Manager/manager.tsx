@@ -1,11 +1,11 @@
 /** @format */
 
-import React, { useCallback, useEffect, useState, useRef } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
+  Redirect,
   Route,
   Switch,
-  Redirect,
 } from "react-router-dom";
 import { ContentBox, SimpleBox } from "../components/Boxes";
 import { ValidateCookieCtx } from "../context/manager";
@@ -56,8 +56,10 @@ function ManagerRouter() {
       <SimpleBox>
         {!isMngrCookieValid && <Login />}
         <Router>
-          {isMngrCookieValid && <Redirect to='/manager/dashboard' />}
-          {mngrProfile !== null && (
+          {isMngrCookieValid && isLoginPath && (
+            <Redirect to='/manager/dashboard' />
+          )}
+          {!isLoginPath && mngrProfile !== null && (
             <SimpleBox>
               <TopBar />
               <ContentBox>

@@ -3,9 +3,11 @@
 import React, { useState } from "react";
 import { Box, ContentPage } from "../components/Boxes";
 import { CardTitle, ContentFrmCard } from "../components/Cards";
-import { Form, FormInput, FrmErrs } from "../components/Forms";
-import { IValidatorResult } from "../utils-lib/validators";
+import { Form, FormInput, FrmErrs, FormActions } from "../components/Forms";
+import { IValidatorResult, Validator } from "../utils-lib/validators";
 import Auth from "./auth";
+import { CheckBox } from "../components/CheckBox";
+import { ajaxUtils } from "../utils-lib/axios-utils";
 
 interface IProps {}
 
@@ -13,22 +15,51 @@ function CreateManager(props: IProps) {
   const [name, setName] = useState<null | string>(null);
   const [email, setEmail] = useState<null | string>(null);
   const [mobile, setMobile] = useState<null | string>(null);
-  const [dob, setDob] = useState(new Date());
+  const [dob, setDob] = useState<null | string>(null);
   const [errs, setErrs] = useState<null | IValidatorResult[]>(null);
-  const onChangeName = (e: any) => setName(e.target.value);
-  const onChangeEmail = (e: any) => setEmail(e.target.value);
-  const onChangeMobile = (e: any) => setMobile(e.target.value);
-  const onChangeDOB = (e: any) => {
-    const { value } = e.target;
-    console.log("value ---", value);
-    setDob(value);
+  const [superAdmin, setSuperAdmin] = useState(false);
+  const onChangeName = (e: any) => setName(e.target.value.trim());
+  const onChangeEmail = (e: any) => setEmail(e.target.value.trim());
+  const onChangeMobile = (e: any) => setMobile(e.target.value.trim());
+  const onChangeDOB = (e: any) => setDob(e.target.value.trim());
+  const onChangeSuperAdmin = (val: boolean) => setSuperAdmin(val);
+  const onSubmit = (e: any) => {
+    const requiredErrs: IValidatorResult[] = [
+      Validator.isRequired(name, "Full Name"),
+      Validator.isRequired(email, "Email"),
+      Validator.isRequired(mobile, "Mobile"),
+      Validator.isRequired(dob, "Date of Birth"),
+    ].filter((validErr) => validErr.err);
+    if (requiredErrs.length > 0) {
+      setErrs(requiredErrs);
+    } else {
+      const validErrs: IValidatorResult[] = [
+        Validator.email(email, "Email"),
+        Validator.mobile(mobile, "Mobile"),
+        Validator.date(dob, "Date of Birth"),
+      ].filter((validErr) => validErr.err);
+      if (validErrs.length > 0) setErrs(validErrs);
+      else {
+        setErrs(null);
+        const data = {
+          name,
+          email,
+          mobile,
+          dob,
+          isSuperAdmin: superAdmin,
+        };
+        ajaxUtils.post("/manager/createManager", { data }).then((res) => {
+          console.log("res ----", res);
+        });
+      }
+    }
   };
   return (
     <ContentPage>
       <Auth>
         <Box>
           <ContentFrmCard>
-            <CardTitle>Add Details</CardTitle>
+            <CardTitle>Fill Manager Details</CardTitle>
             <Form>
               <Box>
                 {errs && <FrmErrs errs={errs} />}
@@ -54,11 +85,18 @@ function CreateManager(props: IProps) {
                   autoComplete='off'
                 />
                 <FormInput
-                  inputType={"date"}
+                  inputType={"text"}
                   onChange={onChangeDOB}
-                  label={"Mobile"}
+                  label={"Date Of Birth (dd-mm-yyyy)"}
                   required={true}
                   autoComplete='off'
+                />
+                <CheckBox onClick={onChangeSuperAdmin} label={"Super Admin"} />
+                <FormActions
+                  onSubmit={{
+                    label: "Submit",
+                    onFrmSubmit: onSubmit,
+                  }}
                 />
               </Box>
             </Form>

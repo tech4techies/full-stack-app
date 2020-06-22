@@ -47,7 +47,10 @@ interface FormInputProps {
   style?: object;
   autoComplete?: string;
   autoCapitalize?: string;
+  min?: string | number;
+  max?: string | number;
   disbaled?: boolean;
+  placeholder?: string;
 }
 export function FormInput(props: FormInputProps) {
   const {
@@ -63,8 +66,11 @@ export function FormInput(props: FormInputProps) {
     autoCapitalize,
     disbaled,
     style,
+    min,
+    max,
+    placeholder,
   } = props;
-  const inputTypes = ["text", "email", "password", "number", "date"];
+  const inputTypes = ["text", "password", "number"];
   const isTextArea = inputTypes.indexOf(inputType) !== -1 ? false : true;
   const inlineStyle = style ? style : {};
   return (
@@ -81,6 +87,9 @@ export function FormInput(props: FormInputProps) {
           autoComplete={autoComplete}
           autoCapitalize={autoCapitalize}
           disabled={disbaled}
+          min={min}
+          placeholder={placeholder}
+          max={max}
         />
       )}
       {isTextArea && (

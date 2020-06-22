@@ -13,6 +13,7 @@ import { getMngrCredentialsTemplate } from "../utils/get-templates";
 import { authenticate } from "./validate";
 import { IMngrActivity } from "../types";
 import { getIp, getUserBrowser, getUserOS } from "../utils/client-info";
+import { reset } from "nodemon";
 
 export function getManagerRouter() {
   return express
@@ -50,8 +51,8 @@ async function getActivities(req: Request, res: Response) {
     );
     return { success: true, type: true, data: rows };
   } else {
-    res.status(500).send({
-      success: true,
+    res.status(403).send({
+      success: false,
       type: false,
       loginRequired: true,
     });
@@ -86,16 +87,20 @@ async function verifyLogin(req: Request, res: Response) {
   if (rows.isDefault) signOpts.expiresIn = FIVE_MIN;
   if (rows.isVerified && !rows.disabled) {
     await recordActivity(req, rows.id, "Logged In Successfully");
-    const jwtRes = jwt.sign(
-      { id: rows.id, user: req.body.userName, userType: "manager" },
-      config.jwtSecret,
-      signOpts,
-    );
+    const base64JWT = new Buffer(
+      jwt.sign(
+        { id: rows.id, user: req.body.userName, userType: "manager" },
+        config.jwtSecret,
+        signOpts,
+      ),
+    )
+      .toString("base64")
+      .replace("=", "");
     const luxonTime = new Date(
       DateTime.utc().plus({ hours: 29, minutes: 30 }).toString(),
     ).toISOString();
     const expiresAt = new Date(luxonTime);
-    res.cookie("ch-token", jwtRes, {
+    res.cookie("ch-token", base64JWT, {
       expires: expiresAt,
     });
     res.send({
@@ -122,7 +127,7 @@ async function getProfile(req: Request, res: Response) {
     const row = await Db.manager.getCtx(id);
     return { success: true, type: true, data: row };
   } else {
-    res.status(500).send({
+    res.status(403).send({
       success: true,
       type: false,
       loginRequired: true,
@@ -156,53 +161,68 @@ async function changeDefault(req: Request, res: Response) {
         userMessage: "Invalid Request",
       };
   } else
-    return res.status(500).send({
+    return res.status(403).send({
       success: true,
       type: false,
       loginRequired: true,
     });
 }
 
-async function createManager(req: Request) {
-  const { data } = req.body;
-  const { email, name } = data;
-  const isExists = await Db.manager.findMngr(email);
-  if (!isExists) {
-    const password = genMngrPass("mngr");
-    const clientPassword = ClientEncrypt.hashPassword(
-      password,
-      config.clientSecretKey,
-    );
-    data.password = Encrypt.hash(clientPassword, config.secretKey);
-    const id = genId(8);
-    const userName = genNum(8);
-    data.userName = Encrypt.hash(userName, config.secretKey);
-    const isInserted = await Db.manager.createMngrCtx(id, data);
-    if (isInserted) {
-      const htmlTemplate = getMngrCredentialsTemplate(
-        name,
-        id,
-        userName,
+async function createManager(req: Request, res: Response) {
+  const cookie = req.headers.cookie as string;
+  const { success, info } = authenticate(cookie);
+  if (success && info) {
+    const { data } = req.body;
+    const { email, name } = data;
+    const isExists = await Db.manager.findMngr(email);
+    if (!isExists) {
+      const password = genMngrPass("mngr");
+      const clientPassword = ClientEncrypt.hashPassword(
         password,
+        config.clientSecretKey,
       );
-      sendgrid.setApiKey(config.sendGridKey);
-      const emailInfo: MailDataRequired = {
-        to: email,
-        from: "admin@chaathra.com",
-        subject: "Welcome to Chaathra",
-        html: htmlTemplate,
+      data.password = Encrypt.hash(clientPassword, config.secretKey);
+      const id = genId(8);
+      const userName = genNum(8);
+      data.userName = Encrypt.hash(userName, config.secretKey);
+      const attrs = {
+        disabled: false,
+        createdBy: info.id,
       };
-      await sendgrid.send(emailInfo);
+      const mgrInfo = Object.assign(data, attrs);
+      const isInserted = await Db.manager.createMngrCtx(id, mgrInfo);
+      if (isInserted) {
+        const htmlTemplate = getMngrCredentialsTemplate(
+          name,
+          id,
+          userName,
+          password,
+        );
+        sendgrid.setApiKey(config.sendGridKey);
+        const emailInfo: MailDataRequired = {
+          to: email,
+          from: "admin@chaathra.com",
+          subject: "Welcome to Chaathra",
+          html: htmlTemplate,
+        };
+        await sendgrid.send(emailInfo);
+        return {
+          success: true,
+          type: true,
+          userMessage: "Manager Created Successfully",
+        };
+      }
+    } else
       return {
         success: true,
-        type: true,
-        userMessage: "Manager Created Successfully",
+        type: false,
+        userMessage: "Manager Already Exists",
       };
-    }
-  } else
-    return {
-      success: true,
+  } else {
+    return res.status(403).send({
+      success: false,
       type: false,
-      userMessage: "Manager Already Exists",
-    };
+      loginRequired: true,
+    });
+  }
 }
