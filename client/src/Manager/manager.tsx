@@ -13,12 +13,13 @@ import NotFound from "../NotFound/not-found";
 import { IMngrProfile } from "../types";
 import { ajaxUtils } from "../utils-lib/axios-utils";
 import history from "../utils-lib/history";
-import ChangeDefault from "./change-default";
-import CreateManager from "./create-mngr";
+import ChangeDefault from "./change-password";
+import CreateManager from "./create-manager";
 import Dashboard from "./dashboard";
 import LeftBar from "./LeftBar/letbar";
 import Login from "./login";
 import TopBar from "./TopBar/topbar";
+import DisableManager from "./disable-manager";
 function ManagerRouter() {
   const {
     location: { pathname },
@@ -46,7 +47,6 @@ function ManagerRouter() {
       });
     }
   }, [isMngrCookieValid]);
-
   return (
     <ValidateCookieCtx.Provider
       value={{
@@ -68,11 +68,14 @@ function ManagerRouter() {
                   <Route path='/manager/dashboard'>
                     {mngrProfile !== null && <Dashboard />}
                   </Route>
-                  <Route path='/manager/change-default'>
+                  <Route path='/manager/change-password'>
                     <ChangeDefault />
                   </Route>
-                  <Route path='/manager/create-mngr'>
+                  <Route path='/manager/create-manager'>
                     <CreateManager />
+                  </Route>
+                  <Route path='/manager/disable-manager'>
+                    <DisableManager />
                   </Route>
                   <Route path='*'>
                     <NotFound />

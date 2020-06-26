@@ -10,6 +10,9 @@ const cfg = {
   serviceMongoDB: ENV.SERVICE_MONGODB || "mongodb://localhost:27017",
   sendGridKey: ENV.SEND_GRID_KEY || "",
   jwtSecret: ENV.JWT_SECRET || "",
+  jwtTokenKey: ENV.JWT_TOKEN_KEY || "",
+  jwtTokenAlgo: ENV.JWT_TOKEN_ALGO || "",
+  jwtTokenIV: ENV.JWT_TOKEN_IV || "",
 };
 
 export default cfg;

@@ -13,14 +13,15 @@ import { getMngrCredentialsTemplate } from "../utils/get-templates";
 import { authenticate } from "./validate";
 import { IMngrActivity } from "../types";
 import { getIp, getUserBrowser, getUserOS } from "../utils/client-info";
-import { reset } from "nodemon";
+import crypto from "crypto";
 
 export function getManagerRouter() {
   return express
     .Router({ mergeParams: true })
     .post("/login", jaction(verifyLogin))
-    .post("/changeDefault", jaction(changeDefault))
+    .post("/changePassword", jaction(changePassword))
     .post("/createManager", jaction(createManager))
+    .post("/createSchool", jaction(createSchool))
     .get("/activities", jaction(getActivities))
     .get("/profile", jaction(getProfile));
 }
@@ -76,6 +77,7 @@ async function recordActivity(req: Request, id: string, activity: string) {
 
 async function verifyLogin(req: Request, res: Response) {
   const { userName, password } = req.body;
+  const { jwtTokenAlgo, jwtTokenKey, jwtTokenIV } = config;
   const data = { userName, password };
   data.password = Encrypt.hash(password, config.secretKey);
   data.userName = Encrypt.hash(userName, config.secretKey);
@@ -87,20 +89,21 @@ async function verifyLogin(req: Request, res: Response) {
   if (rows.isDefault) signOpts.expiresIn = FIVE_MIN;
   if (rows.isVerified && !rows.disabled) {
     await recordActivity(req, rows.id, "Logged In Successfully");
-    const base64JWT = new Buffer(
-      jwt.sign(
-        { id: rows.id, user: req.body.userName, userType: "manager" },
-        config.jwtSecret,
-        signOpts,
-      ),
-    )
-      .toString("base64")
-      .replace("=", "");
+    const jwtToken = jwt.sign(
+      { id: rows.id, user: req.body.userName, userType: "manager" },
+      config.jwtSecret,
+      signOpts,
+    );
+    const cipher = crypto.createCipheriv(jwtTokenAlgo, jwtTokenKey, jwtTokenIV);
+    const encToken = Buffer.concat([
+      cipher.update(Buffer.from(jwtToken).toString("base64")),
+      cipher.final(),
+    ]).toString("hex");
     const luxonTime = new Date(
       DateTime.utc().plus({ hours: 29, minutes: 30 }).toString(),
     ).toISOString();
     const expiresAt = new Date(luxonTime);
-    res.cookie("ch-token", base64JWT, {
+    res.cookie("ch-token", encToken, {
       expires: expiresAt,
     });
     res.send({
@@ -135,7 +138,7 @@ async function getProfile(req: Request, res: Response) {
   }
 }
 
-async function changeDefault(req: Request, res: Response) {
+async function changePassword(req: Request, res: Response) {
   const { password } = req.body;
   const cookie = req.headers.cookie as string;
   const { success, info } = authenticate(cookie);
@@ -148,7 +151,7 @@ async function changeDefault(req: Request, res: Response) {
     if (id && user) {
       const dbUsername = Encrypt.hash(user, config.secretKey);
       await Db.manager.changeDefault(id, encPass, dbUsername);
-      await recordActivity(req, info.id, "Default Password Changed");
+      await recordActivity(req, info.id, "Password Changed");
       res.send({
         success: true,
         type: true,
@@ -166,6 +169,20 @@ async function changeDefault(req: Request, res: Response) {
       type: false,
       loginRequired: true,
     });
+}
+
+async function createSchool(req: Request, res: Response) {
+  const cookie = req.headers.cookie as string;
+  const { success, info } = authenticate(cookie);
+  if (success && info) {
+    const { data } = req.body;
+  } else {
+    return res.status(403).send({
+      success: false,
+      type: false,
+      loginRequired: true,
+    });
+  }
 }
 
 async function createManager(req: Request, res: Response) {

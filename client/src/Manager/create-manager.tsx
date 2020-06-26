@@ -48,9 +48,7 @@ function CreateManager(props: IProps) {
           dob,
           isSuperAdmin: superAdmin,
         };
-        ajaxUtils.post("/manager/createManager", { data }).then((res) => {
-          console.log("res ----", res);
-        });
+        ajaxUtils.post("/manager/createManager", { data });
       }
     }
   };

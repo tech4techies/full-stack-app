@@ -9,14 +9,26 @@ const mngrLeftBarOptions: Array<ILeftBarLinkOption | ILeftBarMenuOption> = [
     isListOption: true,
     options: [
       {
-        label: "Create a Manager",
+        label: "Register a Manager",
         isSuperAdminType: true,
-        path: "/manager/create-mngr",
+        path: "/manager/create-manager",
       },
       {
-        label: "Delete Manager",
+        label: "Disbale Manager",
         isSuperAdminType: true,
-        path: "/manager/delete-mngr",
+        path: "/manager/disable-manager",
+      },
+    ],
+  },
+  {
+    mainLabel: "School Services",
+    isSuperAdminType: false,
+    isListOption: true,
+    options: [
+      {
+        label: "Register a School",
+        isSuperAdminType: false,
+        path: "/manager/create-school",
       },
     ],
   },

@@ -6,6 +6,7 @@ import config from "../config";
 import MongoDb from "../models/mongodb";
 import { jaction } from "../utils/custom-express";
 import Encrypt from "../utils/encrypt";
+import crypto from "crypto";
 
 export function getValidateRouter() {
   return express
@@ -29,7 +30,8 @@ async function managerCookie(req: Request) {
 
 export function authenticate(cookie: string) {
   let token: null | string = null;
-  cookie &&
+  const { jwtTokenAlgo, jwtTokenKey, jwtTokenIV } = config;
+  if (cookie) {
     cookie
       .split(";")
       .map((cookie) => cookie.trim())
@@ -37,13 +39,26 @@ export function authenticate(cookie: string) {
         const cookieInfo = cookie.split(/=/);
         if (/ch-token/.test(cookieInfo[0])) token = cookieInfo[1];
       });
-  let tokenInfo = null;
-  if (token) {
-    try {
-      tokenInfo = jwt.verify(token, config.jwtSecret) as any;
-      return { success: true, info: tokenInfo };
-    } catch (err) {
-      return { success: false, info: null };
-    }
+    let tokenInfo = null;
+    if (token) {
+      try {
+        const decipher = crypto.createDecipheriv(
+          jwtTokenAlgo,
+          jwtTokenKey,
+          jwtTokenIV,
+        );
+        const decryptedToken = Buffer.from(
+          Buffer.concat([
+            decipher.update(Buffer.from(token, "hex")),
+            decipher.final(),
+          ]).toString(),
+          "base64",
+        ).toString("ascii");
+        tokenInfo = jwt.verify(decryptedToken, config.jwtSecret) as any;
+        return { success: true, info: tokenInfo };
+      } catch (err) {
+        return { success: false, info: null };
+      }
+    } else return { success: false, info: null };
   } else return { success: false, info: null };
 }
