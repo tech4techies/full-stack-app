@@ -7,6 +7,7 @@ import {
   FlexBoxRowCenter,
   FrmErrBox,
   InputBox,
+  SimpleBox,
 } from "./Boxes";
 import { SubmitButton, BackButton } from "./Buttons";
 import { InputLabel, StyledInput, StyledSpan, StyledTextArea } from "./Inputs";
@@ -133,7 +134,7 @@ export function FormActions(props: IFormActionsProps) {
 
   const { label, onFrmSubmit } = onSubmit;
   return (
-    <Box style={{ padding: 0 }}>
+    <SimpleBox>
       <FlexBoxRowCenter>
         <Box style={{ marginRight: "40%" }}>
           <SubmitButton onClick={onFrmSubmit}>
@@ -152,6 +153,6 @@ export function FormActions(props: IFormActionsProps) {
           </BackButton>
         )}
       </FlexBoxRowCenter>
-    </Box>
+    </SimpleBox>
   );
 }

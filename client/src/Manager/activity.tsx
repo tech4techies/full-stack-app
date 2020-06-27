@@ -3,7 +3,7 @@
 import React from "react";
 import { SimpleBox } from "../components/Boxes";
 import { CardTitle, SimpleCard } from "../components/Cards";
-import SimpleTable from "../components/Table";
+import { SimpleTable } from "../components/Table";
 import { IMngrActivity } from "../types";
 
 interface IProps {

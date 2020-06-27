@@ -2,12 +2,12 @@
 
 import React, { useState } from "react";
 import { Box, ContentPage } from "../components/Boxes";
-import { CardTitle, ContentFrmCard } from "../components/Cards";
-import { Form, FormInput, FrmErrs, FormActions } from "../components/Forms";
+import { CardTitle, ContentCard } from "../components/Cards";
+import { CheckBox } from "../components/CheckBox";
+import { Form, FormActions, FormInput, FrmErrs } from "../components/Forms";
+import { ajaxUtils } from "../utils-lib/axios-utils";
 import { IValidatorResult, Validator } from "../utils-lib/validators";
 import Auth from "./auth";
-import { CheckBox } from "../components/CheckBox";
-import { ajaxUtils } from "../utils-lib/axios-utils";
 
 interface IProps {}
 
@@ -56,7 +56,7 @@ function CreateManager(props: IProps) {
     <ContentPage>
       <Auth>
         <Box>
-          <ContentFrmCard>
+          <ContentCard>
             <CardTitle>Fill Manager Details</CardTitle>
             <Form>
               <Box>
@@ -98,7 +98,7 @@ function CreateManager(props: IProps) {
                 />
               </Box>
             </Form>
-          </ContentFrmCard>
+          </ContentCard>
         </Box>
       </Auth>
     </ContentPage>

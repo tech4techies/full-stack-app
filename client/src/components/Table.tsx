@@ -25,7 +25,7 @@ interface ITableProps {
   data: Array<ITBodyData>;
 }
 
-export default function SimpleTable(props: ITableProps) {
+export function SimpleTable(props: ITableProps) {
   const { headings, data } = props;
   let objKeys: string[] = [];
   if (data.length > 0) objKeys = Object.keys(data[0]);
@@ -43,7 +43,7 @@ export default function SimpleTable(props: ITableProps) {
           {data.map((d, index) => {
             return (
               <Row key={index}>
-                {objKeys.map((objKey, idx) => (
+                {objKeys.map((x, idx) => (
                   <Col key={idx}>{d[objKeys[idx]]}</Col>
                 ))}
               </Row>

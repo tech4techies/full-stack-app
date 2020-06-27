@@ -17,7 +17,7 @@ export const FormCard = styled.div({
   backgroundColor: "#fff",
 });
 
-export const ContentFrmCard = styled.div({
+export const ContentCard = styled.div({
   borderRadius: 5,
   width: 500,
   padding: 10,
@@ -26,6 +26,5 @@ export const ContentFrmCard = styled.div({
 
 export const CardTitle = styled.h3({
   paddingLeft: 10,
-  letterSpacing: 0.5,
   fontWeight: 500,
 });

@@ -22,6 +22,7 @@ export function getManagerRouter() {
     .post("/changePassword", jaction(changePassword))
     .post("/createManager", jaction(createManager))
     .post("/createSchool", jaction(createSchool))
+    .get("/profile/:email", jaction(getMngrProfile))
     .get("/activities", jaction(getActivities))
     .get("/profile", jaction(getProfile));
 }
@@ -55,7 +56,7 @@ async function getActivities(req: Request, res: Response) {
     res.status(403).send({
       success: false,
       type: false,
-      loginRequired: true,
+      userMessage: "Login Required",
     });
   }
 }
@@ -121,6 +122,30 @@ async function verifyLogin(req: Request, res: Response) {
   }
 }
 
+async function getMngrProfile(req: Request, res: Response) {
+  const { email } = req.params;
+  const cookie = req.headers.cookie as string;
+  const { success, info } = authenticate(cookie);
+  if (success && info) {
+    const row = await Db.manager.getCtxByEmail(email);
+    console.log("row ---", row, typeof row);
+    if (row) return { success: true, type: true, data: row };
+    else
+      return {
+        success: true,
+        type: false,
+        data: null,
+        userMessage: "No Manager found with entered email",
+      };
+  } else {
+    res.status(403).send({
+      success: true,
+      type: false,
+      userMessage: "Login Required",
+    });
+  }
+}
+
 async function getProfile(req: Request, res: Response) {
   const cookie = req.headers.cookie as string;
   const { success, info } = authenticate(cookie);
@@ -133,7 +158,7 @@ async function getProfile(req: Request, res: Response) {
     res.status(403).send({
       success: true,
       type: false,
-      loginRequired: true,
+      userMessage: "Login Required",
     });
   }
 }
@@ -167,7 +192,7 @@ async function changePassword(req: Request, res: Response) {
     return res.status(403).send({
       success: true,
       type: false,
-      loginRequired: true,
+      userMessage: "Login Required",
     });
 }
 
@@ -180,7 +205,7 @@ async function createSchool(req: Request, res: Response) {
     return res.status(403).send({
       success: false,
       type: false,
-      loginRequired: true,
+      userMessage: "Login Required",
     });
   }
 }
@@ -239,7 +264,7 @@ async function createManager(req: Request, res: Response) {
     return res.status(403).send({
       success: false,
       type: false,
-      loginRequired: true,
+      userMessage: "Login Required",
     });
   }
 }

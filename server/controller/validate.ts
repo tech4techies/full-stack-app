@@ -22,10 +22,29 @@ async function managerCookie(req: Request) {
     if (userType === "manager") {
       info.user = Encrypt.hash(info.user, config.secretKey);
       const exists = await MongoDb.manager.checkMngrExists(id, info.user);
-      if (exists) return { success: true, userType: "manager" };
-      else return { success: true, userType: null };
+      if (exists) return { success: true, type: true, userType: "manager" };
+      else
+        return {
+          success: true,
+          type: false,
+          userMessage: "Login Required",
+          userType: null,
+        };
+    } else {
+      return {
+        success: true,
+        type: false,
+        userMessage: "Login Required",
+        userType: null,
+      };
     }
-  } else return { success: true, userType: null };
+  } else
+    return {
+      success: true,
+      type: true,
+      userMessage: "Login Required",
+      userType: null,
+    };
 }
 
 export function authenticate(cookie: string) {

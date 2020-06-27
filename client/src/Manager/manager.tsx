@@ -31,6 +31,7 @@ function ManagerRouter() {
     const res = await ajaxUtils.get("validate/cookie/manager");
     if (res) {
       const { success, userType } = res;
+      console.log("successs, userType ---", success, userType);
       if (success && userType === "manager") setIsMngr(true);
       else if (success && userType !== "manager")
         if (!isLoginPath) history.redirectTo("/manager/login");
@@ -42,7 +43,7 @@ function ManagerRouter() {
       ajaxUtils.get("manager/profile").then((res) => {
         if (res) {
           const { success, type, data } = res;
-          if (success && type) setMngrProfile(data);
+          if (success && type && data) setMngrProfile(data);
         }
       });
     }

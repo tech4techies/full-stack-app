@@ -27,6 +27,22 @@ export default class Manager {
     );
     return row;
   }
+
+  async getCtxByEmail(email: string) {
+    const row = await this.colConn.findOne(
+      { email },
+      {
+        projection: {
+          name: 1,
+          mobile: 1,
+          email: 1,
+          _id: 0,
+          disabled: 1,
+        },
+      },
+    );
+    return row;
+  }
   async checkMngrExists(id: string, userName: string): Promise<boolean> {
     const rows = await this.colConn.findOne({ _id: id, userName });
     if (rows) return true;

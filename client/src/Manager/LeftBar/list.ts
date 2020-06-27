@@ -9,7 +9,7 @@ const mngrLeftBarOptions: Array<ILeftBarLinkOption | ILeftBarMenuOption> = [
     isListOption: true,
     options: [
       {
-        label: "Register a Manager",
+        label: "Register Manager",
         isSuperAdminType: true,
         path: "/manager/create-manager",
       },

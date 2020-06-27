@@ -8,8 +8,11 @@ class AjaxUtils {
       const { data, status } = await axios.get(`/sms/api/${routeSuffix}`, {
         withCredentials: true,
       });
-      if (status === 200) {
+      const { success, type, userMessage } = data;
+      if (success && type && status === 200) {
         return data;
+      } else if (success && !type) {
+        notyUtils.showFailed(userMessage);
       } else {
         notyUtils.showFailed("Something went wrong");
         return {};
