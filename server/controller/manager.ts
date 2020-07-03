@@ -22,6 +22,7 @@ export function getManagerRouter() {
     .post("/changePassword", jaction(changePassword))
     .post("/createManager", jaction(createManager))
     .post("/createSchool", jaction(createSchool))
+    .post("/profile/:email", jaction(updateMngrProfile))
     .get("/profile/:email", jaction(getMngrProfile))
     .get("/activities", jaction(getActivities))
     .get("/profile", jaction(getProfile));
@@ -122,13 +123,33 @@ async function verifyLogin(req: Request, res: Response) {
   }
 }
 
+async function updateMngrProfile(req: Request, res: Response) {
+  const { email } = req.params;
+  const { data } = req.body;
+  const cookie = req.headers.cookie as string;
+  const { success, info } = authenticate(cookie);
+  if (success && info) {
+    await Db.manager.setCtxByEmail(email, data);
+    return {
+      success: true,
+      type: true,
+      userMessage: "Manager Profile Updated Successfully",
+    };
+  } else {
+    res.status(403).send({
+      success: true,
+      type: false,
+      userMessage: "Login Required",
+    });
+  }
+}
+
 async function getMngrProfile(req: Request, res: Response) {
   const { email } = req.params;
   const cookie = req.headers.cookie as string;
   const { success, info } = authenticate(cookie);
   if (success && info) {
     const row = await Db.manager.getCtxByEmail(email);
-    console.log("row ---", row, typeof row);
     if (row) return { success: true, type: true, data: row };
     else
       return {

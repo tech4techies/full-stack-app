@@ -52,6 +52,7 @@ interface FormInputProps {
   max?: string | number;
   disbaled?: boolean;
   placeholder?: string;
+  value?: string;
 }
 export function FormInput(props: FormInputProps) {
   const {
@@ -67,6 +68,7 @@ export function FormInput(props: FormInputProps) {
     autoCapitalize,
     disbaled,
     style,
+    value,
     min,
     max,
     placeholder,
@@ -90,6 +92,7 @@ export function FormInput(props: FormInputProps) {
           disabled={disbaled}
           min={min}
           placeholder={placeholder}
+          value={value}
           max={max}
         />
       )}
@@ -101,6 +104,7 @@ export function FormInput(props: FormInputProps) {
           onKeyPress={onKeyPress}
           disabled={disbaled}
           onKeyUp={onKeyUp}
+          value={value}
           required={required}></StyledTextArea>
       )}
       {required && (

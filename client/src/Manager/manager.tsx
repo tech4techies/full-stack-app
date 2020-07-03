@@ -16,10 +16,10 @@ import history from "../utils-lib/history";
 import ChangeDefault from "./change-password";
 import CreateManager from "./create-manager";
 import Dashboard from "./dashboard";
+import EditManager from "./EditManager/edit-manager";
 import LeftBar from "./LeftBar/letbar";
 import Login from "./login";
 import TopBar from "./TopBar/topbar";
-import DisableManager from "./disable-manager";
 function ManagerRouter() {
   const {
     location: { pathname },
@@ -31,7 +31,6 @@ function ManagerRouter() {
     const res = await ajaxUtils.get("validate/cookie/manager");
     if (res) {
       const { success, userType } = res;
-      console.log("successs, userType ---", success, userType);
       if (success && userType === "manager") setIsMngr(true);
       else if (success && userType !== "manager")
         if (!isLoginPath) history.redirectTo("/manager/login");
@@ -75,8 +74,8 @@ function ManagerRouter() {
                   <Route path='/manager/create-manager'>
                     <CreateManager />
                   </Route>
-                  <Route path='/manager/disable-manager'>
-                    <DisableManager />
+                  <Route path='/manager/edit-manager'>
+                    <EditManager />
                   </Route>
                   <Route path='*'>
                     <NotFound />

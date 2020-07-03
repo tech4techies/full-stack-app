@@ -28,6 +28,16 @@ export default class Manager {
     return row;
   }
 
+  async setCtxByEmail(email: string, info: any) {
+    await this.colConn.updateOne(
+      { email },
+      {
+        $set: {
+          ...info,
+        },
+      },
+    );
+  }
   async getCtxByEmail(email: string) {
     const row = await this.colConn.findOne(
       { email },
@@ -36,7 +46,10 @@ export default class Manager {
           name: 1,
           mobile: 1,
           email: 1,
+          gender: 1,
+          dob: 1,
           _id: 0,
+          isSuperAdmin: 1,
           disabled: 1,
         },
       },

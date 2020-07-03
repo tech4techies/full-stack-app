@@ -14,9 +14,9 @@ const mngrLeftBarOptions: Array<ILeftBarLinkOption | ILeftBarMenuOption> = [
         path: "/manager/create-manager",
       },
       {
-        label: "Disbale Manager",
+        label: "Edit Manager",
         isSuperAdminType: true,
-        path: "/manager/disable-manager",
+        path: "/manager/edit-manager",
       },
     ],
   },

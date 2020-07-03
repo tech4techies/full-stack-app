@@ -31,10 +31,11 @@ const BoxLabel = styled.label({
 interface IProps {
   onClick: (val: boolean) => void;
   label: string;
+  value?: boolean;
 }
 
 export function CheckBox(props: IProps) {
-  const [isChecked, setChecked] = useState(false);
+  const [isChecked, setChecked] = useState(props.value || false);
   const onBoxClick = (e: any) => {
     setChecked(!isChecked);
     props.onClick(!isChecked);

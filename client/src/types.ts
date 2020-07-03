@@ -21,10 +21,15 @@ export interface ILeftBarMenuOption {
   options: ILeftBarLinkOption[];
 }
 
+export interface IOptions {
+  label: string;
+  value: any;
+}
 export interface IMngrProfile {
   name: string;
   email: string;
   mobile: string;
   dob: string;
+  gender: string;
   isSuperAdmin: boolean;
 }
