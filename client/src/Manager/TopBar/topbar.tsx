@@ -14,7 +14,7 @@ import userIcon from "../../assets/user.svg";
 import arrowDown from "../../assets/arrow-down.svg";
 function TopBar() {
   return (
-    <FlexBoxRowCenter style={{ zIndex: 99999 }}>
+    <FlexBoxRowCenter style={{ zIndex: 99999, position: "sticky", top: 0 }}>
       <TopBarMainBox>
         <TopBarLogoBox>
           <SimpleAnchor href='/manager/dashboard'>

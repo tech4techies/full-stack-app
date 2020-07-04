@@ -1,12 +1,13 @@
 /** @format */
 
 import React, { useState } from "react";
-import { Form, FormInput, FormActions } from "../../components/Forms";
-import { Box } from "../../components/Boxes";
-import { CheckBox } from "../../components/CheckBox";
-import { ajaxUtils } from "../../utils-lib/axios-utils";
-import { Select } from "../../components/Select";
-import { genderOpts } from "../common";
+import { Form, FormInput, FormActions } from "../../../components/Forms";
+import { Box } from "../../../components/Boxes";
+import { CheckBox } from "../../../components/CheckBox";
+import { ajaxUtils } from "../../../utils-lib/axios-utils";
+import { Select } from "../../../components/Select";
+import { genderOpts } from "../../common";
+import history from "../../../utils-lib/history";
 
 interface IProps {
   mngrProfile: { [k: string]: any };
@@ -62,10 +63,13 @@ export default function EditMngrForm(props: IProps) {
     }
   };
 
-  const onSubmit = () =>
-    ajaxUtils.post(`manager/profile/${mngrProfile.email}`, {
-      data: newMngrProfile,
-    });
+  const onSubmit = () => {
+    ajaxUtils
+      .post(`manager/profile/${mngrProfile.email}`, {
+        data: newMngrProfile,
+      })
+      .then(() => history.pageRefresh());
+  };
 
   const onChangeGender = (val: string) => {
     if (mngrProfile) {
@@ -106,6 +110,7 @@ export default function EditMngrForm(props: IProps) {
           label='Mobile'
         />
         <Select
+          required={true}
           label={"Gender"}
           options={genderOpts}
           value={newMngrProfile.gender}

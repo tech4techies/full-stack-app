@@ -69,12 +69,33 @@ export class Validator {
           errMessage: `Entered ${fieldName} doesn't match with ${comparatorFieldName}`,
         };
   };
+
+  static numberRequired = (
+    s: number,
+    minVal: number,
+    maxVal: number,
+    fieldName: string,
+  ): IValidatorResult => {
+    if (s >= minVal && s <= maxVal) return { err: false, errMessage: "" };
+    else return { err: true, errMessage: `${fieldName} is an invalid value` };
+  };
+
   static isRequired = (
     s: string | null,
     fieldName: string,
+    inpType?: "option" | "checkbox",
   ): IValidatorResult => {
-    return s && s.length > 0
-      ? { err: false, errMessage: "" }
-      : { err: true, errMessage: `${fieldName} cannot be blank` };
+    if (inpType && inpType === "option")
+      return s && s.length > 0
+        ? { err: false, errMessage: "" }
+        : { err: true, errMessage: `${fieldName} option not selected` };
+    else if (inpType && inpType === "checkbox") {
+      return s && s.length > 0
+        ? { err: false, errMessage: "" }
+        : { err: true, errMessage: `${fieldName} not selected` };
+    } else
+      return s && s.length > 0
+        ? { err: false, errMessage: "" }
+        : { err: true, errMessage: `${fieldName} cannot be blank` };
   };
 }

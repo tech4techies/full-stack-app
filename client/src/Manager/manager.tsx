@@ -14,12 +14,13 @@ import { IMngrProfile } from "../types";
 import { ajaxUtils } from "../utils-lib/axios-utils";
 import history from "../utils-lib/history";
 import ChangeDefault from "./change-password";
-import CreateManager from "./create-manager";
+import CreateManager from "./ManagerServices/create-manager";
 import Dashboard from "./dashboard";
-import EditManager from "./EditManager/edit-manager";
+import EditManager from "./ManagerServices/EditManager/edit-manager";
 import LeftBar from "./LeftBar/letbar";
 import Login from "./login";
 import TopBar from "./TopBar/topbar";
+import CreateSchool from "./SchoolServices/create-school";
 function ManagerRouter() {
   const {
     location: { pathname },
@@ -76,6 +77,9 @@ function ManagerRouter() {
                   </Route>
                   <Route path='/manager/edit-manager'>
                     <EditManager />
+                  </Route>
+                  <Route path='/manager/create-school'>
+                    <CreateSchool />
                   </Route>
                   <Route path='*'>
                     <NotFound />

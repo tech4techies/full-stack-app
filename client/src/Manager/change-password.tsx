@@ -57,14 +57,12 @@ function ChangeDefault() {
                   onChange={onChangePassword}
                   required={true}
                   label={"New Password"}
-                  autoComplete={"off"}
                 />
                 <FormInput
                   inputType='password'
                   onChange={onChangeCnfPwd}
                   required={true}
                   label={"Confirm New Password"}
-                  autoComplete={"off"}
                 />
                 <FormActions
                   onSubmit={{

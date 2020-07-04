@@ -11,6 +11,11 @@ class History {
     browserHistory.push(path);
     this.pageReload();
   }
+  pageRefresh() {
+    setTimeout(() => {
+      history.pageReload();
+    }, 300);
+  }
 }
 const history = new History();
 export default history;

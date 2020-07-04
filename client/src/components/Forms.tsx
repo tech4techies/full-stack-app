@@ -10,7 +10,12 @@ import {
   SimpleBox,
 } from "./Boxes";
 import { SubmitButton, BackButton } from "./Buttons";
-import { InputLabel, StyledInput, StyledSpan, StyledTextArea } from "./Inputs";
+import {
+  InputLabel,
+  StyledInput,
+  RequiredSpan,
+  StyledTextArea,
+} from "./Inputs";
 import { IValidatorResult } from "../utils-lib/validators";
 
 interface IFrmProps {
@@ -87,7 +92,7 @@ export function FormInput(props: FormInputProps) {
           onKeyPress={onKeyPress}
           onKeyUp={onKeyUp}
           required={required}
-          autoComplete={autoComplete}
+          autoComplete={autoComplete ? autoComplete : "off"}
           autoCapitalize={autoCapitalize}
           disabled={disbaled}
           min={min}
@@ -110,7 +115,7 @@ export function FormInput(props: FormInputProps) {
       {required && (
         <InputLabel>
           {label}
-          <StyledSpan>*</StyledSpan>
+          <RequiredSpan>*</RequiredSpan>
         </InputLabel>
       )}
       {!required && <InputLabel>{label}</InputLabel>}

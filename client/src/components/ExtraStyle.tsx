@@ -10,7 +10,7 @@ function ExtraStyle() {
       .chaathra-app {
           background-color: #eff3f6;
           width: 100%;
-          height: 100vh;
+          min-height: 100vh;
       }
       .css-1bla2eh:hover {
         -moz-box-shadow: 0 4px 4px 0 #ba9127, 0 6px 6px 0 #ba9127;
@@ -41,6 +41,9 @@ function ExtraStyle() {
       }
       .css-1xhj18k:hover {
         background-color: rgb(253, 240, 231);
+      }
+      .css-7tktra:focus {
+        border: 2px solid #f57c00;
       }
     `,
       }}

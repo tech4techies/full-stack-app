@@ -129,6 +129,7 @@ async function updateMngrProfile(req: Request, res: Response) {
   const cookie = req.headers.cookie as string;
   const { success, info } = authenticate(cookie);
   if (success && info) {
+    await recordActivity(req, info.id, "Updated Manager Profile");
     await Db.manager.setCtxByEmail(email, data);
     return {
       success: true,
@@ -222,6 +223,7 @@ async function createSchool(req: Request, res: Response) {
   const { success, info } = authenticate(cookie);
   if (success && info) {
     const { data } = req.body;
+    console.log("data ---", data);
   } else {
     return res.status(403).send({
       success: false,

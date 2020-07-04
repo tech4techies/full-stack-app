@@ -74,14 +74,12 @@ function Login() {
                 onChange={onChangeUsername}
                 label={"Username"}
                 required={true}
-                autoComplete='off'
               />
               <FormInput
                 inputType={"password"}
                 onChange={onChangePassword}
                 label={"Password"}
                 required={true}
-                autoComplete='off'
               />
               <FlexBoxRowCenter>
                 <Captcha value={captcha} />
@@ -91,7 +89,6 @@ function Login() {
                   label={"Captcha"}
                   onChange={onChangeCaptcha}
                   required={true}
-                  autoComplete='off'
                 />
               </FlexBoxRowCenter>
               <FormActions

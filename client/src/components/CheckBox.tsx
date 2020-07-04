@@ -3,6 +3,7 @@
 import styled from "@emotion/styled";
 import React, { useState } from "react";
 import { FlexBoxRowCenter } from "./Boxes";
+import { RequiredSpan } from "./Inputs";
 
 const BorderBox = styled.div({
   width: 16,
@@ -29,6 +30,7 @@ const BoxLabel = styled.label({
 });
 
 interface IProps {
+  required?: boolean;
   onClick: (val: boolean) => void;
   label: string;
   value?: boolean;
@@ -51,7 +53,10 @@ export function CheckBox(props: IProps) {
         }>
         {isChecked && <TickMark />}
       </BorderBox>
-      <BoxLabel onClick={onBoxClick}>{props.label}</BoxLabel>
+      <BoxLabel onClick={onBoxClick}>
+        {props.label}
+        {props.required && <RequiredSpan>*</RequiredSpan>}
+      </BoxLabel>
     </FlexBoxRowCenter>
   );
 }

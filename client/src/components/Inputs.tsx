@@ -2,7 +2,7 @@
 
 import styled from "@emotion/styled";
 
-export const StyledSpan = styled.span({
+export const RequiredSpan = styled.span({
   color: "#f44336",
 });
 

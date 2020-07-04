@@ -1,12 +1,17 @@
 /** @format */
 
 import React, { useState } from "react";
-import { Box, ContentPage, SimpleBox } from "../../components/Boxes";
-import { CardTitle, ContentCard } from "../../components/Cards";
-import { Form, FormActions, FormInput, FrmErrs } from "../../components/Forms";
-import { ajaxUtils } from "../../utils-lib/axios-utils";
-import { IValidatorResult, Validator } from "../../utils-lib/validators";
-import Auth from "../auth";
+import { Box, ContentPage, SimpleBox } from "../../../components/Boxes";
+import { CardTitle, ContentCard } from "../../../components/Cards";
+import {
+  Form,
+  FormActions,
+  FormInput,
+  FrmErrs,
+} from "../../../components/Forms";
+import { ajaxUtils } from "../../../utils-lib/axios-utils";
+import { IValidatorResult, Validator } from "../../../utils-lib/validators";
+import Auth from "../../auth";
 import EditMngrForm from "./edit-form";
 
 export default function EditManager() {
