@@ -55,6 +55,7 @@ function Login() {
         password: Encrypt.hashPassword(password, config.secretKey),
       };
       ajaxUtils.post("manager/login", frmData).then((res) => {
+        console.log("res ---", res);
         if (res && res.type && res.isDefault)
           history.redirectTo("/manager/change-password");
         else if (res && res.type) history.redirectTo("/manager/dashboard");

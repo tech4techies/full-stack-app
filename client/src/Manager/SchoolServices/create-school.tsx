@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { useState } from "react";
-import { ContentPage, Box } from "../../components/Boxes";
+import { ContentPage, Box, FlexBoxRowCenter } from "../../components/Boxes";
 import Auth from "../auth";
 import { ContentCard, CardTitle } from "../../components/Cards";
 import { Form, FrmErrs, FormInput, FormActions } from "../../components/Forms";
@@ -138,6 +138,14 @@ export default function CreateSchool() {
     if (isValidSuccess)
       ajaxUtils.post("manager/createSchool", { data: { ...schoolDetails } });
   };
+  const fBox = {
+    width: "50%",
+  };
+
+  const sBox = {
+    width: "50%",
+    marginLeft: 10,
+  };
   return (
     <ContentPage>
       <Auth>
@@ -147,94 +155,122 @@ export default function CreateSchool() {
             <Form>
               <Box>
                 {errs && <FrmErrs errs={errs} />}
-                <FormInput
-                  required={true}
-                  label={"School Name"}
-                  inputType='text'
-                  onChange={onChangeName}
-                />
-                <FormInput
-                  required={true}
-                  label='No.Of Students'
-                  inputType='number'
-                  min={10}
-                  max={100000}
-                  onChange={onChangeNoOfStu}
-                />
-                <FormInput
-                  required={true}
-                  label={"Principal"}
-                  inputType='text'
-                  onChange={onChangePrincipal}
-                />
-                <FormInput
-                  required={true}
-                  label='POC Name'
-                  inputType='text'
-                  onChange={onChangePocName}
-                />
-                <FormInput
-                  required={true}
-                  label='POC Email'
-                  inputType='text'
-                  onChange={onChangePocEmail}
-                />
-                <FormInput
-                  required={true}
-                  label='POC Mobile'
-                  inputType='text'
-                  onChange={onChangePocMobile}
-                />
-                <FormInput
-                  required={true}
-                  label='Street 1'
-                  inputType='text'
-                  onChange={onChangeStreet1}
-                />
-                <FormInput
-                  required={true}
-                  label='Street 2'
-                  inputType='text'
-                  onChange={onChangeStreet2}
-                />
-                <FormInput
-                  required={true}
-                  label='Land Mark'
-                  inputType='text'
-                  onChange={onChangeLandMark}
-                />
-                <FormInput
-                  required={true}
-                  label='Area'
-                  inputType='text'
-                  onChange={onChangeArea}
-                />
-                <FormInput
-                  required={true}
-                  label='District'
-                  inputType='text'
-                  onChange={onChangeDistrict}
-                />
-                <FormInput
-                  required={true}
-                  label='State'
-                  inputType='text'
-                  onChange={onChangeState}
-                />
-                <FormInput
-                  required={true}
-                  label='Country'
-                  inputType='text'
-                  onChange={onChangeCountry}
-                />
-                <FormInput
-                  required={true}
-                  label='ZIP Code'
-                  inputType='number'
-                  onChange={onChangeZip}
-                  min={110001}
-                  max={999999}
-                />
+                <FlexBoxRowCenter>
+                  <FormInput
+                    style={fBox}
+                    required={true}
+                    label={"School Name"}
+                    inputType='text'
+                    onChange={onChangeName}
+                  />
+                  <FormInput
+                    style={sBox}
+                    required={true}
+                    label='No.Of Students'
+                    inputType='number'
+                    min={10}
+                    max={100000}
+                    onChange={onChangeNoOfStu}
+                  />
+                </FlexBoxRowCenter>
+                <FlexBoxRowCenter>
+                  <FormInput
+                    style={fBox}
+                    required={true}
+                    label={"Principal"}
+                    inputType='text'
+                    onChange={onChangePrincipal}
+                  />
+                  <FormInput
+                    style={sBox}
+                    required={true}
+                    label='POC Name'
+                    inputType='text'
+                    onChange={onChangePocName}
+                  />
+                </FlexBoxRowCenter>
+                <FlexBoxRowCenter>
+                  <FormInput
+                    style={fBox}
+                    required={true}
+                    label='POC Email'
+                    inputType='text'
+                    onChange={onChangePocEmail}
+                  />
+                  <FormInput
+                    style={sBox}
+                    required={true}
+                    label='POC Mobile'
+                    inputType='text'
+                    onChange={onChangePocMobile}
+                  />
+                </FlexBoxRowCenter>
+                <FlexBoxRowCenter>
+                  <FormInput
+                    style={fBox}
+                    required={true}
+                    label='Street 1'
+                    inputType='text'
+                    onChange={onChangeStreet1}
+                  />
+                  <FormInput
+                    style={sBox}
+                    required={true}
+                    label='Street 2'
+                    inputType='text'
+                    onChange={onChangeStreet2}
+                  />
+                </FlexBoxRowCenter>
+                <FlexBoxRowCenter>
+                  <FormInput
+                    style={fBox}
+                    required={true}
+                    label='Land Mark'
+                    inputType='text'
+                    onChange={onChangeLandMark}
+                  />
+                  <FormInput
+                    style={sBox}
+                    required={true}
+                    label='Area'
+                    inputType='text'
+                    onChange={onChangeArea}
+                  />
+                </FlexBoxRowCenter>
+                <FlexBoxRowCenter>
+                  <FormInput
+                    style={fBox}
+                    required={true}
+                    label='District'
+                    inputType='text'
+                    onChange={onChangeDistrict}
+                  />
+                  <FormInput
+                    style={sBox}
+                    required={true}
+                    label='State'
+                    inputType='text'
+                    onChange={onChangeState}
+                  />
+                </FlexBoxRowCenter>
+                <FlexBoxRowCenter>
+                  <FormInput
+                    style={fBox}
+                    required={true}
+                    label='Country'
+                    inputType='text'
+                    onChange={onChangeCountry}
+                  />
+                  <FormInput
+                    style={sBox}
+                    required={true}
+                    label='ZIP Code'
+                    inputType='number'
+                    onChange={onChangeZip}
+                    min={110001}
+                    max={999999}
+                  />
+                </FlexBoxRowCenter>
                 <FormActions
                   onSubmit={{ label: "Submit", onFrmSubmit: onSubmit }}
                 />

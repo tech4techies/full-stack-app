@@ -45,6 +45,21 @@ function ExtraStyle() {
       .css-7tktra:focus {
         border: 2px solid #f57c00;
       }
+      #nprogress .bar {
+        background: linear-gradient(to right, #f12711, #f5af19) !important;
+      }
+      #nprogress .spinner-icon {
+        border-top-color: #f44336;
+        border-left-color: #f44336;
+        height: 25px;
+        width: 25px;  
+      }
+      #nprogress .spinner { 
+        right: 50%;
+      }
+      #nprogress .peg {
+        box-shadow: 0 0 10px #f5af19, 0 0 5px #f5af19;
+      }
     `,
       }}
     />
