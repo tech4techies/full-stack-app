@@ -154,7 +154,7 @@ export default function CreateSchool() {
             <CardTitle>Fill School Details</CardTitle>
             <Form>
               <Box>
-                {errs && <FrmErrs errs={errs} />}
+                {errs && <FrmErrs errs={errs.slice(0, 5)} />}
                 <FlexBoxRowCenter>
                   <FormInput
                     style={fBox}

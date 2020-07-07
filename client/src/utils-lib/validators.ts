@@ -21,7 +21,7 @@ export class Validator {
     else
       return {
         err: true,
-        errMessage: `Entered ${fieldName} Invalid Mobile Number`,
+        errMessage: `Entered ${fieldName} is an invalid Mobile Number`,
       };
   };
 

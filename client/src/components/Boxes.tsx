@@ -1,7 +1,7 @@
 /** @format */
 
 import styled from "@emotion/styled";
-import React, { useState } from "react";
+import React from "react";
 import { ILeftBarLinkOption } from "../types";
 import { LeftBarListAnchor } from "./Anchors";
 
@@ -158,34 +158,43 @@ export const ListOptionsBox = styled.div({
 interface IMenuOptionProps {
   label: string;
   options: ILeftBarLinkOption[];
+  onClick: (val: string) => void;
+  shouldOpen: boolean;
 }
 export function LeftBarListOption(props: IMenuOptionProps) {
-  const { label, options } = props;
-  const [isClicked, setIsClicked] = useState(false);
-  const onOptionClick = () => {
-    !isClicked ? setIsClicked(true) : setIsClicked(false);
+  const { label, options, onClick, shouldOpen } = props;
+  const onOptionClick = (e: any) => {
+    const {
+      target: { attributes },
+    } = e;
+    onClick(attributes["data-option"].nodeValue);
   };
   let boxStyle = {};
-  if (isClicked)
+  if (shouldOpen)
     boxStyle = {
       borderRight: "2px solid #f9403a",
       backgroundColor: "#fdf0e7",
     };
 
   return (
-    <SimpleBox>
-      <LeftBarListOptionBox style={boxStyle} onClick={onOptionClick}>
+    <SimpleBox data-option={label}>
+      <LeftBarListOptionBox
+        data-option={label}
+        style={boxStyle}
+        onClick={onOptionClick}>
         <LeftBarListOptionLabelBox
-          style={isClicked ? { color: "#1e0b00" } : {}}>
+          data-option={label}
+          style={shouldOpen ? { color: "#1e0b00" } : {}}>
           {label}
         </LeftBarListOptionLabelBox>
         <svg
+          data-option={label}
           width='8'
           height='8'
           viewBox='0 0 7 4'
           onClick={onOptionClick}
           style={
-            !isClicked
+            !shouldOpen
               ? {
                   transform: "rotate(-90deg)",
                   transition: "all 0.3s ease 0s",
@@ -197,12 +206,13 @@ export function LeftBarListOption(props: IMenuOptionProps) {
                 }
           }>
           <path
+            data-option={label}
             fill='#354052'
             fillRule='evenodd'
             d='M3.852 3.684l-.018.014-.05.042a.492.492 0 0 1-.636-.056L.316.852A.504.504 0 0 1 .262.214L.318.146a.494.494 0 0 1 .705-.001L3.5 2.62 5.977.145A.504.504 0 0 1 6.614.09l.068.056a.494.494 0 0 1 .002.706L3.852 3.684z'></path>
         </svg>
       </LeftBarListOptionBox>
-      {isClicked && (
+      {shouldOpen && (
         <ListOptionsBox>
           {options.map((opt: ILeftBarLinkOption, idx: number) => (
             <LeftBarListAnchor key={idx} path={opt.path} label={opt.label} />

@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import {
   LeftBarListOption,
   LeftBarMainBox,
@@ -14,6 +14,11 @@ interface ILeftBarProps {
 }
 function LeftBar(props: ILeftBarProps) {
   const { isSuperAdmin } = props;
+  const [activeList, setActiveList] = useState<null | string>(null);
+  const onListClick = (val: string) => {
+    if (activeList === val) setActiveList(null);
+    else setActiveList(val);
+  };
   let leftBarOptions: any[] = [];
   if (!isSuperAdmin) {
     leftBarOptions = mngrLeftBarOptions.filter(
@@ -38,6 +43,8 @@ function LeftBar(props: ILeftBarProps) {
           if (isListType) {
             return (
               <LeftBarListOption
+                onClick={onListClick}
+                shouldOpen={option.mainLabel === activeList}
                 key={index}
                 options={option.options}
                 label={option.mainLabel}

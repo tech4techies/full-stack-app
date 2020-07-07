@@ -84,12 +84,11 @@ async function verifyLogin(req: Request, res: Response) {
   data.password = Encrypt.hash(password, config.secretKey);
   data.userName = Encrypt.hash(userName, config.secretKey);
   const rows = await Db.manager.verifyLogin(data.userName, data.password);
-  const signOpts: SignOptions = {
-    expiresIn: "24h",
-  };
-  const FIVE_MIN = 60 * 5;
-  if (rows.isDefault) signOpts.expiresIn = FIVE_MIN;
+
   if (rows.isVerified && !rows.disabled) {
+    const signOpts: SignOptions = {
+      expiresIn: "24h",
+    };
     await recordActivity(req, rows.id, "Logged In Successfully");
     const jwtToken = jwt.sign(
       { id: rows.id, user: req.body.userName, userType: "manager" },
@@ -223,7 +222,7 @@ async function createSchool(req: Request, res: Response) {
   const { success, info } = authenticate(cookie);
   if (success && info) {
     const { data } = req.body;
-    console.log("data ---", data);
+    const schoolId = genId(8);
   } else {
     return res.status(403).send({
       success: false,
@@ -247,8 +246,8 @@ async function createManager(req: Request, res: Response) {
         config.clientSecretKey,
       );
       data.password = Encrypt.hash(clientPassword, config.secretKey);
-      const id = genId(8);
-      const userName = genNum(8);
+      const id = genId(8, true);
+      const userName = genId(8);
       data.userName = Encrypt.hash(userName, config.secretKey);
       const attrs = {
         disabled: false,
