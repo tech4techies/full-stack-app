@@ -8,7 +8,7 @@ import config from "../config";
 import Db from "../models/mongodb";
 import { jaction } from "../utils/custom-express";
 import Encrypt, { ClientEncrypt } from "../utils/encrypt";
-import { genId, genMngrPass, genNum } from "../utils/generate-random";
+import { genId, genPass } from "../utils/generate-random";
 import { getMngrCredentialsTemplate } from "../utils/get-templates";
 import { authenticate } from "./validate";
 import { IMngrActivity } from "../types";
@@ -223,6 +223,8 @@ async function createSchool(req: Request, res: Response) {
   if (success && info) {
     const { data } = req.body;
     const schoolId = genId(8);
+    const userName = genId(8, true);
+    // const password = ClientEncrypt.hashPassword(genPass("admin"), config.);
   } else {
     return res.status(403).send({
       success: false,
@@ -240,7 +242,7 @@ async function createManager(req: Request, res: Response) {
     const { email, name } = data;
     const isExists = await Db.manager.findMngr(email);
     if (!isExists) {
-      const password = genMngrPass("mngr");
+      const password = genPass("mngr");
       const clientPassword = ClientEncrypt.hashPassword(
         password,
         config.clientSecretKey,

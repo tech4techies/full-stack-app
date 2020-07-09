@@ -29,7 +29,7 @@ export function genId(size: number, all?: boolean) {
   } else return genNum(8);
 }
 
-export function genMngrPass(type: string) {
+export function genPass(type: string) {
   if (type === "mngr")
     return (
       genSmallAlpha(1) +

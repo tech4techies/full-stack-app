@@ -2,9 +2,11 @@
 
 import { MongoClient } from "mongodb";
 import config from "../config";
+import Profile from "./school-profile";
 
 export default class SchoolDb {
-  async dbConn(schoolId: string) {
+  static profileCol: Profile;
+  static async dbConn(schoolId: string) {
     const mclient: MongoClient = await MongoClient.connect(
       config.serviceMongoDB,
       {
@@ -15,35 +17,31 @@ export default class SchoolDb {
     return mclient.db(schoolId);
   }
 
-  async adminInfo(schoolId: string) {
-    return await (await this.dbConn(schoolId)).collection("admin_info");
-  }
-
-  async profile(schoolId: string) {
+  static async profile(schoolId: string) {
     return await (await this.dbConn(schoolId)).collection("profile");
   }
 
-  async students(schoolId: string) {
+  static async students(schoolId: string) {
     return await (await this.dbConn(schoolId)).collection("students");
   }
 
-  async staff(schoolId: string) {
+  static async staff(schoolId: string) {
     return await (await this.dbConn(schoolId)).collection("staff");
   }
 
-  async classes(schoolId: string) {
-    await (await this.dbConn(schoolId)).collection("classes");
+  static async classes(schoolId: string) {
+    return await (await this.dbConn(schoolId)).collection("classes");
   }
 
-  async assignmentConfig(schoolId: string) {
-    await (await this.dbConn(schoolId)).collection("assignment_config");
+  static async assignmentConfig(schoolId: string) {
+    return await (await this.dbConn(schoolId)).collection("assignment_config");
   }
 
-  async assignmentLog(schoolId: string) {
-    await (await this.dbConn(schoolId)).collection("assignment_log");
+  static async assignmentLog(schoolId: string) {
+    return await (await this.dbConn(schoolId)).collection("assignment_log");
   }
 
-  async results(schoolId: string) {
-    await (await this.dbConn(schoolId)).collection("results");
+  static async results(schoolId: string) {
+    return await (await this.dbConn(schoolId)).collection("results");
   }
 }
