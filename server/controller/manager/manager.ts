@@ -4,15 +4,15 @@ import sendgrid, { MailDataRequired } from "@sendgrid/mail";
 import express, { Request, Response } from "express";
 import jwt, { SignOptions } from "jsonwebtoken";
 import { DateTime } from "luxon";
-import config from "../config";
-import Db from "../models/mongodb";
-import { jaction } from "../utils/custom-express";
-import Encrypt, { ClientEncrypt } from "../utils/encrypt";
-import { genId, genPass } from "../utils/generate-random";
-import { getMngrCredentialsTemplate } from "../utils/get-templates";
-import { authenticate } from "./validate";
-import { IMngrActivity } from "../types";
-import { getIp, getUserBrowser, getUserOS } from "../utils/client-info";
+import config from "../../config";
+import Db from "../../models/mongodb";
+import { jaction } from "../../utils/custom-express";
+import Encrypt, { ClientEncrypt } from "../../utils/encrypt";
+import { genId, genPass } from "../../utils/generate-random";
+import { getMngrCredentialsTemplate } from "../../utils/get-templates";
+import { authenticate } from "../validate";
+import { IMngrActivity } from "../../types";
+import { getIp, getUserBrowser, getUserOS } from "../../utils/client-info";
 import crypto from "crypto";
 
 export function getManagerRouter() {
@@ -34,23 +34,23 @@ async function getActivities(req: Request, res: Response) {
   if (success && info) {
     const { id } = info;
     const toIndianDateTime = new Date(
-      DateTime.utc().plus({ hours: 5, minutes: 30 }).toString(),
+      DateTime.utc().plus({ hours: 5, minutes: 30 }).toString()
     ).toISOString();
     const fromIndianDateTime = new Date(
       DateTime.fromMillis(
         new Date(
           new Date().toLocaleString("en-US", {
             timeZone: "Asia/Kolkata",
-          }),
-        ).setHours(0, 0, 0, 0),
+          })
+        ).setHours(0, 0, 0, 0)
       )
         .plus({ hours: 5, minutes: 30 })
-        .toString(),
+        .toString()
     ).toISOString();
     const rows = await Db.managerActivity.getList(
       id,
       fromIndianDateTime,
-      toIndianDateTime,
+      toIndianDateTime
     );
     return { success: true, type: true, data: rows };
   } else {
@@ -68,7 +68,7 @@ async function recordActivity(req: Request, id: string, activity: string) {
     ip: getIp(req),
     browser: getUserBrowser(req),
     iAt: new Date(
-      DateTime.utc().plus({ hours: 5 }).plus({ minutes: 30 }).toString(),
+      DateTime.utc().plus({ hours: 5 }).plus({ minutes: 30 }).toString()
     ).toISOString(),
     os: getUserOS(req),
     userAgent: req.headers["user-agent"] || "",
@@ -93,7 +93,7 @@ async function verifyLogin(req: Request, res: Response) {
     const jwtToken = jwt.sign(
       { id: rows.id, user: req.body.userName, userType: "manager" },
       config.jwtSecret,
-      signOpts,
+      signOpts
     );
     const cipher = crypto.createCipheriv(jwtTokenAlgo, jwtTokenKey, jwtTokenIV);
     const encToken = Buffer.concat([
@@ -101,7 +101,7 @@ async function verifyLogin(req: Request, res: Response) {
       cipher.final(),
     ]).toString("hex");
     const luxonTime = new Date(
-      DateTime.utc().plus({ hours: 29, minutes: 30 }).toString(),
+      DateTime.utc().plus({ hours: 29, minutes: 30 }).toString()
     ).toISOString();
     const expiresAt = new Date(luxonTime);
     res.cookie("ch-token", encToken, {
@@ -149,15 +149,24 @@ async function getMngrProfile(req: Request, res: Response) {
   const cookie = req.headers.cookie as string;
   const { success, info } = authenticate(cookie);
   if (success && info) {
-    const row = await Db.manager.getCtxByEmail(email);
-    if (row) return { success: true, type: true, data: row };
-    else
+    const ctx = await Db.manager.getCtx(info.id);
+    if (ctx.email !== email) {
+      const row = await Db.manager.getCtxByEmail(email);
+      if (row) return { success: true, type: true, data: row };
+      else
+        return {
+          success: true,
+          type: false,
+          data: null,
+          userMessage: "No Manager found with entered email",
+        };
+    } else {
       return {
         success: true,
         type: false,
-        data: null,
-        userMessage: "No Manager found with entered email",
+        userMessage: "Please visit Edit Profile Section to edit your profile ",
       };
+    }
   } else {
     res.status(403).send({
       success: true,
@@ -245,7 +254,7 @@ async function createManager(req: Request, res: Response) {
       const password = genPass("mngr");
       const clientPassword = ClientEncrypt.hashPassword(
         password,
-        config.clientSecretKey,
+        config.clientSecretKey
       );
       data.password = Encrypt.hash(clientPassword, config.secretKey);
       const id = genId(8, true);
@@ -262,12 +271,12 @@ async function createManager(req: Request, res: Response) {
           name,
           id,
           userName,
-          password,
+          password
         );
         sendgrid.setApiKey(config.sendGridKey);
         const emailInfo: MailDataRequired = {
           to: email,
-          from: "admin@chaathra.com",
+          from: "welcome@chaathra.com",
           subject: "Welcome to Chaathra",
           html: htmlTemplate,
         };

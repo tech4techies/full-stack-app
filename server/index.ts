@@ -2,7 +2,7 @@
 
 import express from "express";
 import config from "./config";
-import { getManagerRouter } from "./controller/manager";
+import { getManagerRouter } from "./controller/manager/manager";
 import { getSchoolRouter } from "./controller/school";
 import { getValidateRouter } from "./controller/validate";
 import MongoDb from "./models/mongodb";
@@ -23,7 +23,7 @@ async function main() {
     .use("/sms/api", getAPIRouter())
     .use(notFound)
     .listen(config.port, () =>
-      console.log(`Server Running on Port ${config.port}`),
+      console.log(`Server Running on Port ${config.port}`)
     );
   function stopServer() {
     console.log("stopping server");

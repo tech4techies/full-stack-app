@@ -28,7 +28,12 @@ const mngrLeftBarOptions: Array<ILeftBarLinkOption | ILeftBarMenuOption> = [
       {
         label: "Register a School",
         isSuperAdminType: false,
-        path: "/manager/create-school",
+        path: "/manager/school/create",
+      },
+      {
+        label: "Billing",
+        isSuperAdminType: false,
+        path: "/manager/school/billing",
       },
     ],
   },
