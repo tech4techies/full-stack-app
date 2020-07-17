@@ -22,21 +22,23 @@ const StyledOption = styled.option({});
 interface IProps {
   required?: boolean;
   label: string;
+  style?: any;
   options: IOptions[];
   value?: string | number;
-  onSelect: (val: string) => void;
+  onSelect: (val: any) => void;
 }
 
 export function Select(props: IProps) {
-  const { label, options, value, required, onSelect } = props;
+  const { label, options, style, value, required, onSelect } = props;
   return (
-    <SimpleBox>
+    <SimpleBox style={style}>
       {label}
       {required && <RequiredSpan>*</RequiredSpan>}
       <StyledSelect
         required={required}
         value={value}
-        onChange={(e: any) => onSelect(e.target.value)}>
+        onChange={(e: any) => onSelect(e.target.value)}
+      >
         <StyledOption value={""}>{`-- Select --`}</StyledOption>
         {options.map((option) => (
           <StyledOption key={option.value} value={option.value}>

@@ -16,3 +16,18 @@ export const genderOpts: IOptions[] = [
     value: "other",
   },
 ];
+
+export const billingOpts: IOptions[] = [
+  {
+    label: "Premium",
+    value: 20000,
+  },
+  {
+    label: "Pro",
+    value: 15000,
+  },
+  {
+    label: "Basic",
+    value: 10000,
+  },
+];

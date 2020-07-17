@@ -21,6 +21,7 @@ import LeftBar from "./LeftBar/letbar";
 import Login from "./login";
 import TopBar from "./TopBar/topbar";
 import CreateSchool from "./SchoolServices/create-school";
+import Billing from "./SchoolServices/Billing/billing";
 function ManagerRouter() {
   const {
     location: { pathname },
@@ -53,12 +54,13 @@ function ManagerRouter() {
       value={{
         refresh: validateCookie,
         isMngrCookieValid,
-      }}>
+      }}
+    >
       <SimpleBox>
         {!isMngrCookieValid && <Login />}
         <Router>
           {isMngrCookieValid && isLoginPath && (
-            <Redirect to='/manager/dashboard' />
+            <Redirect to="/manager/dashboard" />
           )}
           {!isLoginPath && mngrProfile !== null && (
             <SimpleBox>
@@ -66,22 +68,25 @@ function ManagerRouter() {
               <ContentBox>
                 <LeftBar isSuperAdmin={mngrProfile.isSuperAdmin} />
                 <Switch>
-                  <Route path='/manager/dashboard'>
+                  <Route path="/manager/dashboard">
                     {mngrProfile !== null && <Dashboard />}
                   </Route>
-                  <Route path='/manager/change-password'>
+                  <Route path="/manager/change-password">
                     <ChangeDefault />
                   </Route>
-                  <Route path='/manager/create-manager'>
+                  <Route path="/manager/create-manager">
                     <CreateManager />
                   </Route>
-                  <Route path='/manager/edit-manager'>
+                  <Route path="/manager/edit-manager">
                     <EditManager />
                   </Route>
-                  <Route path='/manager/create-school'>
+                  <Route path="/manager/school/create">
                     <CreateSchool />
                   </Route>
-                  <Route path='*'>
+                  <Route path="/manager/school/billing">
+                    <Billing />
+                  </Route>
+                  <Route path="*">
                     <NotFound />
                   </Route>
                 </Switch>

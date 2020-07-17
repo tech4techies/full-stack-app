@@ -26,6 +26,12 @@ function ExtraStyle() {
         font-size: 12px;
         top: -7px;
       }
+      .css-79elbk .css-m117u4:disbaled ~label{
+        padding: 2px;
+        background-color: #fff;
+        font-size: 12px;
+        top: -7px;
+      }
       .css-79elbk .css-m117u4:valid ~label{
         padding: 2px;
         background-color: #fff;

@@ -9,7 +9,7 @@ import {
   FormInput,
   FormActions,
 } from "../../../components/Forms";
-import { IValidatorResult } from "../../../utils-lib/validators";
+import { IValidatorResult, Validator } from "../../../utils-lib/validators";
 
 export default function Billing() {
   const [billingInfo, setBillingInfo] = useState<null | { [k: string]: any }>(
@@ -19,7 +19,13 @@ export default function Billing() {
   const [errs, setErrs] = useState<null | IValidatorResult[]>(null);
 
   const onSchoolIdChange = (e: any) => setSchoolId(e.target.value);
-  const onSubmit = (e: any) => {};
+  const onSubmit = (e: any) => {
+    const requiredErrs: IValidatorResult[] = [
+      Validator.isRequired(schoolId, "School ID"),
+    ].filter((errs) => errs.err);
+    if (requiredErrs.length > 0) setErrs(requiredErrs);
+    else setErrs(null);
+  };
   return (
     <ContentPage>
       <Auth>
@@ -35,7 +41,7 @@ export default function Billing() {
                       inputType="text"
                       required={true}
                       onChange={onSchoolIdChange}
-                      label={"School Id"}
+                      label={"School ID"}
                     />
 
                     <FormActions

@@ -41,6 +41,8 @@ export interface ISchoolDetails {
   state: string;
   country: string;
   zip: number;
+  billingType: string;
+  billingAmount: null | number;
 }
 
 export interface IMngrProfile {

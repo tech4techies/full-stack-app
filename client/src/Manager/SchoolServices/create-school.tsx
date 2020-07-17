@@ -8,6 +8,8 @@ import { Form, FrmErrs, FormInput, FormActions } from "../../components/Forms";
 import { IValidatorResult, Validator } from "../../utils-lib/validators";
 import { ISchoolDetails } from "../../types";
 import { ajaxUtils } from "../../utils-lib/axios-utils";
+import { Select } from "../../components/Select";
+import { billingOpts } from "../common";
 
 export default function CreateSchool() {
   const [errs, setErrs] = useState<null | IValidatorResult[]>(null);
@@ -26,6 +28,8 @@ export default function CreateSchool() {
     state: "",
     country: "",
     zip: -1,
+    billingType: "",
+    billingAmount: null,
   });
   const onChangeName = (e: any) => {
     schoolDetails.name = e.target.value;
@@ -83,6 +87,10 @@ export default function CreateSchool() {
     schoolDetails.zip = e.target.value;
     setSchoolDetails(schoolDetails);
   };
+  const onChangeBilling = (e: any) => {
+    schoolDetails.billingAmount = parseInt(e.target.value, 10);
+    setSchoolDetails(schoolDetails);
+  };
   const validateDetails = (): boolean => {
     const {
       name,
@@ -99,6 +107,7 @@ export default function CreateSchool() {
       country,
       district,
       zip,
+      billingType,
     } = schoolDetails;
     const requiredErrs: IValidatorResult[] = [
       Validator.isRequired(name, "School Name"),
@@ -115,6 +124,7 @@ export default function CreateSchool() {
       Validator.isRequired(state, "State"),
       Validator.isRequired(country, "Country"),
       Validator.numberRequired(zip, 110001, 999999, "ZIP Code"),
+      Validator.isRequired(billingType, "Billing Type", "option"),
     ].filter((errs) => errs.err);
     if (requiredErrs.length) {
       setErrs(requiredErrs);
@@ -160,14 +170,14 @@ export default function CreateSchool() {
                     style={fBox}
                     required={true}
                     label={"School Name"}
-                    inputType='text'
+                    inputType="text"
                     onChange={onChangeName}
                   />
                   <FormInput
                     style={sBox}
                     required={true}
-                    label='No.Of Students'
-                    inputType='number'
+                    label="No.Of Students"
+                    inputType="number"
                     min={10}
                     max={100000}
                     onChange={onChangeNoOfStu}
@@ -178,14 +188,14 @@ export default function CreateSchool() {
                     style={fBox}
                     required={true}
                     label={"Principal"}
-                    inputType='text'
+                    inputType="text"
                     onChange={onChangePrincipal}
                   />
                   <FormInput
                     style={sBox}
                     required={true}
-                    label='POC Name'
-                    inputType='text'
+                    label="POC Name"
+                    inputType="text"
                     onChange={onChangePocName}
                   />
                 </FlexBoxRowCenter>
@@ -193,15 +203,15 @@ export default function CreateSchool() {
                   <FormInput
                     style={fBox}
                     required={true}
-                    label='POC Email'
-                    inputType='text'
+                    label="POC Email"
+                    inputType="text"
                     onChange={onChangePocEmail}
                   />
                   <FormInput
                     style={sBox}
                     required={true}
-                    label='POC Mobile'
-                    inputType='text'
+                    label="POC Mobile"
+                    inputType="text"
                     onChange={onChangePocMobile}
                   />
                 </FlexBoxRowCenter>
@@ -209,15 +219,15 @@ export default function CreateSchool() {
                   <FormInput
                     style={fBox}
                     required={true}
-                    label='Street 1'
-                    inputType='text'
+                    label="Street 1"
+                    inputType="text"
                     onChange={onChangeStreet1}
                   />
                   <FormInput
                     style={sBox}
                     required={true}
-                    label='Street 2'
-                    inputType='text'
+                    label="Street 2"
+                    inputType="text"
                     onChange={onChangeStreet2}
                   />
                 </FlexBoxRowCenter>
@@ -225,15 +235,15 @@ export default function CreateSchool() {
                   <FormInput
                     style={fBox}
                     required={true}
-                    label='Land Mark'
-                    inputType='text'
+                    label="Land Mark"
+                    inputType="text"
                     onChange={onChangeLandMark}
                   />
                   <FormInput
                     style={sBox}
                     required={true}
-                    label='Area'
-                    inputType='text'
+                    label="Area"
+                    inputType="text"
                     onChange={onChangeArea}
                   />
                 </FlexBoxRowCenter>
@@ -241,15 +251,15 @@ export default function CreateSchool() {
                   <FormInput
                     style={fBox}
                     required={true}
-                    label='District'
-                    inputType='text'
+                    label="District"
+                    inputType="text"
                     onChange={onChangeDistrict}
                   />
                   <FormInput
                     style={sBox}
                     required={true}
-                    label='State'
-                    inputType='text'
+                    label="State"
+                    inputType="text"
                     onChange={onChangeState}
                   />
                 </FlexBoxRowCenter>
@@ -257,18 +267,28 @@ export default function CreateSchool() {
                   <FormInput
                     style={fBox}
                     required={true}
-                    label='Country'
-                    inputType='text'
+                    label="Country"
+                    inputType="text"
                     onChange={onChangeCountry}
                   />
                   <FormInput
                     style={sBox}
                     required={true}
-                    label='ZIP Code'
-                    inputType='number'
+                    label="ZIP Code"
+                    inputType="number"
                     onChange={onChangeZip}
                     min={110001}
                     max={999999}
+                  />
+                </FlexBoxRowCenter>
+                <FlexBoxRowCenter>
+                  <FormInput
+                    style={fBox}
+                    required={true}
+                    label="Billing Amount Per Month"
+                    inputType="number"
+                    onChange={onChangeBilling}
+                    min={0}
                   />
                 </FlexBoxRowCenter>
                 <FormActions

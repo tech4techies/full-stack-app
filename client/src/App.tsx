@@ -11,10 +11,11 @@ function App() {
   const {
     location: { pathname },
   } = window;
-  const isSchoolRoute = /\/school\//gi.test(pathname);
-  const isMngrRoute = /\/manager\//gi.test(pathname);
-  let isValidRoute = isSchoolRoute || isMngrRoute;
-  isValidRoute = isSchoolRoute && isMngrRoute ? false : true;
+  const isMngrRoute =
+    /\/manager\/school\//gi.test(pathname) || /\/manager\//gi.test(pathname);
+  const isSchoolRoute =
+    /\/school\//gi.test(pathname) && !/\/manager\//gi.test(pathname);
+  const isValidRoute = isSchoolRoute || isMngrRoute;
   return (
     <SimpleBox>
       <ExtraStyle />
