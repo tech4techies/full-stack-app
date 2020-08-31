@@ -23,9 +23,17 @@ export default class Manager {
           _id: 0,
           isSuperAdmin: 1,
         },
-      },
+      }
     );
     return row;
+  }
+
+  async getAllCtx() {
+    const rows = await this.colConn
+      .find({}, { projection: { _id: 1, name: 1, email: 1 } })
+      .toArray();
+    const records = rows.map((row) => this.convertMongoId(row));
+    return records;
   }
 
   async setCtxByEmail(email: string, info: any) {
@@ -35,7 +43,7 @@ export default class Manager {
         $set: {
           ...info,
         },
-      },
+      }
     );
   }
   async getCtxByEmail(email: string) {
@@ -52,7 +60,7 @@ export default class Manager {
           isSuperAdmin: 1,
           disabled: 1,
         },
-      },
+      }
     );
     return row;
   }
@@ -64,7 +72,7 @@ export default class Manager {
   async findMngr(email: string): Promise<boolean> {
     const rows = await this.colConn.findOne(
       { email },
-      { projection: { email: 1, userName: 1 } },
+      { projection: { email: 1, userName: 1 } }
     );
     if (rows) return true;
     else return false;
@@ -72,7 +80,7 @@ export default class Manager {
   async changeDefault(id: string, password: string, userName: string) {
     await this.colConn.updateOne(
       { _id: id, userName },
-      { $set: { password, isDefault: false } },
+      { $set: { password, isDefault: false } }
     );
     return true;
   }
@@ -82,7 +90,7 @@ export default class Manager {
         userName,
         password,
       },
-      { projection: { _id: 1, isDefault: 1, disabled: 1 } },
+      { projection: { _id: 1, isDefault: 1, disabled: 1 } }
     );
     if (rows) {
       const res = this.convertMongoId(rows);

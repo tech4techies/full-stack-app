@@ -6,7 +6,7 @@ import { getManagerRouter } from "./controller/manager/manager";
 import { getSchoolRouter } from "./controller/school";
 import { getValidateRouter } from "./controller/validate";
 import MongoDb from "./models/mongodb";
-import { notFound } from "./utils/custom-express";
+import { notFound } from "./utils/express-utils";
 const getAPIRouter = () =>
   express
     .Router({ mergeParams: true })

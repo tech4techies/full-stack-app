@@ -4,7 +4,7 @@ import express, { Request } from "express";
 import jwt from "jsonwebtoken";
 import config from "../config";
 import MongoDb from "../models/mongodb";
-import { jaction } from "../utils/custom-express";
+import { jaction } from "../utils/express-utils";
 import Encrypt from "../utils/encrypt";
 import crypto from "crypto";
 
@@ -22,20 +22,21 @@ async function managerCookie(req: Request) {
     if (userType === "manager") {
       info.user = Encrypt.hash(info.user, config.secretKey);
       const exists = await MongoDb.manager.checkMngrExists(id, info.user);
-      if (exists) return { success: true, type: true, userType: "manager" };
+      if (exists)
+        return { success: true, type: true, data: { userType: "manager" } };
       else
         return {
           success: true,
           type: false,
           userMessage: "Login Required",
-          userType: null,
+          data: { userType: null },
         };
     } else {
       return {
         success: true,
         type: false,
         userMessage: "Login Required",
-        userType: null,
+        data: { userType: null },
       };
     }
   } else
@@ -43,7 +44,7 @@ async function managerCookie(req: Request) {
       success: true,
       type: true,
       userMessage: "Login Required",
-      userType: null,
+      data: { userType: null },
     };
 }
 
@@ -64,14 +65,14 @@ export function authenticate(cookie: string) {
         const decipher = crypto.createDecipheriv(
           jwtTokenAlgo,
           jwtTokenKey,
-          jwtTokenIV,
+          jwtTokenIV
         );
         const decryptedToken = Buffer.from(
           Buffer.concat([
             decipher.update(Buffer.from(token, "hex")),
             decipher.final(),
           ]).toString(),
-          "base64",
+          "base64"
         ).toString("ascii");
         tokenInfo = jwt.verify(decryptedToken, config.jwtSecret) as any;
         return { success: true, info: tokenInfo };

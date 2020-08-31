@@ -1,303 +1,189 @@
 /** @format */
 
-import React, { useState } from "react";
-import { ContentPage, Box, FlexBoxRowCenter } from "../../components/Boxes";
+import styled from "@emotion/styled";
+import React from "react";
+import {
+  ContentPage,
+  FlexBoxRowCenter,
+  SimpleBox,
+} from "../../components/Boxes";
+import { CardTitle, ContentCard } from "../../components/Cards";
+import { Frm } from "../../components/Forms";
+import { FrmInput } from "../../components/Inputs";
+import FrmSelect from "../../components/Select";
+import history from "../../utils-lib/history";
+import { email, mobile, required } from "../../utils-lib/validators";
 import Auth from "../auth";
-import { ContentCard, CardTitle } from "../../components/Cards";
-import { Form, FrmErrs, FormInput, FormActions } from "../../components/Forms";
-import { IValidatorResult, Validator } from "../../utils-lib/validators";
-import { ISchoolDetails } from "../../types";
-import { ajaxUtils } from "../../utils-lib/axios-utils";
-import { Select } from "../../components/Select";
-import { billingOpts } from "../common";
+import { billingOptions } from "../options";
+
+const FieldBox = styled(SimpleBox)`
+  width: 50%;
+  padding: 5px;
+  height: 60px;
+`;
+
+const FlexBox = styled(FlexBoxRowCenter)`
+  width: 100%;
+`;
 
 export default function CreateSchool() {
-  const [errs, setErrs] = useState<null | IValidatorResult[]>(null);
-  const [schoolDetails, setSchoolDetails] = useState<ISchoolDetails>({
-    name: "",
-    noOfStudents: -1,
-    principal: "",
-    pocName: "",
-    pocEmail: "",
-    pocMobile: "",
-    street1: "",
-    street2: "",
-    landMark: "",
-    area: "",
-    district: "",
-    state: "",
-    country: "",
-    zip: -1,
-    billingType: "",
-    billingAmount: null,
-  });
-  const onChangeName = (e: any) => {
-    schoolDetails.name = e.target.value;
-    setSchoolDetails(schoolDetails);
-  };
-  const onChangePrincipal = (e: any) => {
-    schoolDetails.principal = e.target.value;
-    setSchoolDetails(schoolDetails);
-  };
-  const onChangeNoOfStu = (e: any) => {
-    schoolDetails.noOfStudents = parseInt(e.target.value, 10);
-    setSchoolDetails(schoolDetails);
-  };
-  const onChangePocName = (e: any) => {
-    schoolDetails.pocName = e.target.value;
-    setSchoolDetails(schoolDetails);
-  };
-  const onChangePocEmail = (e: any) => {
-    schoolDetails.pocEmail = e.target.value;
-    setSchoolDetails(schoolDetails);
-  };
-  const onChangePocMobile = (e: any) => {
-    schoolDetails.pocMobile = e.target.value;
-    setSchoolDetails(schoolDetails);
-  };
-  const onChangeStreet1 = (e: any) => {
-    schoolDetails.street1 = e.target.value;
-    setSchoolDetails(schoolDetails);
-  };
-  const onChangeStreet2 = (e: any) => {
-    schoolDetails.street2 = e.target.value;
-    setSchoolDetails(schoolDetails);
-  };
-  const onChangeLandMark = (e: any) => {
-    schoolDetails.landMark = e.target.value;
-    setSchoolDetails(schoolDetails);
-  };
-  const onChangeArea = (e: any) => {
-    schoolDetails.area = e.target.value;
-    setSchoolDetails(schoolDetails);
-  };
-  const onChangeDistrict = (e: any) => {
-    schoolDetails.district = e.target.value;
-    setSchoolDetails(schoolDetails);
-  };
-  const onChangeState = (e: any) => {
-    schoolDetails.state = e.target.value;
-    setSchoolDetails(schoolDetails);
-  };
-  const onChangeCountry = (e: any) => {
-    schoolDetails.country = e.target.value;
-    setSchoolDetails(schoolDetails);
-  };
-  const onChangeZip = (e: any) => {
-    schoolDetails.zip = e.target.value;
-    setSchoolDetails(schoolDetails);
-  };
-  const onChangeBilling = (e: any) => {
-    schoolDetails.billingAmount = parseInt(e.target.value, 10);
-    setSchoolDetails(schoolDetails);
-  };
-  const validateDetails = (): boolean => {
-    const {
-      name,
-      noOfStudents,
-      principal,
-      pocName,
-      pocEmail,
-      pocMobile,
-      area,
-      street1,
-      street2,
-      state,
-      landMark,
-      country,
-      district,
-      zip,
-      billingType,
-    } = schoolDetails;
-    const requiredErrs: IValidatorResult[] = [
-      Validator.isRequired(name, "School Name"),
-      Validator.numberRequired(noOfStudents, 10, 100000, "No. Of Students"),
-      Validator.isRequired(principal, "Principal"),
-      Validator.isRequired(pocName, "POC Name"),
-      Validator.isRequired(pocEmail, "POC Email"),
-      Validator.isRequired(pocMobile, "POC Mobile"),
-      Validator.isRequired(street1, "Street1"),
-      Validator.isRequired(street2, "Street2"),
-      Validator.isRequired(landMark, "Land Mark"),
-      Validator.isRequired(area, "Area"),
-      Validator.isRequired(district, "District"),
-      Validator.isRequired(state, "State"),
-      Validator.isRequired(country, "Country"),
-      Validator.numberRequired(zip, 110001, 999999, "ZIP Code"),
-      Validator.isRequired(billingType, "Billing Type", "option"),
-    ].filter((errs) => errs.err);
-    if (requiredErrs.length) {
-      setErrs(requiredErrs);
-      return false;
-    } else {
-      const otherErrs: IValidatorResult[] = [
-        Validator.email(pocEmail, "POC Email"),
-        Validator.mobile(pocMobile, "POC Mobile"),
-      ].filter((errs) => errs.err);
-      if (otherErrs.length) {
-        setErrs(otherErrs);
-        return false;
-      } else {
-        setErrs(null);
-        return true;
-      }
-    }
-  };
-  const onSubmit = () => {
-    const isValidSuccess = validateDetails();
-    if (isValidSuccess)
-      ajaxUtils.post("manager/createSchool", { data: { ...schoolDetails } });
-  };
-  const fBox = {
-    width: "50%",
-  };
+  const postSuccess = () =>
+    setTimeout(() => history.redirectTo("/manager/dashboard"), 300);
 
-  const sBox = {
-    width: "50%",
-    marginLeft: 10,
-  };
   return (
     <ContentPage>
       <Auth>
-        <Box>
+        <SimpleBox>
           <ContentCard>
-            <CardTitle>Fill School Details</CardTitle>
-            <Form>
-              <Box>
-                {errs && <FrmErrs errs={errs.slice(0, 5)} />}
-                <FlexBoxRowCenter>
-                  <FormInput
-                    style={fBox}
+            <CardTitle>Fill the School Details</CardTitle>
+            <Frm getOnLoad={false} onSuccess={postSuccess}>
+              <FlexBox>
+                <FieldBox>
+                  <FrmInput
+                    name="name"
+                    label="School Name"
                     required={true}
-                    label={"School Name"}
-                    inputType="text"
-                    onChange={onChangeName}
+                    validators={[required]}
                   />
-                  <FormInput
-                    style={sBox}
+                </FieldBox>
+                <FieldBox>
+                  <FrmInput
+                    label="Prinicipal"
+                    name="principal"
                     required={true}
-                    label="No.Of Students"
-                    inputType="number"
-                    min={10}
-                    max={100000}
-                    onChange={onChangeNoOfStu}
+                    validators={[required]}
                   />
-                </FlexBoxRowCenter>
-                <FlexBoxRowCenter>
-                  <FormInput
-                    style={fBox}
+                </FieldBox>
+              </FlexBox>
+              <FlexBox>
+                <FieldBox>
+                  <FrmInput
+                    type="number"
+                    label="No. Of Students"
+                    name="noOfStudents"
                     required={true}
-                    label={"Principal"}
-                    inputType="text"
-                    onChange={onChangePrincipal}
+                    validators={[required]}
                   />
-                  <FormInput
-                    style={sBox}
-                    required={true}
+                </FieldBox>
+                <FieldBox>
+                  <FrmInput
+                    name="pocName"
                     label="POC Name"
-                    inputType="text"
-                    onChange={onChangePocName}
-                  />
-                </FlexBoxRowCenter>
-                <FlexBoxRowCenter>
-                  <FormInput
-                    style={fBox}
                     required={true}
+                    validators={[required]}
+                  />
+                </FieldBox>
+              </FlexBox>
+              <FlexBox>
+                <FieldBox>
+                  <FrmInput
                     label="POC Email"
-                    inputType="text"
-                    onChange={onChangePocEmail}
-                  />
-                  <FormInput
-                    style={sBox}
+                    name="pocEmail"
                     required={true}
+                    validators={[required, email]}
+                  />
+                </FieldBox>
+                <FieldBox>
+                  <FrmInput
                     label="POC Mobile"
-                    inputType="text"
-                    onChange={onChangePocMobile}
-                  />
-                </FlexBoxRowCenter>
-                <FlexBoxRowCenter>
-                  <FormInput
-                    style={fBox}
+                    name="pocMobile"
                     required={true}
+                    validators={[required, mobile]}
+                  />
+                </FieldBox>
+              </FlexBox>
+              <FlexBox>
+                <FieldBox>
+                  <FrmInput
                     label="Street 1"
-                    inputType="text"
-                    onChange={onChangeStreet1}
-                  />
-                  <FormInput
-                    style={sBox}
+                    name="street1"
                     required={true}
+                    validators={[required]}
+                  />
+                </FieldBox>
+                <FieldBox>
+                  <FrmInput
                     label="Street 2"
-                    inputType="text"
-                    onChange={onChangeStreet2}
-                  />
-                </FlexBoxRowCenter>
-                <FlexBoxRowCenter>
-                  <FormInput
-                    style={fBox}
+                    name="street2"
                     required={true}
-                    label="Land Mark"
-                    inputType="text"
-                    onChange={onChangeLandMark}
+                    validators={[required]}
                   />
-                  <FormInput
-                    style={sBox}
+                </FieldBox>
+              </FlexBox>
+              <FlexBox>
+                <FieldBox>
+                  <FrmInput label="Land Mark" name="landmark" />
+                </FieldBox>
+                <FieldBox>
+                  <FrmInput
+                    label="Village/Town"
+                    name="areaName"
                     required={true}
-                    label="Area"
-                    inputType="text"
-                    onChange={onChangeArea}
+                    validators={[required]}
                   />
-                </FlexBoxRowCenter>
-                <FlexBoxRowCenter>
-                  <FormInput
-                    style={fBox}
+                </FieldBox>
+              </FlexBox>
+              <FlexBox>
+                <FieldBox>
+                  <FrmInput
+                    label="District/Zone"
+                    name="district"
                     required={true}
-                    label="District"
-                    inputType="text"
-                    onChange={onChangeDistrict}
+                    validators={[required]}
                   />
-                  <FormInput
-                    style={sBox}
+                </FieldBox>
+                <FieldBox>
+                  <FrmInput
+                    label="State/Province"
+                    name="state"
                     required={true}
-                    label="State"
-                    inputType="text"
-                    onChange={onChangeState}
+                    validators={[required]}
                   />
-                </FlexBoxRowCenter>
-                <FlexBoxRowCenter>
-                  <FormInput
-                    style={fBox}
-                    required={true}
+                </FieldBox>
+              </FlexBox>
+              <FlexBox>
+                <FieldBox>
+                  <FrmInput
                     label="Country"
-                    inputType="text"
-                    onChange={onChangeCountry}
-                  />
-                  <FormInput
-                    style={sBox}
+                    name="country"
                     required={true}
+                    validators={[required]}
+                  />
+                </FieldBox>
+                <FieldBox>
+                  <FrmInput
                     label="ZIP Code"
-                    inputType="number"
-                    onChange={onChangeZip}
-                    min={110001}
-                    max={999999}
-                  />
-                </FlexBoxRowCenter>
-                <FlexBoxRowCenter>
-                  <FormInput
-                    style={fBox}
+                    name="zipCode"
+                    type="number"
                     required={true}
-                    label="Billing Amount Per Month"
-                    inputType="number"
-                    onChange={onChangeBilling}
-                    min={0}
+                    validators={[required]}
                   />
-                </FlexBoxRowCenter>
-                <FormActions
-                  onSubmit={{ label: "Submit", onFrmSubmit: onSubmit }}
-                />
-              </Box>
-            </Form>
+                </FieldBox>
+              </FlexBox>
+              <FlexBox>
+                <FieldBox>
+                  <FrmSelect
+                    name="billingType"
+                    options={billingOptions}
+                    validators={[required]}
+                    required={true}
+                    label="Billing Type"
+                  />
+                </FieldBox>
+                <FieldBox>
+                  <FrmInput
+                    style={{ paddingTop: 17 }}
+                    label="Billing Amount"
+                    name="billingAmount"
+                    type="number"
+                    required={true}
+                    validators={[required]}
+                  />
+                </FieldBox>
+              </FlexBox>
+            </Frm>
           </ContentCard>
-        </Box>
+        </SimpleBox>
       </Auth>
     </ContentPage>
   );

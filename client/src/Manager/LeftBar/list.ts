@@ -11,12 +11,12 @@ const mngrLeftBarOptions: Array<ILeftBarLinkOption | ILeftBarMenuOption> = [
       {
         label: "Register Manager",
         isSuperAdminType: true,
-        path: "/manager/create-manager",
+        path: "/manager/create",
       },
       {
         label: "Edit Manager",
         isSuperAdminType: true,
-        path: "/manager/edit-manager",
+        path: "/manager/edit",
       },
     ],
   },
@@ -31,9 +31,9 @@ const mngrLeftBarOptions: Array<ILeftBarLinkOption | ILeftBarMenuOption> = [
         path: "/manager/school/create",
       },
       {
-        label: "Billing",
+        label: "Edit School Info",
         isSuperAdminType: false,
-        path: "/manager/school/billing",
+        path: "/manager/school/edit",
       },
     ],
   },

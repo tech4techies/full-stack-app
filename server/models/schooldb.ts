@@ -2,23 +2,17 @@
 
 import { MongoClient } from "mongodb";
 import config from "../config";
-import Profile from "./school-profile";
 
 export default class SchoolDb {
-  static profileCol: Profile;
   static async dbConn(schoolId: string) {
     const mclient: MongoClient = await MongoClient.connect(
       config.serviceMongoDB,
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
-      },
+      }
     );
     return mclient.db(schoolId);
-  }
-
-  static async profile(schoolId: string) {
-    return await (await this.dbConn(schoolId)).collection("profile");
   }
 
   static async students(schoolId: string) {

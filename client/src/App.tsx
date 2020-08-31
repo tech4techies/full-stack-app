@@ -7,21 +7,16 @@ import ManagerRouter from "./Manager/manager";
 import NotFound from "./NotFound/not-found";
 import "nprogress/nprogress.css";
 import SchoolRouter from "./School/school";
+import getRouteType from "./utils-lib/routes";
 function App() {
-  const {
-    location: { pathname },
-  } = window;
-  const isMngrRoute =
-    /\/manager\/school\//gi.test(pathname) || /\/manager\//gi.test(pathname);
-  const isSchoolRoute =
-    /\/school\//gi.test(pathname) && !/\/manager\//gi.test(pathname);
-  const isValidRoute = isSchoolRoute || isMngrRoute;
+  const routeType = getRouteType();
+  const isValidRoute = routeType === "school" || routeType === "manager";
   return (
     <SimpleBox>
       <ExtraStyle />
       {!isValidRoute && <NotFound />}
-      {isMngrRoute && isValidRoute && <ManagerRouter />}
-      {isSchoolRoute && isValidRoute && <SchoolRouter />}
+      {routeType === "manager" && isValidRoute && <ManagerRouter />}
+      {routeType === "school" && isValidRoute && <SchoolRouter />}
     </SimpleBox>
   );
 }

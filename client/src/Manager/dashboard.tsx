@@ -10,9 +10,8 @@ import Auth from "./auth";
 function Dashboard() {
   const [activity, setActivity] = useState<null | IMngrActivity[] | []>(null);
   useLayoutEffect(() => {
-    ajaxUtils.get("manager/activities").then((res) => {
-      const { success, type, data } = res;
-      if (success && type) setActivity(data);
+    ajaxUtils.get("manager/activities").then((res: any) => {
+      if (res) setActivity(res);
     });
   }, []);
   return (

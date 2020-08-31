@@ -1,81 +1,154 @@
 /** @format */
 
 import React, { useState } from "react";
-import { Box, ContentPage } from "../components/Boxes";
-import { CardTitle, FormCard } from "../components/Cards";
-import { Form, FormActions, FormInput, FrmErrs } from "../components/Forms";
-import config from "../config";
-import { ajaxUtils } from "../utils-lib/axios-utils";
-import Encrypt from "../utils-lib/encrypt";
-import history from "../utils-lib/history";
-import { IValidatorResult, Validator } from "../utils-lib/validators";
+import {
+  ContentPage,
+  InputBox,
+  SimpleBox,
+  Box,
+  FlexBoxRowCenter,
+} from "../components/Boxes";
+import { CardTitle, ContentCard } from "../components/Cards";
+import { InputLabel, StyledInput } from "../components/Inputs";
+import { ReqSpan, ErrSpan } from "../components/Span";
 import Auth from "./auth";
-function ChangeDefault() {
-  const [password, setPassword] = useState<null | string>(null);
-  const [cnfPass, setCnfPass] = useState<null | string>(null);
-  const [errs, setErrs] = useState<null | IValidatorResult[]>(null);
+import { SubmitButton } from "../components/Buttons";
+import { ajaxUtils } from "../utils-lib/axios-utils";
+import history from "../utils-lib/history";
+import Encrypt from "../utils-lib/encrypt";
+import config from "../config";
+
+const ArrowRight = require("../assets/right-arrow.svg");
+
+function ChangePassword() {
+  const [password, setPassword] = useState<string | null>(null);
+  const [passErr, setPassErr] = useState<string | null>(null);
+  const [cnfPassword, setCnfPassword] = useState<string | null>(null);
+  const [needle, setNeedle] = useState(false);
+  const [policyNeedle, setPolicyNeedle] = useState(false);
+  const checkPolicy = (val: string) => {
+    const policy = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{10,20}$/;
+    return policy.test(val);
+  };
   const onChangePassword = (e: any) => {
-    const { value } = e.target;
+    const {
+      target: { value },
+    } = e;
     setPassword(value);
-  };
-  const onChangeCnfPwd = (e: any) => {
-    const { value } = e.target;
-    setCnfPass(value);
-  };
-  const onSubmit = () => {
-    const validErrs: IValidatorResult[] = [
-      Validator.isRequired(password, "New Password"),
-      Validator.isRequired(cnfPass, "Confirm Password"),
-      Validator.equal(cnfPass, password, "Confirm Password", "New Password"),
-      Validator.password(password, "New Password"),
-    ].filter((val: IValidatorResult) => val.err);
-    if (validErrs.length > 0) {
-      setErrs(validErrs);
+    if (value.length) {
+      if (!checkPolicy(value)) {
+        setPolicyNeedle(true);
+        setPassErr(
+          "Password must contain atleast 10 to 20 characters, containing one lowercase alphabet, uppercase alphabet, numbers, symbols"
+        );
+      } else {
+        setPassErr(null);
+        setPolicyNeedle(false);
+      }
     } else {
-      setErrs(null);
-      const frmData = {
-        password: password,
-      };
-      if (password && password.length > 0)
-        frmData.password = Encrypt.hashPassword(password, config.secretKey);
-      ajaxUtils.post("manager/changePassword", frmData).then((res) => {
-        if (res && res.type) history.redirectTo("/manager/login");
-      });
+      setNeedle(false);
+      setPassErr("Cannot be blank");
     }
   };
+  const onChangeCnfPassword = (e: any) => {
+    const {
+      target: { value },
+    } = e;
+    setCnfPassword(value);
+    if (value !== password) {
+      setPassErr("Passwords Cannot be Confirmed");
+      setNeedle(true);
+    } else {
+      setPassErr(null);
+      setNeedle(false);
+    }
+  };
+
+  const isBtnDisabled = () => {
+    return !password ||
+      (password && password.length === 0) ||
+      policyNeedle ||
+      needle
+      ? true
+      : false;
+  };
+
+  const onSubmitClick = (e: any) => {
+    if (password) {
+      ajaxUtils.post(window.location.pathname, {
+        password: Encrypt.hashPassword(password, config.secretKey),
+      });
+      history.pageWaitRefresh();
+    }
+  };
+
   return (
     <ContentPage>
       <Auth>
-        <Box>
-          <FormCard>
+        <SimpleBox>
+          <ContentCard>
             <CardTitle>Change Password </CardTitle>
-            {errs && <FrmErrs errs={errs} />}
-            <Form>
-              <Box>
-                <FormInput
-                  inputType='password'
+            <Box>
+              <InputBox>
+                <StyledInput
+                  type="password"
+                  placeholder=" "
+                  autoComplete="off"
+                  spellCheck={false}
+                  required={true}
                   onChange={onChangePassword}
+                />
+                <InputLabel>
+                  New Password
+                  <ReqSpan>*</ReqSpan>
+                </InputLabel>
+                {passErr && passErr.length > 0 && !needle && (
+                  <ErrSpan>{passErr}</ErrSpan>
+                )}
+              </InputBox>
+            </Box>
+            <Box>
+              <InputBox>
+                <StyledInput
+                  type="password"
+                  placeholder=" "
+                  autoComplete="off"
+                  spellCheck={false}
                   required={true}
-                  label={"New Password"}
+                  disabled={
+                    !password ||
+                    (password && password.length === 0) ||
+                    policyNeedle
+                      ? true
+                      : false
+                  }
+                  onChange={onChangeCnfPassword}
                 />
-                <FormInput
-                  inputType='password'
-                  onChange={onChangeCnfPwd}
-                  required={true}
-                  label={"Confirm New Password"}
-                />
-                <FormActions
-                  onSubmit={{
-                    label: "Submit",
-                    onFrmSubmit: onSubmit,
-                  }}
-                />
-              </Box>
-            </Form>
-          </FormCard>
-        </Box>
+                <InputLabel>
+                  Confirm Password
+                  <ReqSpan>*</ReqSpan>
+                </InputLabel>
+                {passErr && passErr.length > 0 && needle && (
+                  <ErrSpan>{passErr}</ErrSpan>
+                )}
+              </InputBox>
+            </Box>
+            <Box>
+              <SubmitButton
+                onClick={onSubmitClick}
+                style={isBtnDisabled() ? { cursor: "not-allowed" } : {}}
+                disabled={isBtnDisabled()}
+              >
+                <FlexBoxRowCenter>
+                  <img alt={"Arrow-Right"} src={ArrowRight} />
+                  {"Submit"}
+                </FlexBoxRowCenter>
+              </SubmitButton>
+            </Box>
+          </ContentCard>
+        </SimpleBox>
       </Auth>
     </ContentPage>
   );
 }
-export default ChangeDefault;
+export default ChangePassword;

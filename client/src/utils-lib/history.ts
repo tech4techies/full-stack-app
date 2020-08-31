@@ -11,10 +11,13 @@ class History {
     browserHistory.push(path);
     this.pageReload();
   }
-  pageRefresh() {
+  goBack() {
+    browserHistory.goBack();
+  }
+  pageWaitRefresh() {
     setTimeout(() => {
       history.pageReload();
-    }, 300);
+    }, 500);
   }
 }
 const history = new History();

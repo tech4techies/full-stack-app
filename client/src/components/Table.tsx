@@ -3,18 +3,20 @@
 import React from "react";
 import styled from "@emotion/styled";
 
-const Table = styled.table({
+export const Table = styled.table({
   backgroundColor: "#fff",
 });
-const Thead = styled.thead({
+export const Thead = styled.thead({
   fontWeight: 600,
   letterSpacing: 0.5,
 });
-const Row = styled.tr({});
-const Col = styled.td({
+export const Row = styled.tr({});
+export const Col = styled.td({
   padding: 10,
+  paddingBottom: 0,
+  paddingLeft: 0,
 });
-const Tbody = styled.tbody({});
+export const Tbody = styled.tbody({});
 
 interface ITBodyData {
   [k: string]: any;

@@ -12,11 +12,10 @@ import history from "../../../utils-lib/history";
 import { date, mobile, required } from "../../../utils-lib/validators";
 import Auth from "../../auth";
 import { genderOpts } from "../../options";
-// import { IValidatorResult, Validator } from "../../../utils-lib/validators";
 
 interface IProps {}
 
-export default function EditMngrForm(props: IProps) {
+export default function EditSchoolFrm(props: IProps) {
   const [isValid, setValid] = useState<null | object>(null);
   const [isComplete, setComplete] = useState(false);
   useLayoutEffect(() => {

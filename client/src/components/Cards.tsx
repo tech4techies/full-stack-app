@@ -25,6 +25,5 @@ export const ContentCard = styled.div({
 });
 
 export const CardTitle = styled.h3({
-  paddingLeft: 10,
   fontWeight: 500,
 });

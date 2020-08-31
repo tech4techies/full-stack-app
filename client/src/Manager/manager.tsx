@@ -14,14 +14,16 @@ import { IMngrProfile } from "../types";
 import { ajaxUtils } from "../utils-lib/axios-utils";
 import history from "../utils-lib/history";
 import ChangeDefault from "./change-password";
-import CreateManager from "./ManagerServices/create-manager";
 import Dashboard from "./dashboard";
-import EditManager from "./ManagerServices/EditManager/edit-manager";
 import LeftBar from "./LeftBar/letbar";
 import Login from "./login";
-import TopBar from "./TopBar/topbar";
+import CreateManager from "./ManagerServices/create-manager";
+import EditMngrForm from "./ManagerServices/EditManager/edit-form";
+import EditManager from "./ManagerServices/EditManager/edit-manager";
+import EditSchool from "./SchoolServices/EditSchool/edit-school";
 import CreateSchool from "./SchoolServices/create-school";
-import Billing from "./SchoolServices/Billing/billing";
+import TopBar from "./TopBar/topbar";
+import EditSchoolFrm from "./SchoolServices/EditSchool/edit-form";
 function ManagerRouter() {
   const {
     location: { pathname },
@@ -32,20 +34,20 @@ function ManagerRouter() {
   const validateCookie = useCallback(async () => {
     const res = await ajaxUtils.get("validate/cookie/manager");
     if (res) {
-      const { success, userType } = res;
-      if (success && userType === "manager") setIsMngr(true);
-      else if (success && userType !== "manager")
+      const { userType } = res;
+      if (userType && userType === "manager") setIsMngr(true);
+      else if (userType && userType !== "manager") {
         if (!isLoginPath) history.redirectTo("/manager/login");
+      } else {
+        if (!isLoginPath) history.redirectTo("/manager/login");
+      }
     }
   }, [isLoginPath]);
 
   useEffect(() => {
     if (isMngrCookieValid) {
       ajaxUtils.get("manager/profile").then((res) => {
-        if (res) {
-          const { success, type, data } = res;
-          if (success && type && data) setMngrProfile(data);
-        }
+        if (res) setMngrProfile(res);
       });
     }
   }, [isMngrCookieValid]);
@@ -71,20 +73,26 @@ function ManagerRouter() {
                   <Route path="/manager/dashboard">
                     {mngrProfile !== null && <Dashboard />}
                   </Route>
-                  <Route path="/manager/change-password">
+                  <Route path="/manager/changePassword">
                     <ChangeDefault />
                   </Route>
-                  <Route path="/manager/create-manager">
+                  <Route path="/manager/create">
                     <CreateManager />
                   </Route>
-                  <Route path="/manager/edit-manager">
+                  <Route path="/manager/edit" exact>
                     <EditManager />
+                  </Route>
+                  <Route path="/manager/edit/:email" exact>
+                    <EditMngrForm />
                   </Route>
                   <Route path="/manager/school/create">
                     <CreateSchool />
                   </Route>
-                  <Route path="/manager/school/billing">
-                    <Billing />
+                  <Route path="/manager/school/edit">
+                    <EditSchool />
+                  </Route>
+                  <Route path="/manager/school/edit:id">
+                    <EditSchoolFrm />
                   </Route>
                   <Route path="*">
                     <NotFound />

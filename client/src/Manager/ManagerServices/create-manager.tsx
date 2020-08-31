@@ -1,70 +1,60 @@
 /** @format */
 
-import React, { useState } from "react";
-import { Box, ContentPage } from "../../components/Boxes";
+import React from "react";
+import { Box, ContentPage, SimpleBox } from "../../components/Boxes";
 import { CardTitle, ContentCard } from "../../components/Cards";
-import { CheckBox } from "../../components/CheckBox";
-import { Form, FormActions, FormInput, FrmErrs } from "../../components/Forms";
-import { ajaxUtils } from "../../utils-lib/axios-utils";
-import { IValidatorResult, Validator } from "../../utils-lib/validators";
+import FrmCheckBox from "../../components/CheckBox";
+import { Frm } from "../../components/Forms";
+import { FrmInput, FrmDateInput } from "../../components/Inputs";
+import FrmSelect from "../../components/Select";
+import { date, email, mobile, required } from "../../utils-lib/validators";
 import Auth from "../auth";
-import { Select } from "../../components/Select";
-import { genderOpts } from "../common";
+import { genderOpts } from "../options";
 
-interface IProps {}
-
-function CreateManager(props: IProps) {
-  const [name, setName] = useState<null | string>(null);
-  const [email, setEmail] = useState<null | string>(null);
-  const [mobile, setMobile] = useState<null | string>(null);
-  const [dob, setDob] = useState<null | string>(null);
-  const [gender, setGender] = useState<null | string>(null);
-  const [errs, setErrs] = useState<null | IValidatorResult[]>(null);
-  const [superAdmin, setSuperAdmin] = useState(false);
-  const onChangeName = (e: any) => setName(e.target.value.trim());
-  const onChangeEmail = (e: any) => setEmail(e.target.value.trim());
-  const onChangeMobile = (e: any) => setMobile(e.target.value.trim());
-  const onChangeDOB = (e: any) => setDob(e.target.value.trim());
-  const onChangeSuperAdmin = (val: boolean) => setSuperAdmin(val);
-  const onSelectGender = (val: string) => setGender(val);
-  const onSubmit = (e: any) => {
-    const requiredErrs: IValidatorResult[] = [
-      Validator.isRequired(name, "Full Name"),
-      Validator.isRequired(email, "Email"),
-      Validator.isRequired(mobile, "Mobile"),
-      Validator.isRequired(dob, "Date of Birth"),
-      Validator.isRequired(gender, "Gender", "option"),
-    ].filter((validErr) => validErr.err);
-    if (requiredErrs.length > 0) {
-      setErrs(requiredErrs);
-    } else {
-      const validErrs: IValidatorResult[] = [
-        Validator.email(email, "Email"),
-        Validator.mobile(mobile, "Mobile"),
-        Validator.date(dob, "Date of Birth"),
-      ].filter((validErr) => validErr.err);
-      if (validErrs.length > 0) setErrs(validErrs);
-      else {
-        setErrs(null);
-        const data = {
-          name,
-          email,
-          mobile,
-          dob,
-          gender,
-          isSuperAdmin: superAdmin,
-        };
-        ajaxUtils.post("/manager/createManager", { data });
-      }
-    }
-  };
+function CreateManager() {
   return (
     <ContentPage>
       <Auth>
         <Box>
           <ContentCard>
             <CardTitle>Fill Manager Details</CardTitle>
-            <Form>
+            <Frm getOnLoad={false}>
+              <SimpleBox>
+                <FrmInput
+                  label="Full Name"
+                  name="name"
+                  required={true}
+                  validators={[required]}
+                />
+                <FrmInput
+                  label="Email"
+                  name="email"
+                  required={true}
+                  validators={[required, email]}
+                />
+                <FrmInput
+                  label="Mobile"
+                  name="mobile"
+                  required={true}
+                  validators={[required, mobile]}
+                />
+                <FrmDateInput
+                  name="dob"
+                  label="Date Of Birth"
+                  required={true}
+                  validators={[required, date]}
+                />
+                <FrmSelect
+                  name="gender"
+                  required={true}
+                  options={genderOpts}
+                  label="Gender"
+                  validators={[required]}
+                />
+                <FrmCheckBox name="isSuperAdmin" label="SuperAdmin" />
+              </SimpleBox>
+            </Frm>
+            {/* <Form>
               <Box>
                 {errs && <FrmErrs errs={errs} />}
                 <FormInput
@@ -105,7 +95,7 @@ function CreateManager(props: IProps) {
                   }}
                 />
               </Box>
-            </Form>
+            </Form> */}
           </ContentCard>
         </Box>
       </Auth>

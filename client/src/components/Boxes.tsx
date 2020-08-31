@@ -57,15 +57,6 @@ export const CaptchaBox = styled.div({
   textShadow: "1px 1px #f44336",
 });
 
-export const FrmErrBox = styled.div({
-  color: "#f44336",
-  textAlign: "left",
-  padding: 5,
-  backgroundColor: "#ffebee",
-  borderRadius: 3,
-  marginBottom: 5,
-});
-
 export const TopBarMainBox = styled.div({
   backgroundColor: "#fff",
   minWidth: "100%",
@@ -112,6 +103,12 @@ export const ContentPage = styled.div({
   maxWidth: 1000,
   margin: "10px auto",
 });
+
+export const FrmBox = styled.div({
+  marginBottom: 10,
+});
+
+export const FrmFlexRowBox = styled(FlexBoxRowCenter)``;
 
 export const LeftBarListOptionBox = styled.div({
   lineHeight: 1.15,
@@ -181,17 +178,19 @@ export function LeftBarListOption(props: IMenuOptionProps) {
       <LeftBarListOptionBox
         data-option={label}
         style={boxStyle}
-        onClick={onOptionClick}>
+        onClick={onOptionClick}
+      >
         <LeftBarListOptionLabelBox
           data-option={label}
-          style={shouldOpen ? { color: "#1e0b00" } : {}}>
+          style={shouldOpen ? { color: "#1e0b00" } : {}}
+        >
           {label}
         </LeftBarListOptionLabelBox>
         <svg
           data-option={label}
-          width='8'
-          height='8'
-          viewBox='0 0 7 4'
+          width="8"
+          height="8"
+          viewBox="0 0 7 4"
           onClick={onOptionClick}
           style={
             !shouldOpen
@@ -204,12 +203,14 @@ export function LeftBarListOption(props: IMenuOptionProps) {
                   transition: "all 0.3s ease 0s",
                   marginRight: 4,
                 }
-          }>
+          }
+        >
           <path
             data-option={label}
-            fill='#354052'
-            fillRule='evenodd'
-            d='M3.852 3.684l-.018.014-.05.042a.492.492 0 0 1-.636-.056L.316.852A.504.504 0 0 1 .262.214L.318.146a.494.494 0 0 1 .705-.001L3.5 2.62 5.977.145A.504.504 0 0 1 6.614.09l.068.056a.494.494 0 0 1 .002.706L3.852 3.684z'></path>
+            fill="#354052"
+            fillRule="evenodd"
+            d="M3.852 3.684l-.018.014-.05.042a.492.492 0 0 1-.636-.056L.316.852A.504.504 0 0 1 .262.214L.318.146a.494.494 0 0 1 .705-.001L3.5 2.62 5.977.145A.504.504 0 0 1 6.614.09l.068.056a.494.494 0 0 1 .002.706L3.852 3.684z"
+          ></path>
         </svg>
       </LeftBarListOptionBox>
       {shouldOpen && (

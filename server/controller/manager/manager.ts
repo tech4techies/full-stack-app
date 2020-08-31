@@ -1,29 +1,31 @@
 /** @format */
 
 import sendgrid, { MailDataRequired } from "@sendgrid/mail";
+import crypto from "crypto";
 import express, { Request, Response } from "express";
 import jwt, { SignOptions } from "jsonwebtoken";
 import { DateTime } from "luxon";
 import config from "../../config";
 import Db from "../../models/mongodb";
-import { jaction } from "../../utils/custom-express";
+import { IMngrActivity, userType } from "../../types";
+import { getIp, getUserBrowser, getUserOS } from "../../utils/client-info";
 import Encrypt, { ClientEncrypt } from "../../utils/encrypt";
+import { jaction } from "../../utils/express-utils";
 import { genId, genPass } from "../../utils/generate-random";
 import { getMngrCredentialsTemplate } from "../../utils/get-templates";
 import { authenticate } from "../validate";
-import { IMngrActivity } from "../../types";
-import { getIp, getUserBrowser, getUserOS } from "../../utils/client-info";
-import crypto from "crypto";
+import { getManagerSchoolRouter } from "./school";
 
 export function getManagerRouter() {
   return express
     .Router({ mergeParams: true })
+    .use("/school", getManagerSchoolRouter())
     .post("/login", jaction(verifyLogin))
     .post("/changePassword", jaction(changePassword))
-    .post("/createManager", jaction(createManager))
-    .post("/createSchool", jaction(createSchool))
-    .post("/profile/:email", jaction(updateMngrProfile))
-    .get("/profile/:email", jaction(getMngrProfile))
+    .post("/create", jaction(createManager))
+    .post("/edit", jaction(validateManager))
+    .post("/edit/:email", jaction(updateMngrProfile))
+    .get("/edit/:email", jaction(getMngrProfile))
     .get("/activities", jaction(getActivities))
     .get("/profile", jaction(getProfile));
 }
@@ -54,7 +56,7 @@ async function getActivities(req: Request, res: Response) {
     );
     return { success: true, type: true, data: rows };
   } else {
-    res.status(403).send({
+    res.status(401).send({
       success: false,
       type: false,
       userMessage: "Login Required",
@@ -110,7 +112,7 @@ async function verifyLogin(req: Request, res: Response) {
     res.send({
       success: true,
       type: true,
-      isDefault: rows.isDefault,
+      data: { isDefault: rows.isDefault },
       userMessage: "Logged in Successfully",
     });
   } else {
@@ -123,20 +125,53 @@ async function verifyLogin(req: Request, res: Response) {
 }
 
 async function updateMngrProfile(req: Request, res: Response) {
+  const { body } = req;
   const { email } = req.params;
-  const { data } = req.body;
   const cookie = req.headers.cookie as string;
   const { success, info } = authenticate(cookie);
   if (success && info) {
-    await recordActivity(req, info.id, "Updated Manager Profile");
-    await Db.manager.setCtxByEmail(email, data);
+    await recordActivity(req, info.id, `Updated Manager Profile of ${email}`);
+    await Db.manager.setCtxByEmail(email, body);
     return {
       success: true,
       type: true,
       userMessage: "Manager Profile Updated Successfully",
     };
   } else {
-    res.status(403).send({
+    res.status(401).send({
+      success: true,
+      type: false,
+      userMessage: "Login Required",
+    });
+  }
+}
+
+async function validateManager(req: Request, res: Response) {
+  const { email } = req.body;
+  const cookie = req.headers.cookie as string;
+  const { success, info } = authenticate(cookie);
+  if (success && info) {
+    const ctx = await Db.manager.getCtx(info.id);
+    if (ctx.email !== email) {
+      const row = await Db.manager.getCtxByEmail(email);
+      if (row)
+        return { success: true, type: true, data: { valid: true, email } };
+      else
+        return {
+          success: true,
+          type: false,
+          data: { valid: false },
+          userMessage: "No Manager found with entered email",
+        };
+    } else {
+      return {
+        success: true,
+        type: false,
+        userMessage: "Please visit Profile Section to edit your profile ",
+      };
+    }
+  } else {
+    res.status(401).send({
       success: true,
       type: false,
       userMessage: "Login Required",
@@ -149,31 +184,14 @@ async function getMngrProfile(req: Request, res: Response) {
   const cookie = req.headers.cookie as string;
   const { success, info } = authenticate(cookie);
   if (success && info) {
-    const ctx = await Db.manager.getCtx(info.id);
-    if (ctx.email !== email) {
-      const row = await Db.manager.getCtxByEmail(email);
-      if (row) return { success: true, type: true, data: row };
-      else
-        return {
-          success: true,
-          type: false,
-          data: null,
-          userMessage: "No Manager found with entered email",
-        };
-    } else {
-      return {
-        success: true,
-        type: false,
-        userMessage: "Please visit Edit Profile Section to edit your profile ",
-      };
-    }
-  } else {
-    res.status(403).send({
+    const row = await Db.manager.getCtxByEmail(email);
+    return { success: true, type: true, data: row };
+  } else
+    res.status(401).send({
       success: true,
       type: false,
       userMessage: "Login Required",
     });
-  }
 }
 
 async function getProfile(req: Request, res: Response) {
@@ -185,7 +203,7 @@ async function getProfile(req: Request, res: Response) {
     const row = await Db.manager.getCtx(id);
     return { success: true, type: true, data: row };
   } else {
-    res.status(403).send({
+    res.status(401).send({
       success: true,
       type: false,
       userMessage: "Login Required",
@@ -219,64 +237,49 @@ async function changePassword(req: Request, res: Response) {
         userMessage: "Invalid Request",
       };
   } else
-    return res.status(403).send({
+    return res.status(401).send({
       success: true,
       type: false,
       userMessage: "Login Required",
     });
 }
 
-async function createSchool(req: Request, res: Response) {
-  const cookie = req.headers.cookie as string;
-  const { success, info } = authenticate(cookie);
-  if (success && info) {
-    const { data } = req.body;
-    const schoolId = genId(8);
-    const userName = genId(8, true);
-    // const password = ClientEncrypt.hashPassword(genPass("admin"), config.);
-  } else {
-    return res.status(403).send({
-      success: false,
-      type: false,
-      userMessage: "Login Required",
-    });
-  }
-}
-
 async function createManager(req: Request, res: Response) {
   const cookie = req.headers.cookie as string;
   const { success, info } = authenticate(cookie);
   if (success && info) {
-    const { data } = req.body;
-    const { email, name } = data;
+    const { body } = req;
+    const { email, name } = body;
     const isExists = await Db.manager.findMngr(email);
     if (!isExists) {
-      const password = genPass("mngr");
+      const password = genPass(userType.manager);
       const clientPassword = ClientEncrypt.hashPassword(
         password,
         config.clientSecretKey
       );
-      data.password = Encrypt.hash(clientPassword, config.secretKey);
+      body.password = Encrypt.hash(clientPassword, config.secretKey);
       const id = genId(8, true);
       const userName = genId(8);
-      data.userName = Encrypt.hash(userName, config.secretKey);
+      body.userName = Encrypt.hash(userName, config.secretKey);
       const attrs = {
         disabled: false,
         createdBy: info.id,
       };
-      const mgrInfo = Object.assign(data, attrs);
+      const mgrInfo = Object.assign(body, attrs);
       const isInserted = await Db.manager.createMngrCtx(id, mgrInfo);
       if (isInserted) {
         const htmlTemplate = getMngrCredentialsTemplate(
           name,
-          id,
           userName,
           password
         );
         sendgrid.setApiKey(config.sendGridKey);
         const emailInfo: MailDataRequired = {
           to: email,
-          from: "welcome@chaathra.com",
+          from: {
+            email: "donotreply-welcome@chaathra.com",
+            name: "Admin-Chaathra",
+          },
           subject: "Welcome to Chaathra",
           html: htmlTemplate,
         };
@@ -294,7 +297,7 @@ async function createManager(req: Request, res: Response) {
         userMessage: "Manager Already Exists",
       };
   } else {
-    return res.status(403).send({
+    return res.status(401).send({
       success: false,
       type: false,
       userMessage: "Login Required",

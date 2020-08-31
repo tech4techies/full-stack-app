@@ -9,14 +9,14 @@ import history from "../../../utils-lib/history";
 import { email, required } from "../../../utils-lib/validators";
 import Auth from "../../auth";
 
-export default function EditManager() {
+export default function EditSchool() {
   const onValidApiSuccess = (res: any) => {
     if (res && res.valid) {
-      const { email } = res;
+      const { id } = res;
       const {
         location: { pathname },
       } = window;
-      history.redirectTo(`${pathname}/${email}`);
+      history.redirectTo(`${pathname}/${id}`);
     }
   };
 
@@ -25,14 +25,14 @@ export default function EditManager() {
       <Auth>
         <SimpleBox>
           <ContentCard>
-            <CardTitle>Edit Manager</CardTitle>
+            <CardTitle>Edit School Info</CardTitle>
             <Frm getOnLoad={false} onSuccess={onValidApiSuccess}>
               <SimpleBox>
                 <FrmInput
-                  label="Manager Email"
-                  name="email"
+                  label="School Id"
+                  name="id"
                   required={true}
-                  validators={[required, email]}
+                  validators={[required]}
                 />
               </SimpleBox>
             </Frm>

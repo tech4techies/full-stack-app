@@ -1,62 +1,23 @@
-/** @format */
-
-import styled from "@emotion/styled";
-import React, { useState } from "react";
-import { FlexBoxRowCenter } from "./Boxes";
-import { RequiredSpan } from "./Inputs";
-
-const BorderBox = styled.div({
-  width: 16,
-  height: 16,
-  borderRadius: 3,
-  cursor: "pointer",
-  border: "2px solid #9e9e9e",
-});
-
-const TickMark = styled.div({
-  marginLeft: 5,
-  width: 5,
-  border: "2px solid #fff",
-  height: 10,
-  transform: "rotate(45deg)",
-  borderTop: "none",
-  borderLeft: "none",
-});
-
-const BoxLabel = styled.label({
-  marginLeft: 8,
-  marginTop: 2,
-  cursor: "pointer",
-});
+import React from "react";
+import { Field } from "react-final-form";
 
 interface IProps {
-  required?: boolean;
-  onClick: (val: boolean) => void;
+  name: string;
   label: string;
-  value?: boolean;
 }
 
-export function CheckBox(props: IProps) {
-  const [isChecked, setChecked] = useState(props.value || false);
-  const onBoxClick = (e: any) => {
-    setChecked(!isChecked);
-    props.onClick(!isChecked);
-  };
+export default function FrmCheckBox(props: IProps) {
   return (
-    <FlexBoxRowCenter style={{ padding: 3, marginBottom: 5 }}>
-      <BorderBox
-        onClick={onBoxClick}
-        style={
-          isChecked
-            ? { borderColor: "#f97a20", backgroundColor: "#f97a20" }
-            : {}
-        }>
-        {isChecked && <TickMark />}
-      </BorderBox>
-      <BoxLabel onClick={onBoxClick}>
+    <div className="ch-checkbox-group">
+      <label className="ch-checkbox-label">
+        <Field
+          className={"ch-checkbox"}
+          name={props.name}
+          component="input"
+          type="checkbox"
+        />
         {props.label}
-        {props.required && <RequiredSpan>*</RequiredSpan>}
-      </BoxLabel>
-    </FlexBoxRowCenter>
+      </label>
+    </div>
   );
 }

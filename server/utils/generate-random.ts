@@ -1,6 +1,7 @@
 /** @format */
 
 import generate from "nanoid/generate";
+import { userType } from "../types";
 export function genNum(size: number) {
   const numbers = "1234567890";
   return generate(numbers, size);
@@ -29,26 +30,23 @@ export function genId(size: number, all?: boolean) {
   } else return genNum(8);
 }
 
+export function genToken(size: number) {
+  const all =
+    "az1@Sx2Hs#3Xw4YqN5!Cp6DMlE7$Um8%nQJ?9k&oi,IA0*h1K<b(e2LZd3cOv4)Rf>5rP}6Ft:g7.V]b8y{B9u]0+T1-G=2";
+  return generate(all, size);
+}
+
 export function genPass(type: string) {
-  if (type === "mngr")
-    return (
-      genSmallAlpha(1) +
-      genCapAlpha(1) +
-      genSym(1) +
-      genSmallAlpha(2) +
-      genNum(1) +
-      genCapAlpha(2) +
-      genNum(1) +
-      genSym(1)
-    );
-  else if (type === "admin")
-    return (
-      genCapAlpha(2) +
-      genSym(1) +
-      genNum(2) +
-      genSmallAlpha(2) +
-      genNum(2) +
-      genSym(1)
-    );
-  else return genId(8);
+  const pass =
+    genSmallAlpha(1) +
+    genCapAlpha(1) +
+    genSym(1) +
+    genSmallAlpha(2) +
+    genNum(1) +
+    genCapAlpha(2) +
+    genNum(1) +
+    genSym(1);
+  if (type === userType.manager) return pass;
+  else if (type === userType.admin) return pass;
+  else return genId(8, true);
 }

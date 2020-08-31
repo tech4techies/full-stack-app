@@ -3,6 +3,10 @@
 import crypto from "crypto";
 import btoa from "btoa";
 export default class Encrypt {
+  static swapChars(s: string) {
+    return s.split("").reverse().join("");
+  }
+
   static generateTokens(s: string, noOfPairs: number) {
     const pairsLen = Math.round(s.length / noOfPairs);
     const tokens: string[] = [];
@@ -99,7 +103,7 @@ export class ClientEncrypt {
       crypto
         .createHmac("sha256", allTokens.reverse().join(""))
         .update(val)
-        .digest("hex"),
+        .digest("hex")
     ).replace("==", "");
   }
 }
