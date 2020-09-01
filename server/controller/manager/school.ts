@@ -64,32 +64,58 @@ function generateDefaultAdminCredentials() {
     },
   };
 }
+
+async function genNewIdAndCheck() {
+  const schoolIds: string[] = [];
+  let newSchoolId: string = "";
+  for (let i = 0; i < 10; i += 1) schoolIds.push(genId(8));
+  for (const schoolId of schoolIds) {
+    const exists = await Db.school.checkIdExists(schoolId);
+    if (!exists) {
+      newSchoolId = schoolId;
+      break;
+    }
+  }
+  return newSchoolId.length > 0 ? newSchoolId : "12345678";
+}
+
 async function createSchool(req: Request, res: Response) {
   const { body } = req;
-  const schoolId = genId(8);
+  let schoolId = genId(8);
   const { dbDetails, template } = generateDefaultAdminCredentials();
   const schoolInfo = Object.assign(body, dbDetails);
-  await Db.school.set(schoolId, schoolInfo);
-  const htmlTemplate = getSchoolRegistrationTemplate(
-    template.userName,
-    schoolId,
-    template.password,
-    body.name
-  );
-  sendgrid.setApiKey(config.sendGridKey);
-  const emailInfo: MailDataRequired = {
-    to: body.pocEmail,
-    from: {
-      email: "donotreply-welcome@chaathra.com",
-      name: "Admin-Chaathra",
-    },
-    subject: "Welcome to Chaathra",
-    html: htmlTemplate,
-  };
-  await sendgrid.send(emailInfo);
-  return {
-    success: true,
-    type: true,
-    userMessage: "School created and data saved successfully",
-  };
+  const exists = await Db.school.checkIdExists(schoolId);
+  if (exists) schoolId = await genNewIdAndCheck();
+  const ctx = await Db.school.getCtx(schoolId, body.pocEmail, body.pocMobile);
+  if (ctx)
+    return {
+      success: true,
+      type: false,
+      userMessage: "School already exists with the details provided.",
+    };
+  else {
+    await Db.school.save(schoolId, schoolInfo);
+    const htmlTemplate = getSchoolRegistrationTemplate(
+      template.userName,
+      schoolId,
+      template.password,
+      body.name
+    );
+    sendgrid.setApiKey(config.sendGridKey);
+    const emailInfo: MailDataRequired = {
+      to: body.pocEmail,
+      from: {
+        email: "donotreply-welcome@chaathra.com",
+        name: "Admin-Chaathra",
+      },
+      subject: "Welcome to Chaathra",
+      html: htmlTemplate,
+    };
+    await sendgrid.send(emailInfo);
+    return {
+      success: true,
+      type: true,
+      userMessage: "School created and data saved successfully",
+    };
+  }
 }

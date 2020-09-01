@@ -152,7 +152,7 @@ async function validateManager(req: Request, res: Response) {
   const { success, info } = authenticate(cookie);
   if (success && info) {
     const ctx = await Db.manager.getCtx(info.id);
-    if (ctx.email !== email) {
+    if (ctx && ctx.email !== email) {
       const row = await Db.manager.getCtxByEmail(email);
       if (row)
         return { success: true, type: true, data: { valid: true, email } };

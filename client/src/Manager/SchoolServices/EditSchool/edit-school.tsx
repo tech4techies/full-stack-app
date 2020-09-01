@@ -29,8 +29,8 @@ export default function EditSchool() {
             <Frm getOnLoad={false} onSuccess={onValidApiSuccess}>
               <SimpleBox>
                 <FrmInput
-                  label="School Id"
-                  name="id"
+                  label="School Id/Mobile No./Email Id"
+                  name="inp"
                   required={true}
                   validators={[required]}
                 />
