@@ -9,11 +9,27 @@ export default class School {
     this.colConn = dbConn.collection("school");
   }
 
+  convertMongoId(obj: any) {
+    const { _id: id, ...rest } = obj;
+    return { id, ...rest };
+  }
+
   async save(id: string, info: ISchoolDetails) {
     await this.colConn.insertOne({
       _id: id,
       ...info,
     });
+  }
+
+  async checkExists(inp: string) {
+    const row = await this.colConn.findOne(
+      {
+        $or: [{ _id: inp }, { pocEmail: inp }, { pocMobile: inp }],
+      },
+      { projection: { _id: 1 } }
+    );
+    if (!row) return null;
+    else return this.convertMongoId(row);
   }
 
   async checkIdExists(id: string) {
@@ -24,7 +40,7 @@ export default class School {
     else return true;
   }
 
-  async getCtx(id: string, pocEmail: string, pocMobile: string) {
+  async getCtx(pocEmail: string, pocMobile: string) {
     const row = await this.colConn.findOne({
       $or: [{ pocMobile }, { pocEmail }],
     });

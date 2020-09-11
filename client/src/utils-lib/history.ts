@@ -19,6 +19,9 @@ class History {
       history.pageReload();
     }, 500);
   }
+  push(path: string) {
+    browserHistory.push(path);
+  }
 }
 const history = new History();
 export default history;

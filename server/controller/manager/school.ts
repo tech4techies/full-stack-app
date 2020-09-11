@@ -1,19 +1,53 @@
-import express, { Request, Response } from "express";
-import { jaction } from "../../utils/express-utils";
 import sendgrid, { MailDataRequired } from "@sendgrid/mail";
-import { genId, genToken, genPass } from "../../utils/generate-random";
-import Encrypt, { ClientEncrypt } from "../../utils/encrypt";
+import express, { Request, Response } from "express";
 import clientConfig from "../../../client/src/config";
 import config from "../../config";
-import { userType } from "../../types";
-import { getSchoolRegistrationTemplate } from "../../utils/get-templates";
+import MongoDb from "../../models/mongodb";
 import Db from "../../models/mongodb";
-import SchoolDb from "../../models/schooldb";
+import { userType } from "../../types";
+import Encrypt, { ClientEncrypt } from "../../utils/encrypt";
+import { jaction } from "../../utils/express-utils";
+import { genId, genPass, genToken } from "../../utils/generate-random";
+import { getSchoolRegistrationTemplate } from "../../utils/get-templates";
+import { authenticate } from "../validate";
 
 export function getManagerSchoolRouter() {
   return express
     .Router({ mergeParams: true })
-    .post("/create", jaction(createSchool));
+    .post("/create", jaction(createSchool))
+    .post("/edit", jaction(checkSchoolExists))
+    .get("/edit/:id", jaction(getSchoolInfo));
+}
+
+async function getSchoolInfo(req: Request, res: Response) {
+  const { body } = req;
+  const cookie = req.headers.cookie as string;
+  const { success, info } = authenticate(cookie);
+}
+
+async function checkSchoolExists(req: Request, res: Response) {
+  const {
+    body: { input },
+  } = req;
+  const cookie = req.headers.cookie as string;
+  const { success, info } = authenticate(cookie);
+  if (success && info) {
+    const row = await MongoDb.school.checkExists(input);
+    if (!row)
+      return {
+        success: true,
+        type: false,
+        userMessage:
+          "No School exists with the details provided, Please provide valid details.",
+      };
+    else return { success: true, type: true, data: { ...row, valid: true } };
+  } else {
+    res.status(401).send({
+      success: false,
+      type: false,
+      userMessage: "Login Required",
+    });
+  }
 }
 
 function encodeToken(token: string) {
@@ -81,41 +115,50 @@ async function genNewIdAndCheck() {
 
 async function createSchool(req: Request, res: Response) {
   const { body } = req;
-  let schoolId = genId(8);
-  const { dbDetails, template } = generateDefaultAdminCredentials();
-  const schoolInfo = Object.assign(body, dbDetails);
-  const exists = await Db.school.checkIdExists(schoolId);
-  if (exists) schoolId = await genNewIdAndCheck();
-  const ctx = await Db.school.getCtx(schoolId, body.pocEmail, body.pocMobile);
-  if (ctx)
-    return {
-      success: true,
+  const cookie = req.headers.cookie as string;
+  const { success, info } = authenticate(cookie);
+  if (success && info) {
+    let schoolId = genId(8);
+    const { dbDetails, template } = generateDefaultAdminCredentials();
+    const schoolInfo = Object.assign(body, dbDetails);
+    const exists = await Db.school.checkIdExists(schoolId);
+    if (exists) schoolId = await genNewIdAndCheck();
+    const ctx = await Db.school.getCtx(body.pocEmail, body.pocMobile);
+    if (ctx)
+      return {
+        success: true,
+        type: false,
+        userMessage: "School already exists with the details provided.",
+      };
+    else {
+      await Db.school.save(schoolId, schoolInfo);
+      const htmlTemplate = getSchoolRegistrationTemplate(
+        template.userName,
+        schoolId,
+        template.password,
+        body.name
+      );
+      sendgrid.setApiKey(config.sendGridKey);
+      const emailInfo: MailDataRequired = {
+        to: body.pocEmail,
+        from: {
+          email: "donotreply-welcome@chaathra.com",
+          name: "Admin-Chaathra",
+        },
+        subject: "Welcome to Chaathra",
+        html: htmlTemplate,
+      };
+      await sendgrid.send(emailInfo);
+      return {
+        success: true,
+        type: true,
+        userMessage: "School created and data saved successfully",
+      };
+    }
+  } else
+    res.status(401).send({
+      success: false,
       type: false,
-      userMessage: "School already exists with the details provided.",
-    };
-  else {
-    await Db.school.save(schoolId, schoolInfo);
-    const htmlTemplate = getSchoolRegistrationTemplate(
-      template.userName,
-      schoolId,
-      template.password,
-      body.name
-    );
-    sendgrid.setApiKey(config.sendGridKey);
-    const emailInfo: MailDataRequired = {
-      to: body.pocEmail,
-      from: {
-        email: "donotreply-welcome@chaathra.com",
-        name: "Admin-Chaathra",
-      },
-      subject: "Welcome to Chaathra",
-      html: htmlTemplate,
-    };
-    await sendgrid.send(emailInfo);
-    return {
-      success: true,
-      type: true,
-      userMessage: "School created and data saved successfully",
-    };
-  }
+      userMessage: "Login Required",
+    });
 }

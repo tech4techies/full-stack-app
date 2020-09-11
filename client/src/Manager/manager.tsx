@@ -32,7 +32,7 @@ function ManagerRouter() {
   const [mngrProfile, setMngrProfile] = useState<null | IMngrProfile>(null);
   const [isMngrCookieValid, setIsMngr] = useState(false);
   const validateCookie = useCallback(async () => {
-    const res = await ajaxUtils.get("validate/cookie/manager");
+    const res = await ajaxUtils.get("validate/manager");
     if (res) {
       const { userType } = res;
       if (userType && userType === "manager") setIsMngr(true);

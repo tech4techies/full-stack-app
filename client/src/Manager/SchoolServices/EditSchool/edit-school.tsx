@@ -16,7 +16,7 @@ export default function EditSchool() {
       const {
         location: { pathname },
       } = window;
-      history.redirectTo(`${pathname}/${id}`);
+      history.push(`${pathname}/${id}`);
     }
   };
 
@@ -30,7 +30,7 @@ export default function EditSchool() {
               <SimpleBox>
                 <FrmInput
                   label="School Id/Mobile No./Email Id"
-                  name="inp"
+                  name="input"
                   required={true}
                   validators={[required]}
                 />

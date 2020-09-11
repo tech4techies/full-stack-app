@@ -11,7 +11,7 @@ import crypto from "crypto";
 export function getValidateRouter() {
   return express
     .Router({ mergeParams: true })
-    .get("/cookie/manager", jaction(managerCookie));
+    .get("/manager", jaction(managerCookie));
 }
 
 async function managerCookie(req: Request) {
