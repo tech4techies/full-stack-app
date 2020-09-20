@@ -40,9 +40,11 @@ export default class School {
     else return true;
   }
 
+  getCtxbY;
+
   async getCtx(pocEmail: string, pocMobile: string) {
     const row = await this.colConn.findOne({
-      $or: [{ pocMobile }, { pocEmail }],
+      $or: [{ _id: id }, { pocMobile }, { pocEmail }],
     });
     return row;
   }

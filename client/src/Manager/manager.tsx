@@ -88,10 +88,10 @@ function ManagerRouter() {
                   <Route path="/manager/school/create">
                     <CreateSchool />
                   </Route>
-                  <Route path="/manager/school/edit">
+                  <Route path="/manager/school/edit" exact>
                     <EditSchool />
                   </Route>
-                  <Route path="/manager/school/edit:id">
+                  <Route path="/manager/school/edit/:id" exact>
                     <EditSchoolFrm />
                   </Route>
                   <Route path="*">

@@ -6,7 +6,7 @@ import { CardTitle, ContentCard } from "../../../components/Cards";
 import { Frm } from "../../../components/Forms";
 import { FrmInput } from "../../../components/Inputs";
 import history from "../../../utils-lib/history";
-import { email, required } from "../../../utils-lib/validators";
+import { required } from "../../../utils-lib/validators";
 import Auth from "../../auth";
 
 export default function EditSchool() {
@@ -16,7 +16,7 @@ export default function EditSchool() {
       const {
         location: { pathname },
       } = window;
-      history.push(`${pathname}/${id}`);
+      history.redirectTo(`${pathname}/${id}`);
     }
   };
 

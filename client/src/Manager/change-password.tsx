@@ -23,7 +23,7 @@ const ArrowRight = require("../assets/right-arrow.svg");
 function ChangePassword() {
   const [password, setPassword] = useState<string | null>(null);
   const [passErr, setPassErr] = useState<string | null>(null);
-  const [cnfPassword, setCnfPassword] = useState<string | null>(null);
+  const [cnfPassword, setCnfPassword] = useState<string | undefined>(undefined);
   const [needle, setNeedle] = useState(false);
   const [policyNeedle, setPolicyNeedle] = useState(false);
   const checkPolicy = (val: string) => {
@@ -114,6 +114,7 @@ function ChangePassword() {
                   placeholder=" "
                   autoComplete="off"
                   spellCheck={false}
+                  value={cnfPassword}
                   required={true}
                   disabled={
                     !password ||

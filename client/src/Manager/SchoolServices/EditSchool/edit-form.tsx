@@ -25,7 +25,7 @@ export default function EditSchoolFrm(props: IProps) {
     const apiPath = pathname.replace("/", "");
     ajaxUtils.get(apiPath).then((res: any) => {
       if (res) setValid(res);
-      else history.redirectTo("/manager/editManager");
+      else history.redirectTo("/manager/school/edit");
       setComplete(true);
     });
   }, []);

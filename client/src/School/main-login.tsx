@@ -1,13 +1,10 @@
 /** @format */
 
 import React, { useState } from "react";
-import { Box, FlexBoxRowCenter } from "../components/Boxes";
-import { Captcha } from "../components/Captcha";
-import { FormCard, CardTitle } from "../components/Cards";
+import { Box } from "../components/Boxes";
+import { CardTitle, FormCard } from "../components/Cards";
 // import { FormActions, FormInput, FrmErrs, Form } from "../components/Forms";
 import { genCaptcha } from "../utils-lib/generate-captcha";
-// import { Validator, IValidatorResult } from "../utils-lib/validators";
-import { ajaxUtils } from "../utils-lib/axios-utils";
 function MainLogin() {
   const [captcha, setCaptcha] = useState(btoa(genCaptcha(8)).replace("=", ""));
   const [schoolId, setSchoolId] = useState(null);

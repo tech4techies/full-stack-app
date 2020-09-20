@@ -20,9 +20,10 @@ export function getManagerSchoolRouter() {
 }
 
 async function getSchoolInfo(req: Request, res: Response) {
-  const { body } = req;
+  const { id } = req.params;
   const cookie = req.headers.cookie as string;
   const { success, info } = authenticate(cookie);
+  const row = await MongoDb.school.getCtxById(id);
 }
 
 async function checkSchoolExists(req: Request, res: Response) {
@@ -123,7 +124,7 @@ async function createSchool(req: Request, res: Response) {
     const schoolInfo = Object.assign(body, dbDetails);
     const exists = await Db.school.checkIdExists(schoolId);
     if (exists) schoolId = await genNewIdAndCheck();
-    const ctx = await Db.school.getCtx(body.pocEmail, body.pocMobile);
+    const ctx = await Db.school.getCtx(schoolId, body.pocEmail, body.pocMobile);
     if (ctx)
       return {
         success: true,
