@@ -19,7 +19,7 @@
     "@types/react-router-dom": "^5.1.5",
     "axios": "^0.19.2",
     "final-form": "^4.20.1",
-    "nanoid": "^2.1.7",
+    "nanoid": "^3.1.31",
     "node-forge": "^0.10.0",
     "noty": "^3.2.0-beta",
     "nprogress": "^0.2.0",
